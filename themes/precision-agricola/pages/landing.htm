@@ -1,0 +1,169 @@
+url = "/drones"
+layout = "default"
+title = "drones"
+==
+{% put styles %}
+<style>
+.diagonalHover.first {
+    width: 100%;
+    height: 100vh;
+    background-image: url("{{ 'bg_image.jpg'|media }}");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bg-drone {
+    background-image: url("{{ 'drone_bg.png'|media }}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 5em 0;
+}
+
+.bg-drone-2 {
+    height: 100vh;
+    width: 100%;
+    background-image: url("{{ 'dron2.png'|media }}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 5em 0;
+    background-position: bottom center;
+}
+</style>
+{% endput %}
+<section style="width: 100%; background-color: #567043;">
+    <div class="diagonalHover first"></div>
+    <div class="d-flex justify-content-between w-100 px-5" style="position: absolute; bottom: 7%;">
+        <div class="align-self-end">
+            <img src="{{ 'logo-pa.png'|media }}" width="300px" alt="" srcset="">
+        </div>
+        <div class="d-flex flex-column">
+            <img src="{{ 'distribuidor.png'|media }}" class="img-fluid mx-auto" style="width: 150px" alt="" srcset="">
+            <img src="{{ 'dji_agriculture.png'|media }}" class="img-fluid mx-auto" style="width: 300px" alt="" srcset="">
+            <p class="text-uppercase text-white h4">Venta / Reparación / Servicio / Asesoría</p>
+        </div>
+    </div>
+</section>
+
+<section class="container-fluid my-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-12">
+            <img src="{{ 'drone1.png'|media }} " alt="" width="500px" class="img-fluid my-4 mx-auto">
+        </div>
+        <div class="col-12 col-md-6">
+            <img src="{{ 'drone2.png'|media }} " alt="" width="400px" class="img-fluid my-4 mx-auto">
+        </div>
+        <div class="col-12 col-md-6">
+            <img src="{{ 'drone3.png'|media }} " alt="" width="300px" class="img-fluid my-4 mx-auto">
+        </div>
+    </div>
+</section>
+
+<section class="container-fluid bg-drone">
+    <div class="row text-center m-0">
+        <div class="col-12 col-md-4 my-4">
+            <button class="btn btn-lg fw-bold bg-theme px-4 bg-theme text-uppercase">Descargar ficha técnica</button>
+        </div>
+        <div class="col-12 col-md-4 my-4">
+            <button class="btn btn-lg fw-bold bg-theme px-4 bg-theme text-uppercase">Agenda una demostración</button>
+        </div>
+        <div class="col-12 col-md-4 my-4">
+            <button class="btn btn-lg fw-bold bg-theme px-4 bg-theme text-uppercase">Llamar</button>
+        </div>
+    </div>
+</section>
+
+<section class="container-fluid my-5">
+    <div class="row">
+        <div class="d-flex flex-column justify-content-center col-12 col-md-4">
+            <h3 class="text-uppercase fw-bold text-center my-5">Ventajas de la ASPERSIóN con drones agrícolas</h3>
+            <ul class="mx-auto">
+                <li>Aspersiones nocturnas</li>
+                <li>Ahorro del 90% de agua</li>
+                <li>Aplicaciones homogéneas</li>
+                <li>Aplicaciones sin desperdicios</li>
+                <li>Aplicaciones en suelos mojados</li>
+                <li>Reduce costos de mano de obra</li>
+                <li>Utiliza la dosis exacta por hectárea</li>
+                <li>Reduce tiempos de aplicación</li>
+                <li>Aplicaciones en cerros</li>
+            </ul>
+        </div>
+        <div class="col-12 col-md-8">
+            <h3 class="text-uppercase fw-bold text-center my-5">comparación de métodos de aspersión</h3>
+            <div class="table-responsive">
+              <table class="table">
+                    <thead>
+                        <tr>
+                          <th scope="col"></th>
+                          <th scope="col" class="text-uppercase text-center" colspan=2>Aplicación manual con mochila</th>
+                          <th scope="col" class="text-uppercase text-center">Maquinaria agrícola</th>
+                          <th scope="col" class="text-uppercase text-center">Drone de aspersión</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">superficie</th>
+                          <td class="text-center text-uppercase" colspan=4>1 Hectárea</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">Tipo de aplicación</th>
+                          <td class="text-center text-uppercase">Herbicida</td>
+                          <td class="text-center text-uppercase">Foliar</td>
+                          <td class="text-center text-uppercase">Herbicida/Foliar</td>
+                          <td class="text-center text-uppercase">General</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">Gasto de agua por hectárea</th>
+                          <td class="text-center text-uppercase">100 LT</td>
+                          <td class="text-center text-uppercase">200 LT</td>
+                          <td class="text-center text-uppercase">300 LT</td>
+                          <td class="text-center text-uppercase">10 - 20 LT</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">Ancho de asperción</th>
+                          <td class="text-center text-uppercase">3.2 m</td>
+                          <td class="text-center text-uppercase">1.6 m</td>
+                          <td class="text-center text-uppercase">10.5 m</td>
+                          <td class="text-center text-uppercase">5.0 m - 9.0 m LT</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">Tiempo de aplicación</th>
+                          <td class="text-center text-uppercase">4 h</td>
+                          <td class="text-center text-uppercase">7 h</td>
+                          <td class="text-center text-uppercase">1 h</td>
+                          <td class="text-center text-uppercase">10 min</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">Condiciones de suelo</th>
+                          <td class="text-center text-uppercase">Seco / Húmedo</td>
+                          <td class="text-center text-uppercase">Seco</td>
+                          <td class="text-center text-uppercase">Seco / Húmedo</td>
+                          <td class="text-center text-uppercase">No Aplica</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">Rendimiento por día</th>
+                          <td class="text-center text-uppercase">1 Ha</td>
+                          <td class="text-center text-uppercase">1 Ha</td>
+                          <td class="text-center text-uppercase">20 ha</td>
+                          <td class="text-center text-uppercase">60 ha</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="text-center text-uppercase">Costo de aplicación</th>
+                          <td class="text-center text-uppercase">$400</td>
+                          <td class="text-center text-uppercase">$600</td>
+                          <td class="text-center text-uppercase">$400</td>
+                          <td class="text-center text-uppercase">$500</td>
+                        </tr>
+                      </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="bg-drone-2"></div>

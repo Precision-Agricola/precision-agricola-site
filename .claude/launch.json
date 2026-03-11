@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "OctoberCMS Dev Server",
+      "runtimeExecutable": "C:/laragon/bin/php/php7.4.10/php.exe",
+      "runtimeArgs": ["artisan", "serve", "--port=8000"],
+      "port": 8000
+    },
+    {
+      "name": "Watch LESS",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "watch-less"],
+      "port": 0
+    },
+    {
+      "name": "Watch JS",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "watch-js"],
+      "port": 0
+    }
+  ]
+}

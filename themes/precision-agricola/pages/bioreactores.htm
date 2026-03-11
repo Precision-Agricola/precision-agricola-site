@@ -8,228 +8,519 @@ title = "Bioreactores"
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bioreactores - Precisión Agrícola</title>
-    <meta name="description" content="Soluciones de bioreactores para la agricultura de precisión">
+    <title>Bioreactores — Precisión Agrícola</title>
+    <meta name="description" content="Diagnóstico de necesidad biotecnológica para tu campo. Soluciones con bioreactores a medida.">
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
+        /* ── Paleta Precisión Agrícola ──────────────────────────────
+           #1a3c2a  pa-dark    (hoja izq. oscura / fondo navbar)
+           #2d6a4f  pa-forest  (verde bosque / botones primarios)
+           #3d8c5f  pa-mid     (verde medio / hover)
+           #6abf45  pa-lime    (hoja der. lima / acentos)
+           #f0faf3  pa-light   (fondo muy claro / cards)
+        ────────────────────────────────────────────────────────── */
+        :root {
+            --pa-dark:   #1a3c2a;
+            --pa-forest: #2d6a4f;
+            --pa-mid:    #3d8c5f;
+            --pa-lime:   #6abf45;
+            --pa-light:  #f0faf3;
+        }
+
+        /* Navbar */
+        .pa-navbar        { background: var(--pa-dark); }
+        .pa-nav-link      { color: #c8e6c9; transition: color .2s; }
+        .pa-nav-link:hover{ color: #6abf45; border-color: #6abf45; }
+        .pa-btn-cta {
+            background: var(--pa-lime);
+            color: var(--pa-dark);
+            font-weight: 700;
+            border-radius: .5rem;
+            transition: background .2s, transform .1s;
+        }
+        .pa-btn-cta:hover { background: #82d455; transform: translateY(-1px); }
+
+        /* Hero */
         .hero-bg {
             background-image: url("{{ 'assets/images/bioreactors/bioreactors_hero_bg.png'|theme }}");
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
         }
-
         .hero-overlay {
-            background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.45));
+            background: linear-gradient(
+                135deg,
+                rgba(26,60,42,.82) 0%,
+                rgba(45,106,79,.70) 55%,
+                rgba(26,60,42,.50) 100%
+            );
         }
+
+        /* Formulario */
+        .form-card {
+            background: rgba(255,255,255,.97);
+            border-top: 4px solid var(--pa-lime);
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,.35);
+        }
+        .form-label { color: var(--pa-dark); font-size: .78rem; font-weight: 600; letter-spacing: .03em; }
+        .form-input {
+            width: 100%; border: 1.5px solid #d1e8d9; border-radius: .45rem;
+            padding: .45rem .7rem; font-size: .82rem; color: #1a3c2a;
+            background: #f7fdf9; transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+        .form-input:focus { border-color: var(--pa-lime); box-shadow: 0 0 0 3px rgba(106,191,69,.2); }
+        .form-radio { accent-color: var(--pa-forest); }
+        .form-submit {
+            width: 100%; padding: .75rem 1rem;
+            background: var(--pa-forest); color: #fff;
+            font-weight: 700; font-size: .9rem; border-radius: .6rem;
+            transition: background .2s, transform .1s;
+            border: none; cursor: pointer;
+        }
+        .form-submit:hover { background: var(--pa-lime); color: var(--pa-dark); transform: translateY(-1px); }
+        .required-star { color: var(--pa-lime); }
+
+        /* Sección beneficios */
+        .benefit-icon { background: var(--pa-light); color: var(--pa-forest); }
+        .section-tag  { background: var(--pa-light); color: var(--pa-forest); }
+
+        /* Footer */
+        .pa-footer { background: var(--pa-dark); }
+
+        /* Scrollbar del form en desktop */
+        .form-scroll::-webkit-scrollbar       { width: 4px; }
+        .form-scroll::-webkit-scrollbar-track  { background: #f0faf3; }
+        .form-scroll::-webkit-scrollbar-thumb  { background: var(--pa-lime); border-radius: 4px; }
     </style>
 </head>
 
-<body class="font-sans antialiased text-gray-800">
+<body class="font-sans antialiased" style="color:#1a3c2a">
 
-    <!-- ===== BARRA SUPERIOR / NAVBAR ===== -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
-        <div x-data="{ open: false }" class="max-w-screen-xl mx-auto px-5 md:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
+<!-- ════════════════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════════════════ -->
+<header class="pa-navbar fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <div x-data="{ open: false }" class="max-w-screen-xl mx-auto px-5 md:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
 
-                <!-- Logo -->
-                <a href="{{ 'inicio'|page }}" class="flex items-center space-x-2 flex-shrink-0">
-                    <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-9 h-9" alt="Precisión Agrícola">
-                    <span class="text-green-700 font-bold text-sm hidden sm:block">Precisión Agrícola</span>
-                </a>
+            <!-- Logo -->
+            <a href="{{ 'inicio'|page }}" class="flex items-center space-x-2 flex-shrink-0">
+                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-9 h-9" alt="Precisión Agrícola">
+                <span class="font-bold text-sm hidden sm:block" style="color:#6abf45">Precisión Agrícola</span>
+            </a>
 
-                <!-- Nav desktop -->
-                <nav class="hidden md:flex items-center space-x-1">
-                    <a href="{{ 'inicio'|page }}"
-                       class="px-4 py-2 text-sm text-gray-600 hover:text-green-600 border-b-2 border-transparent hover:border-green-600 transition-colors duration-200">
-                        Inicio
-                    </a>
-                    <a href="{{ 'acerca-de'|page }}"
-                       class="px-4 py-2 text-sm text-gray-600 hover:text-green-600 border-b-2 border-transparent hover:border-green-600 transition-colors duration-200">
-                        Acerca de
-                    </a>
-                    <a href="{{ 'contacto'|page }}"
-                       class="px-4 py-2 text-sm text-gray-600 hover:text-green-600 border-b-2 border-transparent hover:border-green-600 transition-colors duration-200">
-                        Contacto
-                    </a>
-                    <a href="#contacto-bioreactores"
-                       class="ml-4 px-5 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors duration-200">
-                        Cotizar
-                    </a>
-                </nav>
+            <!-- Nav desktop -->
+            <nav class="hidden md:flex items-center space-x-1">
+                <a href="{{ 'inicio'|page }}"    class="pa-nav-link px-4 py-2 text-sm border-b-2 border-transparent">Inicio</a>
+                <a href="{{ 'acerca-de'|page }}" class="pa-nav-link px-4 py-2 text-sm border-b-2 border-transparent">Acerca de</a>
+                <a href="{{ 'contacto'|page }}"  class="pa-nav-link px-4 py-2 text-sm border-b-2 border-transparent">Contacto</a>
+                <a href="#diagnostico" class="pa-btn-cta ml-4 px-5 py-2 text-sm">Diagnóstico gratuito</a>
+            </nav>
 
-                <!-- Botón hamburguesa móvil -->
-                <button @click="open = !open"
-                        class="md:hidden p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-gray-100 focus:outline-none"
-                        aria-label="Abrir menú">
-                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Menú móvil desplegable -->
-            <div x-show="open"
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 -translate-y-2"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 x-transition:leave="transition ease-in duration-150"
-                 x-transition:leave-start="opacity-100 translate-y-0"
-                 x-transition:leave-end="opacity-0 -translate-y-2"
-                 class="md:hidden border-t border-gray-100 pb-4"
-                 style="display:none">
-                <nav class="flex flex-col space-y-1 pt-2">
-                    <a href="{{ 'inicio'|page }}"
-                       class="px-4 py-3 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors duration-150">
-                        Inicio
-                    </a>
-                    <a href="{{ 'acerca-de'|page }}"
-                       class="px-4 py-3 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors duration-150">
-                        Acerca de
-                    </a>
-                    <a href="{{ 'contacto'|page }}"
-                       class="px-4 py-3 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors duration-150">
-                        Contacto
-                    </a>
-                    <a href="#contacto-bioreactores"
-                       class="mx-4 mt-2 px-5 py-3 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors duration-200 text-center">
-                        Cotizar
-                    </a>
-                </nav>
-            </div>
+            <!-- Hamburguesa móvil -->
+            <button @click="open = !open"
+                    class="md:hidden p-2 rounded-md focus:outline-none"
+                    style="color:#c8e6c9"
+                    aria-label="Abrir menú">
+                <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
         </div>
-    </header>
 
-    <!-- ===== HERO SECTION ===== -->
-    <section class="hero-bg min-h-screen flex items-center">
-        <div class="hero-overlay w-full min-h-screen flex items-center">
-            <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24 pt-16 w-full">
-                <div class="max-w-2xl">
-                    <!-- Etiqueta superior -->
-                    <span class="inline-block px-3 py-1 text-xs font-semibold tracking-widest text-green-300 uppercase bg-green-900 bg-opacity-50 rounded-full mb-6">
-                        Agricultura de precisión
+        <!-- Menú móvil -->
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-1"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-1"
+             class="md:hidden border-t pb-4"
+             style="border-color:rgba(255,255,255,.1);display:none">
+            <nav class="flex flex-col space-y-1 pt-2">
+                <a href="{{ 'inicio'|page }}"    class="pa-nav-link px-4 py-3 text-sm rounded-md hover:bg-white hover:bg-opacity-10">Inicio</a>
+                <a href="{{ 'acerca-de'|page }}" class="pa-nav-link px-4 py-3 text-sm rounded-md hover:bg-white hover:bg-opacity-10">Acerca de</a>
+                <a href="{{ 'contacto'|page }}"  class="pa-nav-link px-4 py-3 text-sm rounded-md hover:bg-white hover:bg-opacity-10">Contacto</a>
+                <a href="#diagnostico" class="pa-btn-cta mx-4 mt-2 px-5 py-3 text-sm text-center block">Diagnóstico gratuito</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+
+<!-- ════════════════════════════════════════════════════════
+     HERO — texto izquierda / formulario derecha
+════════════════════════════════════════════════════════ -->
+<section id="diagnostico" class="hero-bg" style="min-height:100vh">
+    <div class="hero-overlay w-full" style="min-height:100vh">
+        <div class="max-w-screen-xl mx-auto px-5 md:px-10 lg:px-16 pt-24 pb-16 w-full"
+             style="min-height:100vh;display:flex;align-items:center">
+
+            <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+                <!-- ── Columna izquierda: copy ── -->
+                <div class="text-white">
+                    <span class="inline-block px-3 py-1 text-xs font-semibold tracking-widest uppercase rounded-full mb-6"
+                          style="background:rgba(106,191,69,.25);color:#a8e063;border:1px solid rgba(106,191,69,.4)">
+                        Biotecnología agrícola
                     </span>
 
-                    <!-- Título principal -->
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                        Bioreactores para
-                        <span class="text-green-400">el campo</span>
-                        del futuro
+                    <h1 class="text-4xl md:text-5xl font-black leading-tight mb-5">
+                        Produce tus propios<br>
+                        <span style="color:#6abf45">bioinsumos</span> en campo
                     </h1>
 
-                    <!-- Subtítulo -->
-                    <p class="text-lg md:text-xl text-gray-200 mb-10 leading-relaxed">
-                        Soluciones biotecnológicas avanzadas que potencian tus cultivos de forma
-                        sustentable, combinando ciencia agrícola con tecnología de punta.
+                    <p class="text-lg leading-relaxed mb-8" style="color:#c8e6c9">
+                        Con nuestra tecnología de bioreactores, reduce hasta un <strong class="text-white">80%</strong>
+                        los costos en microorganismos benéficos y biofertilizantes —
+                        producidos directamente en tu rancho.
                     </p>
 
-                    <!-- CTAs -->
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#contacto-bioreactores"
-                           class="px-8 py-4 text-base font-bold text-white bg-green-600 rounded-xl hover:bg-green-500 transition-colors duration-200 text-center shadow-lg">
-                            Solicitar información
-                        </a>
-                        <a href="#que-son"
-                           class="px-8 py-4 text-base font-semibold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-colors duration-200 text-center">
-                            Conocer más
-                        </a>
+                    <!-- Badges de beneficios -->
+                    <div class="flex flex-wrap gap-3 mb-10">
+                        <span class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
+                              style="background:rgba(255,255,255,.12);color:#e8f5e9">
+                            <span style="color:#6abf45">✓</span> Menor costo por ha
+                        </span>
+                        <span class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
+                              style="background:rgba(255,255,255,.12);color:#e8f5e9">
+                            <span style="color:#6abf45">✓</span> Suelo más sano
+                        </span>
+                        <span class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
+                              style="background:rgba(255,255,255,.12);color:#e8f5e9">
+                            <span style="color:#6abf45">✓</span> 100% sustentable
+                        </span>
+                    </div>
+
+                    <p class="text-sm" style="color:#81c784">
+                        ↗ Completa el diagnóstico gratuito y recibe una propuesta personalizada.
+                    </p>
+                </div>
+
+                <!-- ── Columna derecha: formulario ── -->
+                <div>
+                    <div class="form-card">
+
+                        <!-- Encabezado del form -->
+                        <div class="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-gray-100">
+                            <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-8 h-8 flex-shrink-0" alt="">
+                            <div>
+                                <p class="text-xs font-semibold tracking-widest uppercase" style="color:#6abf45">
+                                    Precisión Agrícola
+                                </p>
+                                <h2 class="text-sm font-black leading-tight" style="color:#1a3c2a">
+                                    Diagnóstico de Necesidad Biotecnológica
+                                </h2>
+                            </div>
+                        </div>
+
+                        <!-- Campos del formulario -->
+                        <form action="#" method="post"
+                              class="form-scroll px-6 py-5 space-y-4 overflow-y-auto"
+                              style="max-height:72vh">
+
+                            <!-- Nombre Completo -->
+                            <div>
+                                <label class="form-label block mb-1">
+                                    Nombre Completo <span class="required-star">*</span>
+                                </label>
+                                <input type="text" name="nombre" required placeholder="Ej. Juan García López"
+                                       class="form-input">
+                            </div>
+
+                            <!-- Correo -->
+                            <div>
+                                <label class="form-label block mb-1">
+                                    Correo electrónico <span class="required-star">*</span>
+                                </label>
+                                <input type="email" name="email" required placeholder="correo@ejemplo.com"
+                                       class="form-input">
+                            </div>
+
+                            <!-- Ubicación -->
+                            <div>
+                                <label class="form-label block mb-1">
+                                    Ubicación de la operación (Municipio / Estado) <span class="required-star">*</span>
+                                </label>
+                                <input type="text" name="ubicacion" required placeholder="Ej. Caborca, Sonora"
+                                       class="form-input">
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div>
+                                <label class="form-label block mb-1">
+                                    WhatsApp de contacto <span class="required-star">*</span>
+                                </label>
+                                <input type="tel" name="whatsapp" required placeholder="Ej. 644 123 4567"
+                                       class="form-input">
+                            </div>
+
+                            <!-- Rancho / Empresa -->
+                            <div>
+                                <label class="form-label block mb-1">
+                                    Nombre del Rancho / Empresa <span class="required-star">*</span>
+                                </label>
+                                <input type="text" name="rancho" required placeholder="Ej. Rancho El Mezquite"
+                                       class="form-input">
+                            </div>
+
+                            <!-- Cultivo Principal -->
+                            <div x-data="{ otroCultivo: false }">
+                                <label class="form-label block mb-2">
+                                    Cultivo Principal <span class="required-star">*</span>
+                                </label>
+                                <div class="space-y-1.5">
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="cultivo" value="berries" class="form-radio"
+                                               @change="otroCultivo = false" required>
+                                        Berries (Frambuesa, Arándano, Zarzamora)
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="cultivo" value="aguacate" class="form-radio"
+                                               @change="otroCultivo = false">
+                                        Aguacate
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="cultivo" value="agave" class="form-radio"
+                                               @change="otroCultivo = false">
+                                        Agave
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="cultivo" value="cana" class="form-radio"
+                                               @change="otroCultivo = false">
+                                        Caña de Azúcar
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="cultivo" value="otro" class="form-radio"
+                                               @change="otroCultivo = true">
+                                        Otro:
+                                    </label>
+                                    <input x-show="otroCultivo" type="text" name="cultivo_otro"
+                                           placeholder="Especifica tu cultivo"
+                                           class="form-input mt-1" style="display:none">
+                                </div>
+                            </div>
+
+                            <!-- Superficie -->
+                            <div>
+                                <label class="form-label block mb-2">
+                                    Superficie total en producción (Hectáreas) <span class="required-star">*</span>
+                                </label>
+                                <div class="space-y-1.5">
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="superficie" value="menos10" class="form-radio" required>
+                                        Menos de 10 ha
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="superficie" value="11a50" class="form-radio">
+                                        11 a 50 ha
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="superficie" value="mas50" class="form-radio">
+                                        Más de 50 ha
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Problema principal -->
+                            <div>
+                                <label class="form-label block mb-2">
+                                    ¿Cuál es tu principal problema actualmente? <span class="required-star">*</span>
+                                </label>
+                                <div class="space-y-1.5">
+                                    <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="problema" value="costo" class="form-radio mt-0.5" required>
+                                        Costo excesivo de los Microorganismos Benéficos
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="problema" value="suelo" class="form-radio mt-0.5">
+                                        Salud del suelo y degradación
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="problema" value="patogenos" class="form-radio mt-0.5">
+                                        Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="problema" value="nutrientes" class="form-radio mt-0.5">
+                                        Baja eficiencia en la absorción de nutrientes
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Inversión mensual -->
+                            <div>
+                                <label class="form-label block mb-1">
+                                    ¿Cuánto inviertes aproximadamente al mes en bioinsumos por hectárea?
+                                    <span class="required-star">*</span>
+                                </label>
+                                <input type="text" name="inversion" required
+                                       placeholder="Ej. $500 MXN / ha"
+                                       class="form-input">
+                            </div>
+
+                            <!-- Biofábrica -->
+                            <div>
+                                <label class="form-label block mb-2">
+                                    ¿Deseas adquirir una Biofábrica para reducir al máximo los costos de bioinsumos?
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="flex gap-6">
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="biofabrica" value="si" class="form-radio" required>
+                                        Sí
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="biofabrica" value="no" class="form-radio">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Presupuesto -->
+                            <div x-data="{ otroPresupuesto: false }">
+                                <label class="form-label block mb-2">
+                                    ¿Cuentas con presupuesto para inversión inmediata o requieres apoyo con
+                                    financiamiento / subsidio? <span class="required-star">*</span>
+                                </label>
+                                <div class="space-y-1.5">
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="presupuesto" value="disponible"
+                                               class="form-radio" required
+                                               @change="otroPresupuesto = false">
+                                        Presupuesto disponible (Anticipo listo)
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                                        <input type="radio" name="presupuesto" value="otro"
+                                               class="form-radio"
+                                               @change="otroPresupuesto = true">
+                                        Otro:
+                                    </label>
+                                    <input x-show="otroPresupuesto" type="text" name="presupuesto_otro"
+                                           placeholder="Especifica tu situación"
+                                           class="form-input mt-1" style="display:none">
+                                </div>
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="pt-2 pb-1">
+                                <button type="submit" class="form-submit">
+                                    Enviar diagnóstico →
+                                </button>
+                                <p class="text-center text-xs mt-3" style="color:#7aad8a">
+                                    Un especialista se pondrá en contacto contigo en menos de 24 h.
+                                </p>
+                            </div>
+
+                        </form>
                     </div>
                 </div>
+                <!-- fin columna form -->
+
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ===== SECCIÓN: QUÉ SON ===== -->
-    <section id="que-son" class="py-20 bg-white">
-        <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24">
-            <div class="text-center mb-14">
-                <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">¿Qué son los bioreactores agrícolas?</h2>
-                <p class="text-gray-500 text-lg max-w-2xl mx-auto">
-                    Sistemas de cultivo controlado que permiten producir microorganismos beneficiosos,
-                    bioestimulantes y biofertilizantes a escala industrial o en campo.
+
+<!-- ════════════════════════════════════════════════════════
+     BENEFICIOS
+════════════════════════════════════════════════════════ -->
+<section id="que-son" class="py-20" style="background:#f0faf3">
+    <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24">
+
+        <div class="text-center mb-14">
+            <span class="section-tag inline-block px-3 py-1 text-xs font-semibold tracking-widest uppercase rounded-full mb-4"
+                  style="border:1px solid #b7dfc5">
+                ¿Por qué bioreactores?
+            </span>
+            <h2 class="text-3xl md:text-4xl font-black mb-4" style="color:#1a3c2a">
+                Produce lo que antes comprabas
+            </h2>
+            <p class="text-lg max-w-2xl mx-auto" style="color:#4a7a5e">
+                Sistemas de cultivo controlado para producir microorganismos benéficos,
+                bioestimulantes y biofertilizantes — directo en tu campo.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Beneficio 1 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-green-100 text-center">
+                <div class="benefit-icon w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-black mb-2" style="color:#1a3c2a">Hasta 80% menos costo</h3>
+                <p class="text-sm leading-relaxed" style="color:#4a7a5e">
+                    Elimina la dependencia de proveedores externos y produce tus bioinsumos
+                    al costo real de operación.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div class="text-center p-6">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Alta eficiencia</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">
-                        Producción optimizada de insumos biológicos con mayor concentración y viabilidad.
-                    </p>
+            <!-- Beneficio 2 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-green-100 text-center">
+                <div class="benefit-icon w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
                 </div>
+                <h3 class="text-lg font-black mb-2" style="color:#1a3c2a">Suelo vivo y sano</h3>
+                <p class="text-sm leading-relaxed" style="color:#4a7a5e">
+                    Microorganismos frescos y viables aplicados directamente, con mayor
+                    concentración y eficacia que los productos comerciales.
+                </p>
+            </div>
 
-                <div class="text-center p-6">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">100% sustentable</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">
-                        Reducción del uso de agroquímicos y huella ambiental en cada ciclo de producción.
-                    </p>
+            <!-- Beneficio 3 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-green-100 text-center">
+                <div class="benefit-icon w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
                 </div>
-
-                <div class="text-center p-6">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Mayor rendimiento</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">
-                        Incremento comprobado en la productividad agrícola con aplicaciones biológicas precisas.
-                    </p>
-                </div>
+                <h3 class="text-lg font-black mb-2" style="color:#1a3c2a">Mayor rendimiento</h3>
+                <p class="text-sm leading-relaxed" style="color:#4a7a5e">
+                    Incremento comprobado en productividad con aplicaciones biológicas
+                    de alta precisión adaptadas a tu cultivo.
+                </p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ===== CTA / CONTACTO ===== -->
-    <section id="contacto-bioreactores" class="py-20 bg-green-700">
-        <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24 text-center">
-            <h2 class="text-3xl md:text-4xl font-black text-white mb-4">¿Listo para transformar tu campo?</h2>
-            <p class="text-green-200 text-lg mb-10 max-w-xl mx-auto">
-                Contáctanos y un especialista te asesorará sobre la solución de bioreactores
-                más adecuada para tu cultivo.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="mailto:precisionagricolamx@gmail.com"
-                   class="px-8 py-4 text-base font-bold text-green-700 bg-white rounded-xl hover:bg-green-50 transition-colors duration-200 shadow-lg">
-                    Enviar correo
-                </a>
-                <a href="tel:+529211406256"
-                   class="px-8 py-4 text-base font-semibold text-white border-2 border-white rounded-xl hover:bg-white hover:text-green-700 transition-colors duration-200">
-                    Llamar ahora
-                </a>
-            </div>
-        </div>
-    </section>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="bg-gray-900 text-gray-400 py-10">
-        <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center space-x-3">
-                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-8 h-8" alt="Precisión Agrícola">
-                <span class="text-sm text-gray-300">Precisión Agrícola &mdash; La nueva era de la agricultura</span>
-            </div>
-            <p class="text-xs text-center">© 2025 Precisión Agrícola. Todos los derechos reservados.</p>
+<!-- ════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════ -->
+<footer class="pa-footer py-10">
+    <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center space-x-3">
+            <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-8 h-8" alt="Precisión Agrícola">
+            <span class="text-sm" style="color:#c8e6c9">
+                Precisión Agrícola &mdash; La nueva era de la agricultura
+            </span>
         </div>
-    </footer>
+        <div class="flex gap-6 text-xs" style="color:#81c784">
+            <a href="mailto:precisionagricolamx@gmail.com" class="hover:underline">
+                precisionagricolamx@gmail.com
+            </a>
+            <a href="tel:+529211406256" class="hover:underline">
+                (52) 921 140 6256
+            </a>
+        </div>
+        <p class="text-xs" style="color:#558b6e">© 2025 Precisión Agrícola.</p>
+    </div>
+</footer>
 
 </body>
 </html>

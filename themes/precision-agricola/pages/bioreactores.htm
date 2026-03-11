@@ -1,0 +1,235 @@
+url = "/bioreactores"
+title = "Bioreactores"
+==
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioreactores - Precisión Agrícola</title>
+    <meta name="description" content="Soluciones de bioreactores para la agricultura de precisión">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        .hero-bg {
+            background-image: url("{{ 'assets/images/bioreactors/bioreactors_hero_bg.png'|theme }}");
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+
+        .hero-overlay {
+            background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.45));
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased text-gray-800">
+
+    <!-- ===== BARRA SUPERIOR / NAVBAR ===== -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+        <div x-data="{ open: false }" class="max-w-screen-xl mx-auto px-5 md:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Logo -->
+                <a href="{{ 'inicio'|page }}" class="flex items-center space-x-2 flex-shrink-0">
+                    <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-9 h-9" alt="Precisión Agrícola">
+                    <span class="text-green-700 font-bold text-sm hidden sm:block">Precisión Agrícola</span>
+                </a>
+
+                <!-- Nav desktop -->
+                <nav class="hidden md:flex items-center space-x-1">
+                    <a href="{{ 'inicio'|page }}"
+                       class="px-4 py-2 text-sm text-gray-600 hover:text-green-600 border-b-2 border-transparent hover:border-green-600 transition-colors duration-200">
+                        Inicio
+                    </a>
+                    <a href="{{ 'acerca-de'|page }}"
+                       class="px-4 py-2 text-sm text-gray-600 hover:text-green-600 border-b-2 border-transparent hover:border-green-600 transition-colors duration-200">
+                        Acerca de
+                    </a>
+                    <a href="{{ 'contacto'|page }}"
+                       class="px-4 py-2 text-sm text-gray-600 hover:text-green-600 border-b-2 border-transparent hover:border-green-600 transition-colors duration-200">
+                        Contacto
+                    </a>
+                    <a href="#contacto-bioreactores"
+                       class="ml-4 px-5 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors duration-200">
+                        Cotizar
+                    </a>
+                </nav>
+
+                <!-- Botón hamburguesa móvil -->
+                <button @click="open = !open"
+                        class="md:hidden p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-gray-100 focus:outline-none"
+                        aria-label="Abrir menú">
+                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Menú móvil desplegable -->
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-2"
+                 class="md:hidden border-t border-gray-100 pb-4"
+                 style="display:none">
+                <nav class="flex flex-col space-y-1 pt-2">
+                    <a href="{{ 'inicio'|page }}"
+                       class="px-4 py-3 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors duration-150">
+                        Inicio
+                    </a>
+                    <a href="{{ 'acerca-de'|page }}"
+                       class="px-4 py-3 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors duration-150">
+                        Acerca de
+                    </a>
+                    <a href="{{ 'contacto'|page }}"
+                       class="px-4 py-3 text-sm text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors duration-150">
+                        Contacto
+                    </a>
+                    <a href="#contacto-bioreactores"
+                       class="mx-4 mt-2 px-5 py-3 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors duration-200 text-center">
+                        Cotizar
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero-bg min-h-screen flex items-center">
+        <div class="hero-overlay w-full min-h-screen flex items-center">
+            <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24 pt-16 w-full">
+                <div class="max-w-2xl">
+                    <!-- Etiqueta superior -->
+                    <span class="inline-block px-3 py-1 text-xs font-semibold tracking-widest text-green-300 uppercase bg-green-900 bg-opacity-50 rounded-full mb-6">
+                        Agricultura de precisión
+                    </span>
+
+                    <!-- Título principal -->
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+                        Bioreactores para
+                        <span class="text-green-400">el campo</span>
+                        del futuro
+                    </h1>
+
+                    <!-- Subtítulo -->
+                    <p class="text-lg md:text-xl text-gray-200 mb-10 leading-relaxed">
+                        Soluciones biotecnológicas avanzadas que potencian tus cultivos de forma
+                        sustentable, combinando ciencia agrícola con tecnología de punta.
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#contacto-bioreactores"
+                           class="px-8 py-4 text-base font-bold text-white bg-green-600 rounded-xl hover:bg-green-500 transition-colors duration-200 text-center shadow-lg">
+                            Solicitar información
+                        </a>
+                        <a href="#que-son"
+                           class="px-8 py-4 text-base font-semibold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transition-colors duration-200 text-center">
+                            Conocer más
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECCIÓN: QUÉ SON ===== -->
+    <section id="que-son" class="py-20 bg-white">
+        <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24">
+            <div class="text-center mb-14">
+                <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">¿Qué son los bioreactores agrícolas?</h2>
+                <p class="text-gray-500 text-lg max-w-2xl mx-auto">
+                    Sistemas de cultivo controlado que permiten producir microorganismos beneficiosos,
+                    bioestimulantes y biofertilizantes a escala industrial o en campo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Alta eficiencia</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Producción optimizada de insumos biológicos con mayor concentración y viabilidad.
+                    </p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">100% sustentable</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Reducción del uso de agroquímicos y huella ambiental en cada ciclo de producción.
+                    </p>
+                </div>
+
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Mayor rendimiento</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Incremento comprobado en la productividad agrícola con aplicaciones biológicas precisas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA / CONTACTO ===== -->
+    <section id="contacto-bioreactores" class="py-20 bg-green-700">
+        <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24 text-center">
+            <h2 class="text-3xl md:text-4xl font-black text-white mb-4">¿Listo para transformar tu campo?</h2>
+            <p class="text-green-200 text-lg mb-10 max-w-xl mx-auto">
+                Contáctanos y un especialista te asesorará sobre la solución de bioreactores
+                más adecuada para tu cultivo.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="mailto:precisionagricolamx@gmail.com"
+                   class="px-8 py-4 text-base font-bold text-green-700 bg-white rounded-xl hover:bg-green-50 transition-colors duration-200 shadow-lg">
+                    Enviar correo
+                </a>
+                <a href="tel:+529211406256"
+                   class="px-8 py-4 text-base font-semibold text-white border-2 border-white rounded-xl hover:bg-white hover:text-green-700 transition-colors duration-200">
+                    Llamar ahora
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-gray-900 text-gray-400 py-10">
+        <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-8 h-8" alt="Precisión Agrícola">
+                <span class="text-sm text-gray-300">Precisión Agrícola &mdash; La nueva era de la agricultura</span>
+            </div>
+            <p class="text-xs text-center">© 2025 Precisión Agrícola. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -21,3 +21,6 @@ _ide_helper.php
 
 # for netbeans
 nbproject
+
+# Claude Code worktrees
+.claude/worktrees/

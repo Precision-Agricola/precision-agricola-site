@@ -96,37 +96,6 @@ title = "Bioreactores"
         .form-scroll::-webkit-scrollbar-track  { background: #f0faf3; }
         .form-scroll::-webkit-scrollbar-thumb  { background: var(--pa-lime); border-radius: 4px; }
 
-        /* ── Floating micro-orbs ── */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0;
-            animation: floatOrb linear infinite;
-            pointer-events: none;
-        }
-        @keyframes floatOrb {
-            0%   { transform: translateY(0) scale(1);   opacity: 0; }
-            10%  { opacity: 0.20; }
-            90%  { opacity: 0.08; }
-            100% { transform: translateY(-100vh) scale(0.6); opacity: 0; }
-        }
-
-        /* ── Pulse ring ── */
-        @keyframes pulseRing {
-            0%   { transform: scale(1);   opacity: 0.7; }
-            70%  { transform: scale(2.0); opacity: 0; }
-            100% { transform: scale(2.0); opacity: 0; }
-        }
-        .pulse-ring { position: relative; }
-        .pulse-ring::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            border: 2px solid #6abf45;
-            animation: pulseRing 2s ease-out infinite;
-        }
-
         /* ── Fade-up entrance ── */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(24px); }
@@ -250,9 +219,6 @@ title = "Bioreactores"
 ════════════════════════════════════════════════════════ -->
 <section id="diagnostico" class="hero-bg relative overflow-hidden" style="min-height:100vh">
 
-    <!-- Orb container -->
-    <div id="orb-container" aria-hidden="true"></div>
-
     <div class="hero-overlay absolute inset-0" style="z-index:1"></div>
 
     <div class="relative w-full" style="min-height:100vh;z-index:3">
@@ -263,18 +229,11 @@ title = "Bioreactores"
                 <!-- ── Columna izquierda: copy ── -->
                 <div class="text-white flex-1 px-8 md:px-14 lg:px-20 xl:px-28 py-16">
 
-                    <!-- Etiqueta sobria -->
-                    <span class="fade-up delay-1 inline-flex items-center gap-2 mb-8"
-                          style="font-size:.7rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45)">
-                        <span class="live-dot w-1.5 h-1.5 rounded-full" style="background:#6ec82f;display:inline-block;flex-shrink:0"></span>
-                        Biotecnología agrícola
-                    </span>
-
-                    <h1 class="fade-up delay-2 font-black leading-none mb-6"
+                    <h1 class="fade-up delay-1 font-black leading-none mb-6"
                         style="font-size:clamp(2.8rem, 5vw, 5rem);line-height:1.05">
-                        Consorcios<br>
-                        microbianos<br>
-                        <span class="hero-title-gradient">con control exacto</span>
+                        Biofábrica<br>
+                        in-house —<br>
+                        <span class="hero-title-gradient">produce sin depender</span>
                     </h1>
 
                     <p class="fade-up delay-3 leading-relaxed mb-5"
@@ -562,30 +521,6 @@ title = "Bioreactores"
     </div>
 </section>
 
-<script>
-/* Spawn floating orbs in hero */
-(function(){
-    var c = document.getElementById('orb-container');
-    c.style.cssText = 'position:absolute;inset:0;overflow:hidden;z-index:2;pointer-events:none';
-    var colors = ['106,191,69','45,106,79','61,140,95','26,60,42'];
-    for(var i = 0; i < 16; i++){
-        var o = document.createElement('div');
-        var size = Math.random() * 7 + 3;
-        var color = colors[Math.floor(Math.random() * colors.length)];
-        o.className = 'orb';
-        o.style.cssText = [
-            'width:'  + size + 'px',
-            'height:' + size + 'px',
-            'left:'   + Math.random() * 100 + '%',
-            'bottom:' + (-size) + 'px',
-            'background:rgba(' + color + ',0.4)',
-            'animation-duration:' + (Math.random() * 20 + 14) + 's',
-            'animation-delay:'   + (Math.random() * 16) + 's'
-        ].join(';');
-        c.appendChild(o);
-    }
-})();
-</script>
 
 
 <!-- ════════════════════════════════════════════════════════

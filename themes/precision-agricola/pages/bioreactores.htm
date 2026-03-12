@@ -312,7 +312,10 @@ title = "Bioreactores"
 
                 <!-- ── Columna derecha: formulario ── -->
                 <div class="w-full lg:w-auto lg:flex-shrink-0 px-6 md:px-10 lg:pl-4 lg:pr-12 xl:pr-20 pb-12 lg:py-12">
-                    <div class="form-card" style="width:100%;max-width:440px;margin-left:auto">
+                    <!-- iframe oculto: absorbe la respuesta de Google Forms sin redirigir al usuario -->
+                    <iframe name="gform_target" style="display:none" aria-hidden="true"></iframe>
+
+                    <div class="form-card" x-data="{ submitted: false }" style="width:100%;max-width:440px;margin-left:auto">
 
                         <!-- Encabezado del form -->
                         <div class="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-gray-100">
@@ -327,8 +330,30 @@ title = "Bioreactores"
                             </div>
                         </div>
 
+                        <!-- Estado de éxito: visible tras envío -->
+                        <div x-show="submitted" style="display:none"
+                             class="flex flex-col items-center justify-center px-6 py-20 text-center">
+                            <div class="w-14 h-14 rounded-full flex items-center justify-center mb-5"
+                                 style="background:rgba(106,191,69,.12)">
+                                <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24"
+                                     stroke="#6abf45" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-bold text-base mb-2" style="color:#1a3c2a">
+                                ¡Diagnóstico recibido!
+                            </h3>
+                            <p class="text-xs leading-relaxed" style="color:#4a7c59">
+                                Un especialista se pondrá en contacto<br>contigo en menos de 24 h.
+                            </p>
+                        </div>
+
                         <!-- Campos del formulario -->
-                        <form action="#" method="post"
+                        <form action="https://docs.google.com/forms/d/e/1FAIpQLSfOZg91oykuIKYjBRRgtRuFuLU0IAc6vWANfav_6V43IH4zNA/formResponse"
+                              method="POST"
+                              target="gform_target"
+                              x-show="!submitted"
+                              @submit="setTimeout(() => submitted = true, 800)"
                               class="form-scroll px-6 py-5 space-y-4 overflow-y-auto"
                               style="max-height:72vh">
 
@@ -337,7 +362,7 @@ title = "Bioreactores"
                                 <label class="form-label block mb-1">
                                     Nombre Completo <span class="required-star">*</span>
                                 </label>
-                                <input type="text" name="nombre" required placeholder="Ej. Juan García López"
+                                <input type="text" name="entry.1633920210" required placeholder="Ej. Juan García López"
                                        class="form-input">
                             </div>
 
@@ -346,7 +371,7 @@ title = "Bioreactores"
                                 <label class="form-label block mb-1">
                                     Correo electrónico <span class="required-star">*</span>
                                 </label>
-                                <input type="email" name="email" required placeholder="correo@ejemplo.com"
+                                <input type="email" name="entry.227649005" required placeholder="correo@ejemplo.com"
                                        class="form-input">
                             </div>
 
@@ -355,7 +380,7 @@ title = "Bioreactores"
                                 <label class="form-label block mb-1">
                                     Ubicación de la operación (Municipio / Estado) <span class="required-star">*</span>
                                 </label>
-                                <input type="text" name="ubicacion" required placeholder="Ej. Caborca, Sonora"
+                                <input type="text" name="entry.790080973" required placeholder="Ej. Caborca, Sonora"
                                        class="form-input">
                             </div>
 
@@ -364,7 +389,7 @@ title = "Bioreactores"
                                 <label class="form-label block mb-1">
                                     WhatsApp de contacto <span class="required-star">*</span>
                                 </label>
-                                <input type="tel" name="whatsapp" required placeholder="Ej. 644 123 4567"
+                                <input type="tel" name="entry.1770822543" required placeholder="Ej. 644 123 4567"
                                        class="form-input">
                             </div>
 
@@ -373,7 +398,7 @@ title = "Bioreactores"
                                 <label class="form-label block mb-1">
                                     Nombre del Rancho / Empresa <span class="required-star">*</span>
                                 </label>
-                                <input type="text" name="rancho" required placeholder="Ej. Rancho El Mezquite"
+                                <input type="text" name="entry.1846923513" required placeholder="Ej. Rancho El Mezquite"
                                        class="form-input">
                             </div>
 
@@ -384,31 +409,31 @@ title = "Bioreactores"
                                 </label>
                                 <div class="space-y-1.5">
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="cultivo" value="berries" class="form-radio"
-                                               @change="otroCultivo = false" required>
+                                        <input type="radio" name="entry.995683106" value="Berries (Frambuesa, Arándano, Zarzamora)"
+                                               class="form-radio" @change="otroCultivo = false" required>
                                         Berries (Frambuesa, Arándano, Zarzamora)
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="cultivo" value="aguacate" class="form-radio"
-                                               @change="otroCultivo = false">
+                                        <input type="radio" name="entry.995683106" value="Aguacate"
+                                               class="form-radio" @change="otroCultivo = false">
                                         Aguacate
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="cultivo" value="agave" class="form-radio"
-                                               @change="otroCultivo = false">
+                                        <input type="radio" name="entry.995683106" value="Agave"
+                                               class="form-radio" @change="otroCultivo = false">
                                         Agave
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="cultivo" value="cana" class="form-radio"
-                                               @change="otroCultivo = false">
+                                        <input type="radio" name="entry.995683106" value="Caña de Azúcar"
+                                               class="form-radio" @change="otroCultivo = false">
                                         Caña de Azúcar
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="cultivo" value="otro" class="form-radio"
-                                               @change="otroCultivo = true">
+                                        <input type="radio" name="entry.995683106" value="__other_option__"
+                                               class="form-radio" @change="otroCultivo = true">
                                         Otro:
                                     </label>
-                                    <input x-show="otroCultivo" type="text" name="cultivo_otro"
+                                    <input x-show="otroCultivo" type="text" name="entry.995683106.other_option_response"
                                            placeholder="Especifica tu cultivo"
                                            class="form-input mt-1" style="display:none">
                                 </div>
@@ -421,15 +446,15 @@ title = "Bioreactores"
                                 </label>
                                 <div class="space-y-1.5">
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="superficie" value="menos10" class="form-radio" required>
+                                        <input type="radio" name="entry.1663197873" value="Menos de 10 ha" class="form-radio" required>
                                         Menos de 10 ha
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="superficie" value="11a50" class="form-radio">
+                                        <input type="radio" name="entry.1663197873" value="11 a 50 ha" class="form-radio">
                                         11 a 50 ha
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="superficie" value="mas50" class="form-radio">
+                                        <input type="radio" name="entry.1663197873" value="Más de 50 ha" class="form-radio">
                                         Más de 50 ha
                                     </label>
                                 </div>
@@ -442,19 +467,23 @@ title = "Bioreactores"
                                 </label>
                                 <div class="space-y-1.5">
                                     <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="problema" value="costo" class="form-radio mt-0.5" required>
+                                        <input type="radio" name="entry.1465633856" value="Costo excesivo de los Microorganismos Benéficos"
+                                               class="form-radio mt-0.5" required>
                                         Costo excesivo de los Microorganismos Benéficos
                                     </label>
                                     <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="problema" value="suelo" class="form-radio mt-0.5">
+                                        <input type="radio" name="entry.1465633856" value="Salud del suelo y degradación"
+                                               class="form-radio mt-0.5">
                                         Salud del suelo y degradación
                                     </label>
                                     <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="problema" value="patogenos" class="form-radio mt-0.5">
+                                        <input type="radio" name="entry.1465633856" value="Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)"
+                                               class="form-radio mt-0.5">
                                         Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)
                                     </label>
                                     <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="problema" value="nutrientes" class="form-radio mt-0.5">
+                                        <input type="radio" name="entry.1465633856" value="Baja eficiencia en la absorción de nutrientes"
+                                               class="form-radio mt-0.5">
                                         Baja eficiencia en la absorción de nutrientes
                                     </label>
                                 </div>
@@ -466,7 +495,7 @@ title = "Bioreactores"
                                     ¿Cuánto inviertes aproximadamente al mes en bioinsumos por hectárea?
                                     <span class="required-star">*</span>
                                 </label>
-                                <input type="text" name="inversion" required
+                                <input type="text" name="entry.1048475605" required
                                        placeholder="Ej. $500 MXN / ha"
                                        class="form-input">
                             </div>
@@ -479,11 +508,11 @@ title = "Bioreactores"
                                 </label>
                                 <div class="flex gap-6">
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="biofabrica" value="si" class="form-radio" required>
+                                        <input type="radio" name="entry.2031238092" value="Sí" class="form-radio" required>
                                         Sí
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="biofabrica" value="no" class="form-radio">
+                                        <input type="radio" name="entry.2031238092" value="No" class="form-radio">
                                         No
                                     </label>
                                 </div>
@@ -497,18 +526,18 @@ title = "Bioreactores"
                                 </label>
                                 <div class="space-y-1.5">
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="presupuesto" value="disponible"
+                                        <input type="radio" name="entry.580245610" value="Presupuesto disponible (Anticipo listo)"
                                                class="form-radio" required
                                                @change="otroPresupuesto = false">
                                         Presupuesto disponible (Anticipo listo)
                                     </label>
                                     <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
-                                        <input type="radio" name="presupuesto" value="otro"
+                                        <input type="radio" name="entry.580245610" value="__other_option__"
                                                class="form-radio"
                                                @change="otroPresupuesto = true">
                                         Otro:
                                     </label>
-                                    <input x-show="otroPresupuesto" type="text" name="presupuesto_otro"
+                                    <input x-show="otroPresupuesto" type="text" name="entry.580245610.other_option_response"
                                            placeholder="Especifica tu situación"
                                            class="form-input mt-1" style="display:none">
                                 </div>

@@ -10,7 +10,7 @@ title = "Bioreactores"
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bioreactores — Precisión Agrícola</title>
     <meta name="description" content="Producción de consorcios microbianos con control IoT de precisión. Bioreactores agrícolas 200 L y 1,000 L.">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
@@ -29,8 +29,13 @@ title = "Bioreactores"
             --pa-light:  #f0faf3;
         }
 
-        /* Navbar */
-        .pa-navbar        { background: var(--pa-dark); }
+        /* Navbar — efecto acrílico */
+        .pa-navbar {
+            background: rgba(0, 0, 0, 0.20);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
         .pa-nav-link      { color: #c8e6c9; transition: color .2s; }
         .pa-nav-link:hover{ color: #6abf45; border-color: #6abf45; }
         .pa-btn-cta {
@@ -42,9 +47,13 @@ title = "Bioreactores"
         }
         .pa-btn-cta:hover { background: #82d455; transform: translateY(-1px); }
 
+        /* Fonts */
+        .font-title { font-family: 'Montserrat', sans-serif; }
+        .font-body  { font-family: 'DM Sans', sans-serif; }
+
         /* Hero */
         .hero-bg {
-            background-image: url("{{ 'assets/images/bioreactors/bioreactors_hero_bg_light.png'|theme }}");
+            background-image: url("{{ 'assets/images/bioreactors/main_bg.jpg'|theme }}");
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
@@ -158,7 +167,7 @@ title = "Bioreactores"
     </style>
 </head>
 
-<body class="antialiased" style="font-family:'Space Grotesk',sans-serif;color:#1a3c2a">
+<body class="antialiased font-body" style="color:#1a3c2a">
 
 <!-- ════════════════════════════════════════════════════════
      NAVBAR
@@ -229,41 +238,29 @@ title = "Bioreactores"
                 <!-- ── Columna izquierda: copy ── -->
                 <div class="text-white flex-1 px-8 md:px-14 lg:px-20 xl:px-28 py-16">
 
-                    <h1 class="fade-up delay-1 font-black leading-none mb-6"
-                        style="font-size:clamp(2.8rem, 5vw, 5rem);line-height:1.05">
-                        Biofábrica<br>
-                        in-house —<br>
-                        <span class="hero-title-gradient">produce sin depender</span>
+                    <h1 class="fade-up delay-1 font-title font-black uppercase leading-none mb-6"
+                        style="font-size:clamp(2.6rem, 5vw, 4.5rem);line-height:1.08;letter-spacing:-0.01em">
+                        Biorreactores<br>
+                        <span class="hero-title-gradient">Agrícolas</span>
                     </h1>
 
-                    <p class="fade-up delay-3 leading-relaxed mb-5"
-                       style="font-size:clamp(.95rem, 1.5vw, 1.2rem);color:#c8e6c9;max-width:500px">
-                        Producimos insumos biológicos de alta viabilidad en bioreactores de
-                        <strong class="text-white">200 L y 1,000 L</strong>,
-                        guiados por sensores IoT en tiempo real —
-                        pH, O₂ disuelto, NH₃, H₂S y CO₂ —
-                        para garantizar el pico óptimo de cada ciclo productivo.
+                    <p class="fade-up delay-3 font-body leading-relaxed mb-8"
+                       style="font-size:clamp(1rem, 1.5vw, 1.15rem);color:#c8e6c9;max-width:520px">
+                        Optimiza tu agricultura en Jalisco y Michoacán.
+                        Deja de gastar de más y produce tus bioinsumos on-farm
+                        con tecnología IoT. Retorno de inversión garantizado.
                     </p>
-
-                    <!-- Consorcios disponibles -->
-                    <div class="fade-up delay-3 flex flex-wrap gap-2 mb-8">
-                        <span class="badge-consortium" style="background:rgba(110,200,47,.12);color:#a8e063;border:1px solid rgba(110,200,47,.3)">Fungicida</span>
-                        <span class="badge-consortium" style="background:rgba(56,189,248,.10);color:#7dd3fc;border:1px solid rgba(56,189,248,.3)">Fijador de N₂</span>
-                        <span class="badge-consortium" style="background:rgba(251,191,36,.10);color:#fcd34d;border:1px solid rgba(251,191,36,.3)">Solubilizador de P</span>
-                        <span class="badge-consortium" style="background:rgba(167,139,250,.10);color:#c4b5fd;border:1px solid rgba(167,139,250,.3)">Micorrizas</span>
-                    </div>
 
                     <!-- Links secundarios -->
                     <div class="fade-up delay-4 flex flex-wrap gap-3">
                         <a href="#plataforma"
-                           class="px-5 py-2.5 text-sm font-semibold rounded-lg"
-                           style="background:rgba(255,255,255,.12);color:#e8f5e9;border:1px solid rgba(255,255,255,.2)">
+                           class="pa-btn-cta px-6 py-3 text-sm font-semibold rounded-lg">
                             Ver plataforma IoT
                         </a>
                         <a href="#que-son"
                            class="px-5 py-2.5 text-sm font-semibold rounded-lg"
-                           style="color:#81c784">
-                            ↓ Beneficios
+                           style="background:rgba(255,255,255,.12);color:#e8f5e9;border:1px solid rgba(255,255,255,.2)">
+                            Beneficios
                         </a>
                     </div>
 

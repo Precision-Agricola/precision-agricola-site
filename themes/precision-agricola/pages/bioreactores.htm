@@ -222,6 +222,22 @@ meta_description = "Produce bioinsumos on-farm con biorreactores agrícolas IoT 
         .form-submit:hover { background: var(--pa-lime); color: var(--pa-dark); transform: translateY(-1px); }
         .required-star { color: var(--pa-lime); }
 
+        /* ── CTA pulse — ping esporádico ── */
+        @keyframes ctaPing {
+            0%, 85%, 100% { transform: scale(1); }
+            90% { transform: scale(1.05); }
+            95% { transform: scale(0.98); }
+        }
+        .cta-pulse {
+            animation: ctaPing 4s ease-in-out infinite;
+        }
+        .cta-pulse:hover {
+            animation: none;
+            background: var(--pa-lime) !important;
+            color: var(--pa-dark) !important;
+            border-color: var(--pa-lime) !important;
+        }
+
         /* Honeypot anti-spam — invisible para humanos */
         .form-hp { position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;z-index:-1;pointer-events:none;tab-index:-1; }
 
@@ -659,7 +675,7 @@ meta_description = "Produce bioinsumos on-farm con biorreactores agrícolas IoT 
 
                             <!-- Submit -->
                             <div class="pt-2 pb-1">
-                                <button type="submit" class="form-submit" :disabled="submitting"
+                                <button type="submit" class="form-submit cta-pulse" :disabled="submitting"
                                         :style="submitting ? 'opacity:0.7;cursor:wait' : ''">
                                     <span x-show="!submitting">Enviar diagnóstico →</span>
                                     <span x-show="submitting" style="display:none" class="flex items-center justify-center gap-2">
@@ -722,10 +738,8 @@ meta_description = "Produce bioinsumos on-farm con biorreactores agrícolas IoT 
                 </p>
 
                 <a href="#diagnostico"
-                   class="inline-block px-7 py-3 font-semibold rounded-lg uppercase"
-                   style="background:#468a51;color:#ffffff;transition:background .2s,transform .1s;font-size:1.1rem;letter-spacing:0.03em"
-                   onmouseover="this.style.background='#3a7544'"
-                   onmouseout="this.style.background='#468a51'">
+                   class="cta-pulse inline-block px-7 py-3 font-semibold rounded-lg uppercase"
+                   style="background:#468a51;color:#ffffff;transition:background .3s,transform .2s,box-shadow .3s;font-size:1.1rem;letter-spacing:0.03em">
                     Llenar solicitud de diagnóstico →
                 </a>
             </div>
@@ -796,10 +810,8 @@ meta_description = "Produce bioinsumos on-farm con biorreactores agrícolas IoT 
         <!-- CTA centrado -->
         <div class="text-center">
             <a href="#diagnostico"
-               class="inline-block px-10 py-4 font-semibold rounded-lg uppercase font-title"
-               style="background:transparent;color:#ffffff;border:2px solid #ffffff;font-size:1.1rem;letter-spacing:0.04em;transition:background .2s,color .2s"
-               onmouseover="this.style.background='#ffffff';this.style.color='#2d6a4f'"
-               onmouseout="this.style.background='transparent';this.style.color='#ffffff'">
+               class="cta-pulse inline-block px-10 py-4 font-semibold rounded-lg uppercase font-title"
+               style="background:transparent;color:#ffffff;border:2px solid #ffffff;font-size:1.1rem;letter-spacing:0.04em;transition:background .3s,color .2s,transform .2s,box-shadow .3s">
                 Llenar solicitud de diagnóstico
             </a>
         </div>

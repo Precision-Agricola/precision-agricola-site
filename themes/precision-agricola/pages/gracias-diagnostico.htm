@@ -1,0 +1,149 @@
+url = "/gracias-diagnostico"
+title = "Gracias — Diagnóstico Recibido"
+meta_title = "Diagnóstico Recibido | Precisión Agrícola"
+meta_description = "Tu diagnóstico de necesidad biotecnológica ha sido recibido. Un especialista te contactará en menos de 24 horas."
+==
+<!DOCTYPE html>
+<html lang="es-MX">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Diagnóstico Recibido | Precisión Agrícola</title>
+    <meta name="description" content="Tu diagnóstico de necesidad biotecnológica ha sido recibido. Un especialista te contactará en menos de 24 horas.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ 'assets/images/favicon.ico'|theme }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ 'assets/images/favicon-32x32.png'|theme }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ 'assets/images/favicon-16x16.png'|theme }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ 'assets/images/apple-touch-icon.png'|theme }}">
+
+    <!-- Fonts & Tailwind -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- ═══ Meta Pixel — base + evento Lead (fire-once) ═══ -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '5389193441304738');
+    fbq('track', 'PageView');
+    /* ── Fire Lead solo una vez por sesión ── */
+    if (!sessionStorage.getItem('pa_lead_fired')) {
+        fbq('track', 'Lead');
+        sessionStorage.setItem('pa_lead_fired', '1');
+    }
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+             src="https://www.facebook.com/tr?id=5389193441304738&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- ═══ Fin Meta Pixel ═══ -->
+
+    <style>
+        :root {
+            --pa-dark:   #1a3c2a;
+            --pa-forest: #2d6a4f;
+            --pa-mid:    #3d8c5f;
+            --pa-lime:   #6abf45;
+            --pa-light:  #f0faf3;
+        }
+        html { scroll-behavior: smooth; }
+        .font-title { font-family: 'Montserrat', sans-serif; }
+        .font-body  { font-family: 'DM Sans', sans-serif; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up  { animation: fadeUp 0.75s ease forwards; opacity: 0; }
+        .delay-1  { animation-delay: 0.10s; }
+        .delay-2  { animation-delay: 0.25s; }
+        .delay-3  { animation-delay: 0.42s; }
+
+        .pa-footer { background: var(--pa-dark); }
+    </style>
+</head>
+
+<body class="antialiased font-body" style="color:#1a3c2a; background:#f0faf3;">
+
+    <!-- ── Contenido principal ── -->
+    <main class="min-h-screen flex items-center justify-center px-6 py-20">
+        <div class="text-center max-w-lg">
+
+            <!-- Ícono check -->
+            <div class="fade-up delay-1 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8"
+                 style="background:rgba(106,191,69,.15)">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24"
+                     stroke="#6abf45" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+
+            <!-- Logo -->
+            <div class="fade-up delay-1 flex items-center justify-center gap-3 mb-6">
+                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-10 h-10" alt="Precisión Agrícola">
+                <span class="font-title font-bold text-sm" style="color:#6abf45">Precisión Agrícola</span>
+            </div>
+
+            <!-- Mensaje -->
+            <h1 class="fade-up delay-2 font-title font-black uppercase mb-4"
+                style="font-size:clamp(1.8rem, 4vw, 2.8rem); line-height:1.15; color:var(--pa-dark);">
+                ¡Registro exitoso!
+            </h1>
+
+            <p class="fade-up delay-3 font-body leading-relaxed mb-8"
+               style="font-size:1.05rem; color:#4a7c59; max-width:420px; margin:0 auto;">
+                Para recibir tu <strong style="color:var(--pa-dark);">cálculo de ROI de inmediato</strong>
+                por WhatsApp, haz clic aquí:
+            </p>
+
+            <!-- Botón WhatsApp -->
+            <a href="https://wa.me/5233111744441?text=Hola%2C%20acabo%20de%20completar%20el%20diagn%C3%B3stico%20de%20biorreactores.%20Me%20gustar%C3%ADa%20recibir%20mi%20c%C3%A1lculo%20de%20ROI."
+               target="_blank" rel="noopener noreferrer"
+               class="fade-up delay-3 inline-flex items-center gap-3 px-8 py-4 font-semibold rounded-lg"
+               style="background:#25D366; color:#fff; font-size:1rem; letter-spacing:.02em; transition:background .2s, transform .1s;"
+               onmouseover="this.style.background='#1ebe5a'; this.style.transform='translateY(-2px)';"
+               onmouseout="this.style.background='#25D366'; this.style.transform='translateY(0)';">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Recibir mi ROI por WhatsApp
+            </a>
+
+            <!-- Link secundario volver -->
+            <div class="fade-up delay-3 mt-6">
+                <a href="{{ 'bioreactores'|page }}"
+                   class="text-sm underline"
+                   style="color:#7aad8a; transition:color .2s;"
+                   onmouseover="this.style.color='var(--pa-forest)'"
+                   onmouseout="this.style.color='#7aad8a'">
+                    ← Volver a Biorreactores
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ── Footer mínimo ── -->
+    <footer class="pa-footer py-8">
+        <div class="max-w-screen-xl mx-auto px-5 text-center">
+            <p class="text-xs" style="color:rgba(255,255,255,.5)">
+                &copy; 2025 Precisión Agrícola. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

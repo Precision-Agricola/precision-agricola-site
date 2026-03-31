@@ -39,10 +39,11 @@ meta_description = "Tu diagnóstico de necesidad biotecnológica ha sido recibid
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '5389193441304738');
     fbq('track', 'PageView');
-    /* ── Fire Lead solo una vez por sesión ── */
-    if (!sessionStorage.getItem('pa_lead_fired')) {
+    /* ── Lead se dispara en el formulario (bioreactores.htm), NO aquí ──
+         Respaldo: solo si el usuario llegó sin pasar por el form ── */
+    if (typeof fbq === 'function' && !localStorage.getItem('pa_lead_fired')) {
         fbq('track', 'Lead');
-        sessionStorage.setItem('pa_lead_fired', '1');
+        localStorage.setItem('pa_lead_fired', '1');
     }
     </script>
     <noscript>

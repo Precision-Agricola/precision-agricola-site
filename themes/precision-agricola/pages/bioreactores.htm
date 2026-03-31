@@ -414,6 +414,11 @@ meta_description = "Produce bioinsumos on-farm con biorreactores agrícolas IoT 
                             })
                             .then(() => {
                                 this.submitting = false;
+                                /* ── Disparar Lead solo al enviar (1 vez por usuario) ── */
+                                if (typeof fbq === 'function' && !localStorage.getItem('pa_lead_fired')) {
+                                    fbq('track', 'Lead');
+                                    localStorage.setItem('pa_lead_fired', '1');
+                                }
                                 window.location.href = '/gracias-diagnostico';
                             })
                             .catch(() => {

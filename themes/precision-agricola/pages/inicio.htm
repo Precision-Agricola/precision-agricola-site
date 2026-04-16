@@ -1,14 +1,67 @@
 url = "/"
 title = "Inicio"
+meta_title = "Precisión Agrícola | Fumigación con Drones y Biorreactores Agrícolas en México"
+meta_description = "Empresa RENIECyT de agricultura de precisión en Jalisco y Michoacán. Fumigación con drones, mapas de fertilidad, biorreactores agrícolas IoT y bioinsumos on-farm."
 ==
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-MX">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precisión Agrícola</title>
+
+    <!-- SEO — Title & Description -->
+    <title>Precisión Agrícola | Fumigación con Drones y Biorreactores Agrícolas en México</title>
+    <meta name="description" content="Empresa RENIECyT de agricultura de precisión en Jalisco y Michoacán. Fumigación con drones, mapas de fertilidad, biorreactores agrícolas IoT y bioinsumos on-farm.">
+    <meta name="keywords" content="precisión agrícola, agricultura de precisión, fumigación con drones, biorreactores agrícolas, bioinsumos, mapas de fertilidad, drones agrícolas, Jalisco, Michoacán, México">
+    <link rel="canonical" href="https://www.precisionagricola.com/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.precisionagricola.com/">
+    <meta property="og:title" content="Precisión Agrícola | Fumigación con Drones y Biorreactores Agrícolas">
+    <meta property="og:description" content="Empresa RENIECyT de agricultura de precisión. Fumigación con drones, mapas de fertilidad y biorreactores agrícolas IoT en Jalisco y Michoacán.">
+    <meta property="og:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/img3.jpeg">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:site_name" content="Precisión Agrícola">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Precisión Agrícola | Fumigación con Drones y Biorreactores Agrícolas">
+    <meta name="twitter:description" content="Agricultura de precisión en Jalisco y Michoacán. Drones, biorreactores y bioinsumos on-farm.">
+    <meta name="twitter:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/img3.jpeg">
+
+    <!-- Geo targeting -->
+    <meta name="geo.region" content="MX-JAL">
+    <meta name="geo.placename" content="Jalisco, México">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ 'assets/images/favicon.ico'|theme }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ 'assets/images/favicon-32x32.png'|theme }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ 'assets/images/favicon-16x16.png'|theme }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ 'assets/images/apple-touch-icon.png'|theme }}">
+
+    <!-- Schema.org JSON-LD — Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Precisión Agrícola",
+        "url": "https://www.precisionagricola.com",
+        "logo": "https://www.precisionagricola.com/themes/precision-agricola/assets/images/favicon-32x32.png",
+        "description": "Empresa RENIECyT de agricultura de precisión. Fumigación con drones, mapas de fertilidad y biorreactores agrícolas IoT.",
+        "telephone": "+52-33-1117-4441",
+        "areaServed": [
+            { "@type": "State", "name": "Jalisco", "containedInPlace": { "@type": "Country", "name": "México" } },
+            { "@type": "State", "name": "Michoacán", "containedInPlace": { "@type": "Country", "name": "México" } }
+        ],
+        "sameAs": [
+            "https://www.facebook.com/precisionagricolamx"
+        ]
+    }
+    </script>
+
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>

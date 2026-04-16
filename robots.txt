@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /backend/
+Disallow: /storage/
+Disallow: /vendor/
+Disallow: /modules/
+Disallow: /plugins/
+
+Sitemap: https://www.precisionagricola.com/sitemap.xml

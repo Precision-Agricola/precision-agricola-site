@@ -7,6 +7,13 @@
     RewriteEngine On
 
     ##
+    ## SEO 301 redirects — common misspellings / variants → canonical URL
+    ##
+    RewriteRule ^biorreactores/?$ /bioreactores [R=301,L,NC]
+    RewriteRule ^biorreactor/?$ /bioreactores [R=301,L,NC]
+    RewriteRule ^bioreactor/?$ /bioreactores [R=301,L,NC]
+
+    ##
     ## You may need to uncomment the following line for some hosting environments,
     ## if you have installed to a subdirectory, enter the name here also.
     ##

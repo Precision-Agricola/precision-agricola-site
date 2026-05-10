@@ -24,3 +24,6 @@ nbproject
 
 # Claude Code worktrees
 .claude/worktrees/
+
+# Local-only prospecting / scraping workspace
+/scraping/

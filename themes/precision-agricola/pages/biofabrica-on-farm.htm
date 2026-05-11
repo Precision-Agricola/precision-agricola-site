@@ -14,7 +14,7 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
     <!-- SEO — Title & Description -->
     <title>Biofábrica On-Farm en México: Produce tus Bioinsumos en el Rancho | Precisión Agrícola</title>
     <meta name="description" content="¿Qué es una biofábrica on-farm? Produce tus propios bioinsumos, biofertilizantes y consorcios microbianos directamente en tu unidad de producción con biorreactores agrícolas IoT. Jalisco y Michoacán.">
-    <meta name="keywords" content="biofábrica on-farm, biofábrica, biofábricas, biofábricas on-farm, producción on-farm de bioinsumos, biorreactor agrícola, biorreactores, bioinsumos, biofertilizantes, consorcios microbianos, agricultura regenerativa, agricultura de precisión, Jalisco, Michoacán, México">
+    <meta name="keywords" content="biofábrica on-farm, biofábrica, biofábricas, biofábricas on-farm, producción on-farm de bioinsumos, biorreactor agrícola, biorreactores, bioinsumos, biofertilizantes, consorcios microbianos, micorrizas, agricultura regenerativa, agricultura de precisión, Jalisco, Michoacán, México">
     <link rel="canonical" href="https://www.precisionagricola.com/biofabrica-on-farm">
 
     <!-- Open Graph / Facebook -->
@@ -48,7 +48,7 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": "Biofábrica On-Farm: produce tus bioinsumos directamente en tu unidad de producción",
-        "description": "Guía técnica sobre qué es una biofábrica on-farm, sus componentes, beneficios y los bioinsumos que permite producir con biorreactores agrícolas IoT.",
+        "description": "Guía técnica sobre qué es una biofábrica on-farm, sus componentes, los consorcios microbianos producidos y los parámetros operativos con biorreactores agrícolas IoT.",
         "author": {
             "@type": "Organization",
             "name": "Precisión Agrícola"
@@ -85,31 +85,31 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
                 "name": "¿Qué es una biofábrica on-farm?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Una biofábrica on-farm es una infraestructura biotecnológica instalada directamente en la unidad de producción agrícola, compuesta por biorreactores, consorcios microbianos y protocolos de fermentación. Permite al productor multiplicar microorganismos benéficos y producir sus propios bioinsumos en el rancho, con viabilidad biológica máxima."
+                    "text": "Una biofábrica on-farm es una infraestructura biotecnológica instalada directamente en la unidad de producción agrícola, compuesta por biorreactores con sensores IoT, cepas microbianas certificadas y protocolos de fermentación. Permite al productor multiplicar microorganismos benéficos y aplicar bioinsumos frescos en el sitio donde se necesitan."
                 }
             },
             {
                 "@type": "Question",
-                "name": "¿Qué bioinsumos puedo producir en una biofábrica on-farm?",
+                "name": "¿Qué consorcios microbianos se producen en una biofábrica on-farm?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Biofertilizantes a base de Azospirillum, Azotobacter y micorrizas; biocontroladores como Trichoderma, Bacillus thuringiensis y Beauveria bassiana; y bioestimulantes con consorcios PGPR. Todos producidos frescos en el sitio de aplicación."
+                    "text": "Cuatro consorcios principales: fungicida (Pseudomonas fluorescens, Bacillus subtilis, Trichoderma harzianum, Trichoderma viride), fijador de nitrógeno (Azospirillum brasilense, Azotobacter sp., Rhizobium etli), solubilizador de fósforo (Bacillus megaterium) y micorrizas arbusculares (Glomus intraradices, Glomus etunicatum, Paraglomus spp.)."
                 }
             },
             {
                 "@type": "Question",
-                "name": "¿Qué tamaño de operación justifica una biofábrica on-farm?",
+                "name": "¿Cómo se controla la calidad de cada lote producido?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Operaciones desde 50 hectáreas comienzan a tener retorno de inversión positivo con una biofábrica de 200 L. Operaciones mayores a 200 ha se benefician más con biorreactores de 1,000 L. El punto exacto depende del tipo de cultivo, costos actuales de bioinsumos comerciales y zona geográfica."
+                    "text": "Mediante sensores IoT que registran continuamente pH, oxígeno disuelto, temperatura, CO₂, NH₃ y H₂S durante toda la fermentación. Cada 15 días se realiza muestreo microbiológico con técnica de diluciones seriadas y conteo de UFC en placa Petri incubada a 28-30 °C por 48-72 horas para validar la viabilidad."
                 }
             },
             {
                 "@type": "Question",
-                "name": "¿Cuánto ahorra una biofábrica on-farm vs comprar bioinsumos comerciales?",
+                "name": "¿En qué etapa está la validación del sistema?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "El ahorro típico es de 50% a 70% en costo por hectárea, dependiendo del tipo de bioinsumo y el volumen aplicado. El ahorro se complementa con mejor viabilidad biológica al aplicar productos frescos en lugar de comerciales con meses de almacenamiento."
+                    "text": "El sistema integrado biorreactor + IoT + consorcios microbianos está en fase de validación en campo con productores piloto en Jalisco y Michoacán. Cada ciclo productivo aporta datos históricos al modelo de operación, lo que permite optimización continua de protocolos por cultivo, región y consorcio."
                 }
             }
         ]
@@ -155,6 +155,7 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
             border-radius: 1rem;
             padding: 1.5rem;
             transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+            height: 100%;
         }
         .benefit-card:hover {
             border-color: var(--pa-lime);
@@ -176,15 +177,60 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
         }
 
-        .bioinsumo-pill {
-            display: inline-flex; align-items: center;
+        .consorcio-card {
+            background: #ffffff;
+            border: 1px solid #d1e8d9;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .consorcio-card h3 {
+            color: var(--pa-dark);
+            margin-bottom: 0.25rem;
+        }
+        .consorcio-card .role {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             background: var(--pa-light);
             color: var(--pa-forest);
-            font-weight: 600; font-size: 0.85rem;
-            padding: 0.5rem 0.9rem;
+            padding: 4px 10px;
             border-radius: 999px;
+            margin-bottom: 0.75rem;
+        }
+        .consorcio-card .species {
+            font-size: 0.9rem;
+            color: #3a5a4a;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .consorcio-card .species em { font-weight: 600; color: var(--pa-dark); }
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .param {
+            background: #f0faf3;
             border: 1px solid #cfe7d6;
-            margin: 0.25rem;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.75rem;
+        }
+        .param-label {
+            color: var(--pa-forest);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+            letter-spacing: 0.04em;
+        }
+        .param-value {
+            color: var(--pa-dark);
+            font-weight: 600;
+            margin-top: 2px;
         }
 
         .faq-item {
@@ -194,15 +240,8 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
             padding: 1.25rem 1.5rem;
             margin-bottom: 0.75rem;
         }
-        .faq-q {
-            font-weight: 700;
-            color: var(--pa-dark);
-            margin-bottom: 0.5rem;
-        }
-        .faq-a {
-            color: #3a5a4a;
-            line-height: 1.6;
-        }
+        .faq-q { font-weight: 700; color: var(--pa-dark); margin-bottom: 0.5rem; }
+        .faq-a { color: #3a5a4a; line-height: 1.6; }
 
         .pa-btn-cta {
             display: inline-flex; align-items: center;
@@ -226,6 +265,13 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
         .pa-link-inline:hover { color: var(--pa-lime); }
 
         .pa-footer { background: var(--pa-dark); color: #c8e6c9; }
+
+        .r-and-d-banner {
+            background: linear-gradient(135deg, #f0faf3 0%, #d9f0e0 100%);
+            border-left: 4px solid var(--pa-forest);
+            border-radius: 0 0.75rem 0.75rem 0;
+            padding: 1.5rem 1.75rem;
+        }
     </style>
 </head>
 
@@ -255,7 +301,7 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
             Biofábrica On-Farm: produce tus bioinsumos directamente en tu rancho
         </h1>
         <p class="text-base md:text-lg leading-relaxed" style="color:#d6f0dc">
-            Una biofábrica on-farm es una infraestructura biotecnológica de precisión instalada en tu unidad de producción agrícola. Te permite multiplicar consorcios microbianos y producir tus propios <strong style="color:#fff">bioinsumos</strong>, <strong style="color:#fff">biofertilizantes</strong> y bioestimulantes <strong style="color:#fff">en el sitio de aplicación</strong>, con viabilidad biológica máxima y a una fracción del costo de los productos comerciales.
+            Una biofábrica on-farm es una infraestructura biotecnológica de precisión instalada en tu unidad de producción agrícola. Te permite multiplicar consorcios microbianos —fijadores de nitrógeno, solubilizadores de fósforo, micorrizas y antagonistas fúngicos— para aplicar <strong style="color:#fff">bioinsumos frescos en el sitio donde se necesitan</strong>, con trazabilidad completa de cada lote por sensores IoT.
         </p>
     </div>
 </section>
@@ -266,10 +312,10 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
         <span class="section-tag">Definición</span>
         <h2 class="font-title font-bold text-2xl md:text-3xl mt-4 mb-6" style="color:var(--pa-dark)">¿Qué es una biofábrica on-farm?</h2>
         <p class="text-base leading-relaxed mb-4" style="color:#3a5a4a">
-            Una <strong>biofábrica on-farm</strong> es la combinación de tres elementos: equipo de fermentación controlada (<a href="/bioreactores" class="pa-link-inline">biorreactores agrícolas</a>), cepas microbiológicas certificadas, y protocolos técnicos que permiten al productor multiplicar microorganismos benéficos directamente en el campo.
+            Una <strong>biofábrica on-farm</strong> integra tres elementos: equipo de fermentación controlada (<a href="/bioreactores" class="pa-link-inline">biorreactores agrícolas IoT</a> de 200 L o 1,000 L), cepas microbianas certificadas, y protocolos técnicos diferenciados por consorcio. El conjunto permite al productor multiplicar microorganismos benéficos directamente en su unidad de producción.
         </p>
         <p class="text-base leading-relaxed mb-4" style="color:#3a5a4a">
-            A diferencia de los bioinsumos comerciales —que se compran empacados, viajan semanas o meses, y pierden viabilidad biológica en el almacén—, el modelo on-farm produce <em>Trichoderma</em>, <em>Bacillus</em>, <em>Pseudomonas</em>, micorrizas y otros consorcios <strong>frescos, en el sitio donde se van a aplicar</strong>. El resultado: mayor población viva de microorganismos por mL aplicado, mejor colonización radicular y reducción significativa del costo por hectárea.
+            A diferencia de los bioinsumos comerciales —que se compran empacados, viajan semanas hasta llegar al cultivo, y se almacenan con pérdida de viabilidad biológica—, el modelo on-farm produce los consorcios <strong>frescos, en el sitio de aplicación</strong>. Los microorganismos se multiplican bajo condiciones monitoreadas (pH, oxígeno disuelto, temperatura, gases) y se aplican al cultivo dentro de horas o días.
         </p>
     </div>
 </section>
@@ -277,40 +323,40 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
 <!-- BENEFICIOS -->
 <section class="py-20" style="background:#f0faf3">
     <div class="max-w-5xl mx-auto px-6">
-        <span class="section-tag">Beneficios</span>
-        <h2 class="font-title font-bold text-2xl md:text-3xl mt-4 mb-10" style="color:var(--pa-dark)">¿Por qué instalar una biofábrica on-farm?</h2>
+        <span class="section-tag">Diferenciadores</span>
+        <h2 class="font-title font-bold text-2xl md:text-3xl mt-4 mb-10" style="color:var(--pa-dark)">¿Qué hace diferente a una biofábrica on-farm con IoT?</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div class="benefit-card">
                 <div class="benefit-icon">
-                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h12v2H4V4zm0 4h12v2H4V8zm0 4h12v2H4v-2zm0 4h7v2H4v-2z"/></svg>
+                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a1 1 0 011-1h14a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V5zm2 1v8h12V6H4zm2 2h8v1H6V8zm0 2h8v1H6v-1zm0 2h5v1H6v-1z"/></svg>
                 </div>
-                <h3 class="font-bold text-lg mb-2">Reducción de costo hasta 70%</h3>
-                <p class="text-sm leading-relaxed" style="color:#3a5a4a">El costo por hectárea de un bioinsumo producido on-farm es típicamente 50%-70% menor que el equivalente comercial, manteniendo o superando su efectividad biológica.</p>
+                <h3 class="font-bold text-lg mb-2">Automatización IoT continua</h3>
+                <p class="text-sm leading-relaxed" style="color:#3a5a4a">Sensores miden pH, oxígeno disuelto, temperatura, CO₂, NH₃ y H₂S durante toda la fermentación. La oxigenación y recirculación se controlan automáticamente según el protocolo del consorcio en producción.</p>
             </div>
 
             <div class="benefit-card">
                 <div class="benefit-icon">
-                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9V9h2v4zm0-6H9V5h2v2z"/></svg>
+                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M3 17h14v1H3v-1zm2-4h2v3H5v-3zm3-3h2v6H8v-6zm3-3h2v9h-2V7zm3-3h2v12h-2V4z"/></svg>
                 </div>
-                <h3 class="font-bold text-lg mb-2">Viabilidad biológica máxima</h3>
-                <p class="text-sm leading-relaxed" style="color:#3a5a4a">Los microorganismos se aplican frescos, con poblaciones vivas de 10⁸-10⁹ UFC/mL, frente a productos comerciales que pierden 60-80% de viabilidad en transporte y almacenamiento.</p>
+                <h3 class="font-bold text-lg mb-2">Datos históricos por lote</h3>
+                <p class="text-sm leading-relaxed" style="color:#3a5a4a">Cada ciclo productivo se registra: parámetros de fermentación, fechas de muestreo, conteo de UFC, identidad de la cepa. Permite trazabilidad completa y análisis de tendencias por cultivo y región.</p>
             </div>
 
             <div class="benefit-card">
                 <div class="benefit-icon">
-                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3l-4 4a1 1 0 01-1.4 0l-2-2a1 1 0 011.4-1.4L9 10.6l3.3-3.3a1 1 0 011.4 1.4z"/></svg>
+                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm-.5 11.5l-3-3 1.4-1.4 1.6 1.6 4.6-4.6 1.4 1.4-6 6z"/></svg>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Aplicación fresca en el sitio</h3>
+                <p class="text-sm leading-relaxed" style="color:#3a5a4a">Los microorganismos se aplican al cultivo dentro de horas o pocos días de cosechados del biorreactor, sin las pérdidas de viabilidad asociadas al transporte y almacenamiento prolongado de productos comerciales.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2h2v2H9V2zm0 14h2v2H9v-2zM2 9h2v2H2V9zm14 0h2v2h-2V9zm-1.6-5.4l1.4 1.4-1.4 1.4-1.4-1.4 1.4-1.4zm-9.8 9.8l1.4 1.4-1.4 1.4-1.4-1.4 1.4-1.4zm9.8 1.4l-1.4-1.4 1.4-1.4 1.4 1.4-1.4 1.4zm-9.8-9.8L3.2 4.6 4.6 3.2l1.4 1.4-1.4 1.4z"/></svg>
                 </div>
                 <h3 class="font-bold text-lg mb-2">Autonomía operativa</h3>
-                <p class="text-sm leading-relaxed" style="color:#3a5a4a">Produces lo que necesitas, cuando lo necesitas. Sin dependencia de la disponibilidad del proveedor, tiempos de embarque o desabastos estacionales.</p>
-            </div>
-
-            <div class="benefit-card">
-                <div class="benefit-icon">
-                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 1v10h10V5H5z"/></svg>
-                </div>
-                <h3 class="font-bold text-lg mb-2">Trazabilidad técnica</h3>
-                <p class="text-sm leading-relaxed" style="color:#3a5a4a">Conoces la cepa exacta, el día de producción, los parámetros de fermentación (pH, O₂, temperatura) y la concentración aplicada. Información clave para certificaciones de exportación.</p>
+                <p class="text-sm leading-relaxed" style="color:#3a5a4a">El productor define cuándo, cuánto y de qué consorcio producir según su calendario agronómico. Sin dependencia de la disponibilidad del proveedor, tiempos de embarque o desabastos estacionales.</p>
             </div>
         </div>
     </div>
@@ -324,95 +370,159 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
 
         <div class="space-y-4">
             <div class="component-step">
-                <h3 class="font-bold mb-2">1. Biorreactores agrícolas IoT</h3>
-                <p class="text-sm" style="color:#3a5a4a">Equipo de fermentación controlado por sensores de pH, O₂ disuelto, temperatura, CO₂ y NH₃. Disponible en configuraciones de 200 L (operaciones medianas) y 1,000 L (operaciones grandes). <a href="/bioreactores" class="pa-link-inline">Ver biorreactores disponibles</a>.</p>
+                <h3 class="font-bold mb-2">1. Biorreactor agrícola IoT</h3>
+                <p class="text-sm" style="color:#3a5a4a">Equipo de fermentación con instrumentación continua: sensores de pH, oxígeno disuelto, CO₂, NH₃, H₂S, nivel y temperatura. Disponible en configuraciones de 200 L (acero inoxidable) y 1,000 L (toten). El sistema tolera hasta 2 días sin aireación por cortes eléctricos; al tercer día requiere aireación manual correctiva. <a href="/bioreactores" class="pa-link-inline">Ver biorreactores disponibles</a>.</p>
             </div>
             <div class="component-step">
-                <h3 class="font-bold mb-2">2. Cepas y consorcios microbiológicos certificados</h3>
-                <p class="text-sm" style="color:#3a5a4a">Madres microbiológicas de origen trazable: <em>Trichoderma harzianum</em>, <em>Bacillus subtilis</em>, <em>Azospirillum brasilense</em>, micorrizas arbusculares, PGPR (rizobacterias promotoras de crecimiento), entre otras según el cultivo objetivo.</p>
+                <h3 class="font-bold mb-2">2. Cepas madre certificadas</h3>
+                <p class="text-sm" style="color:#3a5a4a">Inóculo microbiológico de origen trazable, suministrado por la empresa. El volumen de inoculación recomendado es del <strong>1-5% del volumen total</strong> del biorreactor. Cada 3 ciclos productivos se incorporan cepas frescas para mantener viabilidad y diversidad funcional.</p>
             </div>
             <div class="component-step">
-                <h3 class="font-bold mb-2">3. Protocolos de fermentación</h3>
-                <p class="text-sm" style="color:#3a5a4a">Recetas técnicas para cada microorganismo: medio de cultivo, temperatura óptima, ventana de fermentación, criterios de cosecha. Optimizados para que el productor obtenga consistencia lote a lote.</p>
+                <h3 class="font-bold mb-2">3. Medio de cultivo</h3>
+                <p class="text-sm" style="color:#3a5a4a">Suministrado mensualmente por la empresa con instrucciones específicas. Formulación base por ciclo: 200 g de ácido glutámico + 200 g de vitaminas del grupo B + 1 kg de melaza o azúcar morena. Se disuelve en tanque auxiliar antes de transferir al biorreactor.</p>
             </div>
             <div class="component-step">
-                <h3 class="font-bold mb-2">4. Capacitación operativa y monitoreo IoT</h3>
-                <p class="text-sm" style="color:#3a5a4a">Capacitación al personal del rancho + dashboard remoto para que el equipo técnico supervise parámetros de fermentación desde cualquier dispositivo. Soporte continuo durante la curva de aprendizaje.</p>
+                <h3 class="font-bold mb-2">4. Protocolos de fermentación y muestreo</h3>
+                <p class="text-sm" style="color:#3a5a4a">Protocolos diferenciados por consorcio (parámetros operativos abajo) + procedimiento de muestreo cada 15 días con diluciones seriadas y conteo de UFC en placa Petri incubada a 28-30 °C por 48-72 h. Define el pico de producción óptimo y la programación de aplicación al cultivo.</p>
+            </div>
+            <div class="component-step">
+                <h3 class="font-bold mb-2">5. Capacitación operativa</h3>
+                <p class="text-sm" style="color:#3a5a4a">Entrenamiento al personal del rancho para operar el llenado, dosificación de medio, inoculación, monitoreo del dashboard IoT y procedimientos de limpieza (peróxido de hidrógeno agrícola al 70% cada 3 ciclos del mismo consorcio, o cada cambio de cepa).</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- QUÉ PRODUCES -->
+<!-- CONSORCIOS -->
 <section class="py-20" style="background:#f0faf3">
     <div class="max-w-4xl mx-auto px-6">
         <span class="section-tag">Producción</span>
-        <h2 class="font-title font-bold text-2xl md:text-3xl mt-4 mb-6" style="color:var(--pa-dark)">¿Qué bioinsumos puedes producir on-farm?</h2>
-        <p class="text-base leading-relaxed mb-6" style="color:#3a5a4a">
-            Una biofábrica on-farm bien diseñada permite cubrir las tres familias principales de bioinsumos que necesita un cultivo moderno:
+        <h2 class="font-title font-bold text-2xl md:text-3xl mt-4 mb-3" style="color:var(--pa-dark)">Consorcios microbianos producidos en la biofábrica</h2>
+        <p class="text-base leading-relaxed mb-8" style="color:#3a5a4a">
+            Cuatro consorcios diferenciados, cada uno con su protocolo de fermentación específico. Los parámetros operativos se controlan automáticamente por el sistema IoT durante toda la fermentación.
         </p>
 
-        <div class="mb-6">
-            <h3 class="font-bold text-lg mb-3" style="color:var(--pa-dark)">Biofertilizantes</h3>
-            <p class="text-sm mb-3" style="color:#3a5a4a">Microorganismos que fijan nitrógeno atmosférico, solubilizan fósforo o aumentan absorción radicular:</p>
-            <div>
-                <span class="bioinsumo-pill">Azospirillum brasilense</span>
-                <span class="bioinsumo-pill">Azotobacter chroococcum</span>
-                <span class="bioinsumo-pill">Micorrizas arbusculares</span>
-                <span class="bioinsumo-pill">Pseudomonas fluorescens</span>
-                <span class="bioinsumo-pill">Bacillus megaterium</span>
+        <!-- Consorcio 1 -->
+        <div class="consorcio-card">
+            <span class="role">Consorcio 1 · Fungicida / Antagonista</span>
+            <h3 class="font-bold text-xl">Control biológico de hongos fitopatógenos</h3>
+            <p class="species mt-2">
+                <em>Pseudomonas fluorescens</em>, <em>Bacillus subtilis</em>, <em>Trichoderma harzianum</em>, <em>Trichoderma viride</em>
+            </p>
+            <div class="param-grid">
+                <div class="param"><div class="param-label">pH óptimo</div><div class="param-value">5.5 – 7.5</div></div>
+                <div class="param"><div class="param-label">Temperatura</div><div class="param-value">20 – 30 °C</div></div>
+                <div class="param"><div class="param-label">O₂ disuelto</div><div class="param-value">20 – 40 %</div></div>
+                <div class="param"><div class="param-label">H₂S tolerado</div><div class="param-value">≤ 1 ppm</div></div>
+                <div class="param"><div class="param-label">NH₃ tolerado</div><div class="param-value">≤ 1 ppm</div></div>
             </div>
         </div>
 
-        <div class="mb-6">
-            <h3 class="font-bold text-lg mb-3" style="color:var(--pa-dark)">Biocontroladores</h3>
-            <p class="text-sm mb-3" style="color:#3a5a4a">Hongos y bacterias que antagonizan patógenos del suelo y plagas foliares:</p>
-            <div>
-                <span class="bioinsumo-pill">Trichoderma harzianum</span>
-                <span class="bioinsumo-pill">Bacillus thuringiensis</span>
-                <span class="bioinsumo-pill">Beauveria bassiana</span>
-                <span class="bioinsumo-pill">Metarhizium anisopliae</span>
-                <span class="bioinsumo-pill">Bacillus subtilis</span>
+        <!-- Consorcio 2 -->
+        <div class="consorcio-card">
+            <span class="role">Consorcio 2 · Fijador de nitrógeno</span>
+            <h3 class="font-bold text-xl">Fijación biológica de N atmosférico</h3>
+            <p class="species mt-2">
+                <em>Azospirillum brasilense</em>, <em>Azotobacter sp.</em>, <em>Rhizobium etli</em>, <em>Pseudomonas fluorescens</em>
+            </p>
+            <div class="param-grid">
+                <div class="param"><div class="param-label">pH óptimo</div><div class="param-value">6.5 – 7.5</div></div>
+                <div class="param"><div class="param-label">Temperatura</div><div class="param-value">25 – 35 °C</div></div>
+                <div class="param"><div class="param-label">O₂ disuelto</div><div class="param-value">30 – 40 %</div></div>
+                <div class="param"><div class="param-label">H₂S tolerado</div><div class="param-value">≤ 1 ppm</div></div>
+                <div class="param"><div class="param-label">NH₃ tolerado</div><div class="param-value">≤ 200 ppm</div></div>
             </div>
         </div>
 
-        <div class="mb-2">
-            <h3 class="font-bold text-lg mb-3" style="color:var(--pa-dark)">Bioestimulantes</h3>
-            <p class="text-sm mb-3" style="color:#3a5a4a">Consorcios y metabolitos que promueven crecimiento vegetal vía hormonas y compuestos bioactivos:</p>
-            <div>
-                <span class="bioinsumo-pill">Consorcios PGPR</span>
-                <span class="bioinsumo-pill">Ácidos húmicos vivos</span>
-                <span class="bioinsumo-pill">Extractos de algas fermentados</span>
-                <span class="bioinsumo-pill">Quitosano biológico</span>
+        <!-- Consorcio 3 -->
+        <div class="consorcio-card">
+            <span class="role">Consorcio 3 · Solubilizador de fósforo</span>
+            <h3 class="font-bold text-xl">Liberación de P disponible para la planta</h3>
+            <p class="species mt-2">
+                <em>Bacillus megaterium</em>
+            </p>
+            <div class="param-grid">
+                <div class="param"><div class="param-label">pH óptimo</div><div class="param-value">6.0 – 7.5</div></div>
+                <div class="param"><div class="param-label">Temperatura</div><div class="param-value">25 – 35 °C</div></div>
+                <div class="param"><div class="param-label">O₂ disuelto</div><div class="param-value">20 – 30 %</div></div>
+                <div class="param"><div class="param-label">H₂S tolerado</div><div class="param-value">≤ 1 ppm</div></div>
+                <div class="param"><div class="param-label">NH₃ tolerado</div><div class="param-value">≤ 1 ppm</div></div>
             </div>
         </div>
+
+        <!-- Consorcio 4 -->
+        <div class="consorcio-card">
+            <span class="role">Consorcio 4 · Micorrizas arbusculares</span>
+            <h3 class="font-bold text-xl">Simbiosis radicular y absorción de nutrientes</h3>
+            <p class="species mt-2">
+                <em>Glomus intraradices</em>, <em>Glomus nanolumen</em>, <em>Glomus etunicatum</em>, <em>Paraglomus spp.</em>
+            </p>
+            <div class="param-grid">
+                <div class="param"><div class="param-label">pH óptimo</div><div class="param-value">5.5 – 7.0</div></div>
+                <div class="param"><div class="param-label">Temperatura</div><div class="param-value">20 – 30 °C</div></div>
+                <div class="param"><div class="param-label">O₂ disuelto</div><div class="param-value">20 – 40 %</div></div>
+                <div class="param"><div class="param-label">H₂S tolerado</div><div class="param-value">≤ 1 ppm</div></div>
+                <div class="param"><div class="param-label">NH₃ tolerado</div><div class="param-value">≤ 1 ppm</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INVESTIGACIÓN Y DESARROLLO -->
+<section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-6">
+        <span class="section-tag">Investigación y desarrollo</span>
+        <h2 class="font-title font-bold text-2xl md:text-3xl mt-4 mb-6" style="color:var(--pa-dark)">Validación en campo y mejora continua</h2>
+        <p class="text-base leading-relaxed mb-6" style="color:#3a5a4a">
+            El sistema integrado biorreactor + IoT + consorcios microbianos se encuentra en <strong>fase de validación activa</strong> con productores piloto en Jalisco y Michoacán. A diferencia de un producto cerrado, cada operación que adopta el modelo aporta datos al sistema, lo que permite refinar protocolos por cultivo, región y consorcio.
+        </p>
+
+        <div class="r-and-d-banner mb-6">
+            <h3 class="font-bold text-lg mb-3" style="color:var(--pa-dark)">¿Qué se está midiendo y mejorando?</h3>
+            <ul class="text-sm leading-relaxed space-y-2" style="color:#3a5a4a">
+                <li><strong>· Curvas de crecimiento microbiano</strong> por consorcio y por región climática</li>
+                <li><strong>· Estabilidad de parámetros</strong> (pH, O₂, gases) a lo largo del ciclo</li>
+                <li><strong>· Frecuencia óptima</strong> de reincorporación de cepa madre</li>
+                <li><strong>· Comportamiento del medio de cultivo</strong> bajo diferentes calidades de agua de origen</li>
+                <li><strong>· Respuesta agronómica</strong> al ser aplicado en campo (en colaboración con los productores piloto)</li>
+            </ul>
+        </div>
+
+        <p class="text-base leading-relaxed" style="color:#3a5a4a">
+            Los productores que adoptan la biofábrica on-farm en esta etapa no solo obtienen el equipo — se incorporan como <strong>socios de validación</strong>, con acceso anticipado a optimizaciones del protocolo conforme el modelo madura. La acumulación de datos históricos es lo que distingue al sistema de cualquier biofábrica artesanal sin instrumentación.
+        </p>
     </div>
 </section>
 
 <!-- FAQ -->
-<section class="py-20 bg-white">
+<section class="py-20" style="background:#f0faf3">
     <div class="max-w-3xl mx-auto px-6">
         <span class="section-tag">Preguntas frecuentes</span>
         <h2 class="font-title font-bold text-2xl md:text-3xl mt-4 mb-8" style="color:var(--pa-dark)">Sobre la biofábrica on-farm</h2>
 
         <div class="faq-item">
-            <div class="faq-q">¿Qué tamaño de operación justifica una biofábrica on-farm?</div>
-            <div class="faq-a">Operaciones desde 50 hectáreas comienzan a tener retorno de inversión positivo con una biofábrica de 200 L. Para operaciones de 200+ ha, los biorreactores de 1,000 L ofrecen mejor relación costo/producción. El punto exacto depende del cultivo, costos actuales de bioinsumos comerciales y zona geográfica.</div>
-        </div>
-
-        <div class="faq-item">
             <div class="faq-q">¿Necesito personal especializado para operarla?</div>
-            <div class="faq-a">No. El equipo IoT está diseñado para que el personal del rancho —con la capacitación inicial que incluye el sistema— pueda operar las fermentaciones cotidianas. El equipo técnico de Precisión Agrícola supervisa parámetros remotamente y interviene solo en cambios de protocolo o introducción de cepas nuevas.</div>
+            <div class="faq-a">No. El personal del rancho —con la capacitación inicial incluida— puede operar las fermentaciones cotidianas (llenado, dosificación de medio, inoculación, monitoreo del dashboard, limpieza). El equipo técnico de Precisión Agrícola supervisa parámetros remotamente y acompaña cambios de protocolo, introducción de cepas nuevas o eventos atípicos.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-q">¿Cuánto tiempo tarda en instalarse?</div>
-            <div class="faq-a">Una biofábrica on-farm de 200 L se instala y arranca en 2-3 semanas desde la firma del contrato, incluyendo: entrega del biorreactor, conexión a servicios, capacitación inicial al personal, primera tanda piloto supervisada y entrega de protocolos para los 2-3 microorganismos prioritarios del cultivo objetivo.</div>
+            <div class="faq-q">¿Qué tan crítica es la calidad del agua?</div>
+            <div class="faq-a">Muy importante. Se requiere agua limpia, libre de cloro o con un máximo tolerable de 5 ppm. Preferentemente agua de pozo o agua reposada; si no se dispone, debe purificarse con filtros UV. El pH inicial debe estar entre 5.5 y 7.5 antes de iniciar el proceso.</div>
         </div>
 
         <div class="faq-item">
-            <div class="faq-q">¿Es compatible con certificaciones orgánicas o de exportación?</div>
-            <div class="faq-a">Sí. La trazabilidad de cepa, lote y parámetros de fermentación que genera el sistema IoT es justamente la información que certificadoras como USDA Organic, GlobalGAP o BioCert solicitan. La biofábrica on-farm facilita la auditoría en lugar de complicarla.</div>
+            <div class="faq-q">¿Cómo se controla la calidad de cada lote?</div>
+            <div class="faq-a">Por dos vías paralelas: (1) sensores IoT que registran continuamente pH, oxígeno disuelto, temperatura, CO₂, NH₃ y H₂S durante toda la fermentación; (2) muestreo microbiológico cada 15 días con diluciones seriadas y conteo de UFC en placa Petri incubada a 28-30 °C por 48-72 horas, lo que permite identificar el pico de producción óptimo y decidir si reactivar el ciclo o reforzar con cepa nueva.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">¿Cada cuándo hay que limpiar el sistema?</div>
+            <div class="faq-a">Cada 3 ciclos de producción si se trata de la misma cepa; o inmediatamente al terminar de vaciar el biorreactor si se va a incorporar una cepa distinta. Procedimiento: vaciado y enjuague con agua a presión, desinfección con peróxido de hidrógeno agrícola al 70%, enjuague mínimo 2 veces con agua limpia, y limpieza de sensores y válvulas.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">¿En qué etapa está la validación del sistema?</div>
+            <div class="faq-a">El sistema integrado se encuentra en validación de campo con productores piloto. Los protocolos operativos están definidos y operativos; lo que sigue refinándose es la respuesta agronómica diferenciada por cultivo y región climática, con acumulación de datos históricos por cada ciclo productivo registrado.</div>
         </div>
     </div>
 </section>
@@ -422,10 +532,10 @@ meta_description = "¿Qué es una biofábrica on-farm? Produce tus propios bioin
     <div class="max-w-3xl mx-auto px-6 text-center">
         <h2 class="font-title font-bold text-2xl md:text-3xl text-white mb-4">¿Tu operación es candidata para una biofábrica on-farm?</h2>
         <p class="text-base mb-8" style="color:#d6f0dc">
-            Conoce los <a href="/bioreactores" class="pa-link-inline" style="color:#6abf45">biorreactores agrícolas disponibles</a> y solicita un diagnóstico técnico gratuito. Evaluamos tu cultivo, hectáreas y costos actuales para indicar el equipo y consorcios que mejor se ajustan.
+            Conoce los <a href="/bioreactores" class="pa-link-inline" style="color:#6abf45">biorreactores agrícolas disponibles</a> y solicita un diagnóstico técnico. Evaluamos cultivo, hectáreas, calidad de agua y consorcio prioritario para indicar la configuración que mejor se ajusta a tu operación.
         </p>
         <a href="/bioreactores#diagnostico" class="pa-btn-cta">
-            Solicitar diagnóstico gratuito
+            Solicitar diagnóstico técnico
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </a>
     </div>

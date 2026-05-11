@@ -1,0 +1,19 @@
+url = "/robots.txt"
+title = "Robots TXT"
+==
+<?php
+function onStart()
+{
+    $txt = "User-agent: *\n"
+         . "Allow: /\n"
+         . "Disallow: /backend/\n"
+         . "Disallow: /storage/\n"
+         . "Disallow: /vendor/\n"
+         . "Disallow: /modules/\n"
+         . "Disallow: /plugins/\n"
+         . "\n"
+         . "Sitemap: https://www.precisionagricola.com/sitemap.xml\n";
+    return Response::make($txt, 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+}
+?>
+==

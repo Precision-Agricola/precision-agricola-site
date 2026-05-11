@@ -14,13 +14,6 @@
     RewriteRule ^bioreactor/?$ /bioreactores [R=301,L,NC]
 
     ##
-    ## Serve static SEO files directly — otherwise OctoberCMS routing
-    ## catches them and returns 404. Must come BEFORE the index.php routing.
-    ##
-    RewriteRule ^sitemap\.xml$ - [L]
-    RewriteRule ^robots\.txt$ - [L]
-
-    ##
     ## You may need to uncomment the following line for some hosting environments,
     ## if you have installed to a subdirectory, enter the name here also.
     ##

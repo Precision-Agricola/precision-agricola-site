@@ -37,22 +37,6 @@ meta_description = "Conoce la ficha técnica completa del Kit Biorreactor de Pre
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Meta Pixel -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '5389193441304738');
-    fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=5389193441304738&ev=PageView&noscript=1"
-    /></noscript>
     <style>
         :root {
             --pa-dark:   #1a3c2a;
@@ -200,10 +184,6 @@ meta_description = "Conoce la ficha técnica completa del Kit Biorreactor de Pre
                 })
                 .then(() => {
                     this.submitting = false;
-                    if (typeof fbq === 'function' && !localStorage.getItem('pa_lead_fired')) {
-                        fbq('track', 'Lead');
-                        localStorage.setItem('pa_lead_fired', '1');
-                    }
                     window.location.href = '/gracias-diagnostico';
                 })
                 .catch(() => {

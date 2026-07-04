@@ -1,0 +1,447 @@
+url = "/kit-biorreactor"
+title = "Kit Biorreactor — Biofábrica On-Farm"
+meta_title = "Kit Biorreactor 2.0 | Ficha Técnica y Diagnóstico — Precisión Agrícola"
+meta_description = "Conoce la ficha técnica completa del Kit Biorreactor de Precisión Agrícola: especificaciones, videos demostrativos y diagnóstico gratuito para tu operación."
+==
+<!DOCTYPE html>
+<html lang="es-MX">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO — Title & Description -->
+    <title>Kit Biorreactor 2.0 | Ficha Técnica y Diagnóstico — Precisión Agrícola</title>
+    <meta name="description" content="Conoce la ficha técnica completa del Kit Biorreactor de Precisión Agrícola: especificaciones, videos demostrativos y diagnóstico gratuito para tu operación.">
+    <link rel="canonical" href="https://www.precisionagricola.com/kit-biorreactor">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.precisionagricola.com/kit-biorreactor">
+    <meta property="og:title" content="Kit Biorreactor 2.0 — Ficha Técnica | Precisión Agrícola">
+    <meta property="og:description" content="Ficha técnica, videos demostrativos y diagnóstico gratuito del Kit Biorreactor de Precisión Agrícola.">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:site_name" content="Precisión Agrícola">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ 'assets/images/favicon.ico'|theme }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ 'assets/images/favicon-32x32.png'|theme }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ 'assets/images/favicon-16x16.png'|theme }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ 'assets/images/apple-touch-icon.png'|theme }}">
+
+    <!-- Preconnect para rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '5389193441304738');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=5389193441304738&ev=PageView&noscript=1"
+    /></noscript>
+    <style>
+        :root {
+            --pa-dark:   #1a3c2a;
+            --pa-forest: #2d6a4f;
+            --pa-mid:    #3d8c5f;
+            --pa-lime:   #6abf45;
+            --pa-light:  #f0faf3;
+        }
+        html { scroll-behavior: smooth; }
+        .font-title { font-family: 'Montserrat', sans-serif; }
+        .font-body  { font-family: 'DM Sans', sans-serif; }
+
+        /* Navbar */
+        .pa-navbar {
+            background: var(--pa-dark);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* Formulario (copiado de /bioreactores para mantener el mismo lead pipeline) */
+        .form-card {
+            background: rgba(255,255,255,.97);
+            border-top: 4px solid var(--pa-lime);
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,.18);
+        }
+        .form-label { color: var(--pa-dark); font-size: .78rem; font-weight: 600; letter-spacing: .03em; }
+        .form-input {
+            width: 100%; border: 1.5px solid #d1e8d9; border-radius: .45rem;
+            padding: .45rem .7rem; font-size: .82rem; color: #1a3c2a;
+            background: #f7fdf9; transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+        .form-input:focus { border-color: var(--pa-lime); box-shadow: 0 0 0 3px rgba(106,191,69,.2); }
+        .form-radio { accent-color: var(--pa-forest); }
+        .form-submit {
+            width: 100%; padding: .75rem 1rem;
+            background: var(--pa-forest); color: #fff;
+            font-weight: 700; font-size: .9rem; border-radius: .6rem;
+            transition: background .2s, transform .1s;
+            border: none; cursor: pointer;
+        }
+        .form-submit:hover { background: var(--pa-lime); color: var(--pa-dark); transform: translateY(-1px); }
+        .required-star { color: var(--pa-lime); }
+        .form-hp { position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;z-index:-1;pointer-events:none;tab-index:-1; }
+
+        @keyframes ctaPing {
+            0%, 70%, 100% { transform: scale(1); }
+            78% { transform: scale(1.07); }
+            86% { transform: scale(0.97); }
+        }
+        .cta-pulse { animation: ctaPing 2.4s ease-in-out infinite; }
+        .cta-pulse:hover {
+            animation: none;
+            background: var(--pa-lime) !important;
+            color: var(--pa-dark) !important;
+        }
+
+        /* Embed de Canva (ficha técnica + videos) */
+        .canva-embed-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body class="antialiased font-body" style="color:#1a3c2a">
+
+<!-- ════════════════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════════════════ -->
+<header class="pa-navbar sticky top-0 z-50 shadow-lg">
+    <div class="max-w-screen-xl mx-auto px-5 md:px-12 lg:px-24">
+        <div class="flex items-center justify-between h-16">
+            <a href="{{ 'inicio'|page }}" class="flex items-center space-x-2 flex-shrink-0">
+                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-9 h-9" alt="Precisión Agrícola">
+                <span class="font-bold text-sm hidden sm:block" style="color:#6abf45">Precisión Agrícola</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════
+     FICHA TÉCNICA (diseño en Canva: specs + videos)
+════════════════════════════════════════════════════════ -->
+<section class="py-10 lg:py-16 px-4" style="background:var(--pa-light)">
+    <div class="canva-embed-wrap">
+        <div style="position: relative; width: 100%; height: 0; padding-top: 766.6667%; padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden; border-radius: 8px; will-change: transform;">
+            <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
+                src="https://www.canva.com/design/DAHGMeBROQs/29SW5kizCSmEC7-jEy9HPw/view?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+            </iframe>
+        </div>
+        <a href="https://www.canva.com/design/DAHGMeBROQs/29SW5kizCSmEC7-jEy9HPw/view?utm_content=DAHGMeBROQs&utm_campaign=designshare&utm_medium=embeds&utm_source=link"
+           target="_blank" rel="noopener" class="text-xs" style="color:#8a8a8a">
+            diseño landingpage BIOFABRICA By Precision Agricola 2.0 de Precisión Agrícola
+        </a>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     DIAGNÓSTICO — mismo formulario y pipeline que /bioreactores
+════════════════════════════════════════════════════════ -->
+<section id="diagnostico" class="py-16 lg:py-24 px-4" style="background:var(--pa-dark)">
+    <div class="max-w-md mx-auto">
+
+        <div class="text-center mb-8">
+            <h2 class="font-title font-black uppercase text-white mb-3" style="font-size:clamp(1.5rem, 3vw, 2.1rem)">
+                Solicita tu diagnóstico
+            </h2>
+            <p class="font-body" style="color:#c8e6c9;font-size:.95rem">
+                Completa el formulario y un especialista te contactará en menos de 24 h.
+            </p>
+        </div>
+
+        <div class="form-card" x-data="{
+            submitted: false,
+            submitting: false,
+            submitError: false,
+            tooFast: false,
+            _t0: Date.now(),
+            _ep: atob('aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZm9ybXMvZC9lLzFGQUlwUUxTZHVGVUxzSElVdmhQN1NBdGZPb1Y0MjJWTzVIUTVBNnZnQjVKMXQxV3k1ekZtcWV3L2Zvcm1SZXNwb25zZQ=='),
+            submitForm(e) {
+                e.preventDefault();
+                const hp = e.target.querySelector('[name=company_url]');
+                if (hp && hp.value) { this.submitted = true; return; }
+                if ((Date.now() - this._t0) < 5000) {
+                    this.tooFast = true;
+                    this.submitting = false;
+                    return;
+                }
+                this.submitting = true;
+                this.submitError = false;
+                const form = e.target;
+                const formData = new FormData(form);
+                const params = new URLSearchParams();
+                for (const [key, val] of formData.entries()) {
+                    if (key === 'company_url') continue;
+                    if (key.includes('.other_option_response') && !val.trim()) continue;
+                    params.append(key, val);
+                }
+                fetch(this._ep, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                })
+                .then(() => {
+                    this.submitting = false;
+                    if (typeof fbq === 'function' && !localStorage.getItem('pa_lead_fired')) {
+                        fbq('track', 'Lead');
+                        localStorage.setItem('pa_lead_fired', '1');
+                    }
+                    window.location.href = '/gracias-diagnostico';
+                })
+                .catch(() => {
+                    this.submitting = false;
+                    this.submitError = true;
+                });
+            }
+        }">
+
+            <div class="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-gray-100">
+                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-8 h-8 flex-shrink-0" alt="">
+                <div>
+                    <p class="text-xs font-semibold tracking-widest uppercase" style="color:#6abf45">
+                        Precisión Agrícola
+                    </p>
+                    <h2 class="text-sm font-black leading-tight" style="color:#1a3c2a">
+                        Diagnóstico de Necesidad Biotecnológica
+                    </h2>
+                </div>
+            </div>
+
+            <div x-show="submitted" style="display:none" class="flex flex-col items-center justify-center px-6 py-20 text-center">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center mb-5" style="background:rgba(106,191,69,.12)">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#6abf45" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-base mb-2" style="color:#1a3c2a">¡Diagnóstico recibido!</h3>
+                <p class="text-xs leading-relaxed" style="color:#4a7c59">
+                    Un especialista se pondrá en contacto<br>contigo en menos de 24 h.
+                </p>
+            </div>
+
+            <div x-show="submitError" style="display:none" class="flex flex-col items-center justify-center px-6 py-12 text-center">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center mb-5" style="background:rgba(220,53,69,.12)">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#dc3545" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </div>
+                <h3 class="font-bold text-base mb-2" style="color:#1a3c2a">Error al enviar</h3>
+                <p class="text-xs leading-relaxed mb-4" style="color:#4a7c59">
+                    No se pudo registrar tu diagnóstico.<br>Por favor intenta nuevamente.
+                </p>
+                <button type="button" @click="submitError = false" class="form-submit" style="max-width:200px;margin:0 auto">
+                    Reintentar →
+                </button>
+            </div>
+
+            <form action="#"
+                  method="POST"
+                  x-show="!submitted && !submitError"
+                  @submit.prevent="submitForm($event)"
+                  class="px-6 py-5 space-y-4">
+
+                <div class="form-hp" aria-hidden="true">
+                    <label for="company_url">Website</label>
+                    <input type="text" name="company_url" id="company_url" tabindex="-1" autocomplete="off" value="">
+                </div>
+
+                <div x-show="tooFast" x-cloak class="rounded-lg px-4 py-3 text-xs font-semibold text-center"
+                     style="background:rgba(220,170,50,.12);color:#8a6d00;border:1px solid rgba(220,170,50,.3)">
+                    Por favor tómate un momento para completar el formulario antes de enviarlo.
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Nombre Completo <span class="required-star">*</span></label>
+                    <input type="text" name="entry.717719532" required placeholder="Ej. Juan García López" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Correo electrónico <span class="required-star">*</span></label>
+                    <input type="email" name="entry.418293425" required placeholder="correo@ejemplo.com" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Ubicación de la operación (Municipio / Estado) <span class="required-star">*</span></label>
+                    <input type="text" name="entry.1012014923" required placeholder="Ej. Caborca, Sonora" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">WhatsApp de contacto <span class="required-star">*</span></label>
+                    <input type="tel" name="entry.1936785384" required placeholder="Ej. 644 123 4567" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Nombre del Rancho / Empresa <span class="required-star">*</span></label>
+                    <input type="text" name="entry.1412966994" required placeholder="Ej. Rancho El Mezquite" class="form-input">
+                </div>
+
+                <div x-data="{ otroCultivo: false }">
+                    <label class="form-label block mb-2">Cultivo Principal <span class="required-star">*</span></label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Berries (Frambuesa, Arándano, Zarzamora)" class="form-radio" @change="otroCultivo = false" required>
+                            Berries (Frambuesa, Arándano, Zarzamora)
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Aguacate" class="form-radio" @change="otroCultivo = false">
+                            Aguacate
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Agave" class="form-radio" @change="otroCultivo = false">
+                            Agave
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Caña de Azúcar" class="form-radio" @change="otroCultivo = false">
+                            Caña de Azúcar
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="__other_option__" class="form-radio" @change="otroCultivo = true">
+                            Otro:
+                        </label>
+                        <input x-show="otroCultivo" type="text" name="entry.232288433.other_option_response" placeholder="Especifica tu cultivo" class="form-input mt-1" style="display:none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label block mb-2">Superficie total en producción (Hectáreas) <span class="required-star">*</span></label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1112158256" value="Menos de 10 ha" class="form-radio" required>
+                            Menos de 10 ha
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1112158256" value="11 a 50 ha" class="form-radio">
+                            11 a 50 ha
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1112158256" value="Más de 50 ha" class="form-radio">
+                            Más de 50 ha
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label block mb-2">¿Cuál es tu principal problema actualmente? <span class="required-star">*</span></label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Costo excesivo de los Microorganismos Benéficos" class="form-radio mt-0.5" required>
+                            Costo excesivo de los Microorganismos Benéficos
+                        </label>
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Salud del suelo y degradación" class="form-radio mt-0.5">
+                            Salud del suelo y degradación
+                        </label>
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)" class="form-radio mt-0.5">
+                            Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)
+                        </label>
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Baja eficiencia en la absorción de nutrientes" class="form-radio mt-0.5">
+                            Baja eficiencia en la absorción de nutrientes
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">
+                        ¿Cuánto inviertes aproximadamente al mes en bioinsumos por hectárea? <span class="required-star">*</span>
+                    </label>
+                    <input type="text" name="entry.939413606" required placeholder="Ej. $500 MXN / ha" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-2">
+                        ¿Deseas adquirir una Biofábrica para reducir al máximo los costos de bioinsumos? <span class="required-star">*</span>
+                    </label>
+                    <div class="flex gap-6">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1073422398" value="Sí" class="form-radio" required>
+                            Sí
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1073422398" value="No" class="form-radio">
+                            No
+                        </label>
+                    </div>
+                </div>
+
+                <div x-data="{ otroPresupuesto: false }">
+                    <label class="form-label block mb-2">
+                        ¿Cuentas con presupuesto para inversión inmediata o requieres apoyo con financiamiento / subsidio? <span class="required-star">*</span>
+                    </label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1366426429" value="Presupuesto disponible (Anticipo listo)" class="form-radio" required @change="otroPresupuesto = false">
+                            Presupuesto disponible (Anticipo listo)
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1366426429" value="__other_option__" class="form-radio" @change="otroPresupuesto = true">
+                            Otro:
+                        </label>
+                        <input x-show="otroPresupuesto" type="text" name="entry.1366426429.other_option_response" placeholder="Especifica tu situación" class="form-input mt-1" style="display:none">
+                    </div>
+                </div>
+
+                <div class="pt-2 pb-1">
+                    <button type="submit" class="form-submit cta-pulse" :disabled="submitting" :style="submitting ? 'opacity:0.7;cursor:wait' : ''">
+                        <span x-show="!submitting">Enviar diagnóstico →</span>
+                        <span x-show="submitting" style="display:none" class="flex items-center justify-center gap-2">
+                            <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            Enviando…
+                        </span>
+                    </button>
+                    <p class="text-center text-xs mt-3" style="color:#7aad8a">
+                        Un especialista se pondrá en contacto contigo en menos de 24 h.
+                    </p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════ -->
+<footer style="background:#333333">
+    <div class="text-center px-8 md:px-16 lg:px-28 pt-16 pb-10">
+        <img src="{{ 'assets/images/bioreactors/pa_letras_logo.png'|theme }}"
+             alt="Precisión Agrícola — Biorreactores agrícolas y biofábricas on-farm"
+             loading="lazy" class="mx-auto mb-10" style="max-width:220px;height:auto">
+        <p class="font-title uppercase text-white font-bold"
+           style="font-size:clamp(1rem, 2vw, 1.3rem);letter-spacing:0.03em">
+            Agenda una cita al teléfono
+            <a href="tel:+523311174441" class="hover:underline" style="color:#ffffff">33 1117 4441</a>
+        </p>
+    </div>
+    <div class="text-center pb-12 pt-4">
+        <a href="https://www.precisionagricola.com" target="_blank" rel="noopener"
+           class="font-body text-white hover:underline" style="font-size:clamp(1.2rem, 2.5vw, 1.6rem)">
+            www.precisionagricola.com
+        </a>
+    </div>
+</footer>
+
+</body>
+</html>

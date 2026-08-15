@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "OctoberCMS Dev Server",
-      "runtimeExecutable": "C:/laragon/bin/php/php7.4.10/php.exe",
-      "runtimeArgs": ["artisan", "serve", "--port=8000"],
-      "port": 8000
+      "runtimeExecutable": "C:/laragon/bin/php/php-7.4.33-nts-x64/php.exe",
+      "runtimeArgs": ["artisan", "serve", "--port=8877"],
+      "port": 8877
     },
     {
       "name": "Watch LESS",

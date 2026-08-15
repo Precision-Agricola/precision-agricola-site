@@ -1,0 +1,891 @@
+url = "/kit-biorreactor"
+title = "Kit Biorreactor — Biofábrica On-Farm"
+meta_title = "Kit Biorreactor Agrícola | Ficha Técnica y Diagnóstico — Precisión Agrícola"
+meta_description = "Ficha técnica completa del Kit Biorreactor de Precisión Agrícola: especificaciones del equipo, consorcios microbianos, videos demostrativos y diagnóstico gratuito para tu operación."
+==
+<?php
+
+/**
+ * El diseño de Canva es la fuente de contenido de esta página: el equipo de
+ * ventas actualiza ahí especificaciones, cifras y videos. El código sólo lo
+ * enmarca.
+ *
+ * Para incrustarlo hay que reservarle el alto con el truco del padding-top,
+ * que es un porcentaje del ancho. Si ese porcentaje no coincide con la
+ * proporción real del diseño, Canva lo encoge para que quepa y rellena el
+ * sobrante en negro: bandas a los lados si el porcentaje se queda corto,
+ * arriba y abajo si se pasa. Por eso no se deja escrito a mano.
+ *
+ * La proporción sale del endpoint oEmbed de Canva. Sus thumbnail_width y
+ * thumbnail_height coinciden exactamente con la imagen que Canva renderiza
+ * del diseño completo (verificado: render de 1024x9216 y thumbnail de
+ * 149x1341, ambos 900%).
+ *
+ * OJO: las metaetiquetas og:image:width / og:image:height de la página del
+ * diseño NO sirven — se quedan desactualizadas respecto al render real y
+ * daban 1033% cuando la proporción verdadera era 900%.
+ */
+
+const CANVA_DESIGN = 'DAHGMeBROQs/29SW5kizCSmEC7-jEy9HPw';
+
+// Proporción medida el 2026-08-15. Se usa si Canva no responde o si contesta
+// algo que no tiene sentido.
+const CANVA_RATIO_FALLBACK = 900.0;
+
+function onStart()
+{
+    $view = 'https://www.canva.com/design/' . self::CANVA_DESIGN . '/view';
+
+    $this['canvaView']  = $view;
+    $this['canvaEmbed'] = $view . '?embed';
+    $this['canvaRatio'] = $this->canvaRatio($view);
+}
+
+/**
+ * Alto/ancho del diseño, en porcentaje, según el oEmbed de Canva.
+ */
+function canvaRatio($view)
+{
+    return Cache::remember('kit_biorreactor.canva_ratio', now()->addHours(6), function () use ($view) {
+        $json = $this->fetchUrl('https://www.canva.com/_oembed?url=' . urlencode($view));
+        $data = $json ? json_decode($json, true) : null;
+
+        $width  = isset($data['thumbnail_width'])  ? (float) $data['thumbnail_width']  : 0;
+        $height = isset($data['thumbnail_height']) ? (float) $data['thumbnail_height'] : 0;
+
+        // Una ficha larga va de "casi cuadrada" a "muy larga". Fuera de ese
+        // rango asumimos lectura mala y preferimos el respaldo.
+        $ratio = ($width >= 1 && $height >= 1) ? round(($height / $width) * 100, 4) : 0;
+
+        if ($ratio < 50 || $ratio > 3000) {
+            Log::warning('kit-biorreactor: no se pudo leer la proporción del diseño en Canva; se usa el respaldo de ' . self::CANVA_RATIO_FALLBACK . '%.');
+
+            return self::CANVA_RATIO_FALLBACK;
+        }
+
+        return $ratio;
+    });
+}
+
+/**
+ * GET simple y con timeout corto. Devuelve null ante cualquier problema: esta
+ * petición nunca debe poder tumbar ni retrasar la página.
+ */
+function fetchUrl($url)
+{
+    try {
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_CONNECTTIMEOUT => 3,
+                CURLOPT_TIMEOUT        => 6,
+                CURLOPT_USERAGENT      => 'PrecisionAgricola/1.0 (+https://www.precisionagricola.com)',
+            ]);
+            $body = curl_exec($ch);
+            curl_close($ch);
+
+            return $body ?: null;
+        }
+
+        if (ini_get('allow_url_fopen')) {
+            $ctx = stream_context_create(['http' => [
+                'timeout' => 6,
+                'header'  => "User-Agent: PrecisionAgricola/1.0 (+https://www.precisionagricola.com)\r\n",
+            ]]);
+
+            return @file_get_contents($url, false, $ctx) ?: null;
+        }
+    }
+    catch (\Exception $e) {
+        // Silencio a propósito: caemos al valor de respaldo.
+    }
+
+    return null;
+}
+
+?>
+==
+<!DOCTYPE html>
+<html lang="es-MX">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO — Title & Description -->
+    <title>Kit Biorreactor Agrícola | Ficha Técnica y Diagnóstico — Precisión Agrícola</title>
+    <meta name="description" content="Ficha técnica completa del Kit Biorreactor de Precisión Agrícola: especificaciones del equipo, consorcios microbianos, videos demostrativos y diagnóstico gratuito para tu operación.">
+    <meta name="keywords" content="kit biorreactor, biorreactor agrícola, biofábrica on-farm, microorganismos benéficos, bioinsumos, consorcio microbiano, agricultura regenerativa, México">
+    <link rel="canonical" href="https://www.precisionagricola.com/kit-biorreactor">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="https://www.precisionagricola.com/kit-biorreactor">
+    <meta property="og:title" content="Kit Biorreactor Agrícola — Ficha Técnica">
+    <meta property="og:description" content="Especificaciones del equipo, consorcios microbianos y videos demostrativos del sistema de biofábrica on-farm de Precisión Agrícola.">
+    <meta property="og:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/main_bg.jpg">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:site_name" content="Precisión Agrícola">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kit Biorreactor Agrícola — Ficha Técnica">
+    <meta name="twitter:description" content="Especificaciones del equipo, consorcios microbianos y videos demostrativos del sistema de biofábrica on-farm.">
+    <meta name="twitter:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/main_bg.jpg">
+
+    <!-- Geo targeting -->
+    <meta name="geo.region" content="MX-JAL">
+    <meta name="geo.placename" content="Jalisco, México">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ 'assets/images/favicon.ico'|theme }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ 'assets/images/favicon-32x32.png'|theme }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ 'assets/images/favicon-16x16.png'|theme }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ 'assets/images/apple-touch-icon.png'|theme }}">
+
+    <!-- Schema.org JSON-LD — Product -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Kit Biorreactor Agrícola",
+        "description": "Sistema de biofábrica on-farm para producir consorcios microbianos vivos directamente en la unidad de producción agrícola: biorreactor en acero inoxidable, cepas madre aisladas, medios de cultivo selectivos y kit de esterilización.",
+        "image": "https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/main_bg.jpg",
+        "brand": { "@type": "Brand", "name": "Precisión Agrícola" },
+        "category": "Equipo agrícola biotecnológico",
+        "url": "https://www.precisionagricola.com/kit-biorreactor"
+    }
+    </script>
+
+    <!-- Preconnect para rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.canva.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        :root {
+            --pa-dark:   #1a3c2a;
+            --pa-forest: #2d6a4f;
+            --pa-mid:    #3d8c5f;
+            --pa-lime:   #6abf45;
+            --pa-light:  #f0faf3;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', system-ui, sans-serif; color: #1a3c2a; background: #fff; }
+        h1, h2, h3, .font-title { font-family: 'Montserrat', system-ui, sans-serif; }
+
+        [x-cloak] { display: none !important; }
+
+        /* ── Barra de progreso de lectura ─────────────────────────────
+           La ficha es muy larga; saber cuánto falta cambia por completo
+           la sensación de la página. */
+        .scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0;
+            background: linear-gradient(90deg, var(--pa-mid), var(--pa-lime));
+            z-index: 60; transition: width .1s linear;
+        }
+
+        /* ── Navbar ── */
+        .pa-navbar {
+            background: rgba(26, 60, 42, .97);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            backdrop-filter: saturate(180%) blur(8px);
+        }
+
+        /* ── Hero ── */
+        .hero-kit {
+            position: relative; overflow: hidden;
+            background:
+                linear-gradient(135deg, rgba(26,60,42,.95) 0%, rgba(45,106,79,.90) 55%, rgba(26,60,42,.97) 100%),
+                url("{{ 'assets/images/bioreactors/main_bg.jpg'|theme }}") center/cover no-repeat;
+        }
+        /* Halo suave detrás del título */
+        .hero-kit::before {
+            content: ''; position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+            width: 900px; height: 900px; pointer-events: none;
+            background: radial-gradient(circle, rgba(106,191,69,.16) 0%, transparent 62%);
+        }
+        .hero-kit > * { position: relative; z-index: 1; }
+
+        .eyebrow {
+            display: inline-block; font-size: .72rem; font-weight: 700;
+            letter-spacing: .16em; text-transform: uppercase;
+            color: var(--pa-lime); background: rgba(106,191,69,.12);
+            border: 1px solid rgba(106,191,69,.28);
+            padding: 7px 16px; border-radius: 999px;
+        }
+
+        .section-tag {
+            display: inline-block; font-size: .72rem; font-weight: 700;
+            letter-spacing: .09em; text-transform: uppercase;
+            color: var(--pa-forest); background: var(--pa-light);
+            padding: 6px 14px; border-radius: 999px;
+        }
+        .section-title {
+            font-weight: 900; text-transform: uppercase; line-height: 1.12;
+            font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+        }
+
+        /* ── Marco de la ficha técnica ────────────────────────────────
+           El embed va dentro de algo que se lea como documento oficial,
+           no como una imagen suelta pegada en medio de la página. */
+        .ficha-stage {
+            position: relative;
+            background:
+                radial-gradient(ellipse at 50% 0%, #ffffff 0%, var(--pa-light) 55%, #e3f2e8 100%);
+        }
+        .ficha-frame {
+            max-width: 900px; margin: 0 auto;
+            border-radius: 18px; overflow: hidden;
+            background: #fff;
+            border: 1px solid #cfe7d6;
+            box-shadow:
+                0 2px 4px rgba(26,60,42,.05),
+                0 12px 28px rgba(26,60,42,.10),
+                0 40px 80px rgba(26,60,42,.10);
+        }
+        .ficha-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 1rem; padding: .8rem 1.1rem;
+            background: linear-gradient(180deg, #22503a 0%, var(--pa-dark) 100%);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .ficha-bar-title {
+            display: flex; align-items: center; gap: .6rem; min-width: 0;
+        }
+        .ficha-bar-title span {
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: .78rem; letter-spacing: .04em; color: #fff;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .ficha-expand {
+            display: inline-flex; align-items: center; gap: .4rem; flex-shrink: 0;
+            font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+            color: var(--pa-dark); background: var(--pa-lime);
+            padding: .42rem .8rem; border-radius: 6px;
+            text-decoration: none; transition: background .2s, transform .1s;
+        }
+        .ficha-expand:hover { background: #82d455; color: var(--pa-dark); transform: translateY(-1px); }
+
+        /* El alto se reserva con el porcentaje calculado desde Canva */
+        .canva-ratio { position: relative; width: 100%; height: 0; overflow: hidden; background: #0f1f16; }
+        .canva-ratio iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+        .ficha-note {
+            max-width: 900px; margin: 1rem auto 0;
+            font-size: .78rem; color: #6b8578; text-align: center;
+        }
+
+        /* ── CTA flotante ─────────────────────────────────────────────
+           En una página de ~10 000 px, el formulario queda inalcanzable
+           si no viaja con el lector. */
+        .sticky-cta {
+            position: fixed; right: 18px; bottom: 18px; z-index: 55;
+            display: flex; flex-direction: column; gap: .6rem; align-items: flex-end;
+            opacity: 0; transform: translateY(16px); pointer-events: none;
+            transition: opacity .35s ease, transform .35s ease;
+        }
+        .sticky-cta.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+        .sticky-cta a {
+            display: inline-flex; align-items: center; gap: .5rem;
+            font-weight: 700; font-size: .82rem; text-decoration: none;
+            padding: .8rem 1.1rem; border-radius: 999px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.22);
+            transition: transform .15s ease, background .2s ease;
+        }
+        .sticky-cta a:hover { transform: translateY(-2px); }
+        .cta-diag { background: var(--pa-lime); color: var(--pa-dark); }
+        .cta-diag:hover { background: #82d455; color: var(--pa-dark); }
+        .cta-wa { background: #25d366; color: #0b2e1a; }
+        .cta-wa:hover { background: #3ae078; color: #0b2e1a; }
+        @media (max-width: 640px) {
+            .sticky-cta a span { display: none; }
+            .sticky-cta a { padding: .85rem; }
+        }
+
+        /* ── Botones ── */
+        .pa-btn-cta {
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--pa-lime); color: var(--pa-dark);
+            font-weight: 700; padding: .9rem 1.75rem; border-radius: .6rem;
+            text-decoration: none; transition: background .2s, transform .1s;
+        }
+        .pa-btn-cta:hover { background: #82d455; transform: translateY(-1px); color: var(--pa-dark); }
+        .pa-btn-ghost {
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1.5px solid rgba(255,255,255,.35); color: #fff;
+            font-weight: 600; padding: .85rem 1.6rem; border-radius: .6rem;
+            text-decoration: none; transition: border-color .2s, background .2s;
+        }
+        .pa-btn-ghost:hover { border-color: var(--pa-lime); background: rgba(106,191,69,.12); color: #fff; }
+
+        /* ── Animaciones de entrada ──────────────────────────────────
+           Todo esto cuelga de .js, que sólo se pone si el script de
+           abajo llegó a correr. Sin JS —o si el script truena— el
+           contenido se queda visible en vez de desaparecer. */
+        .js .reveal {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity .7s cubic-bezier(.2,.6,.2,1), transform .7s cubic-bezier(.2,.6,.2,1);
+        }
+        .js .reveal.is-visible { opacity: 1; transform: none; }
+        .reveal-d1 { transition-delay: .09s; }
+        .reveal-d2 { transition-delay: .18s; }
+        .reveal-d3 { transition-delay: .27s; }
+
+        @keyframes floatArrow {
+            0%, 100% { transform: translateY(0); opacity: .55; }
+            50%      { transform: translateY(7px); opacity: 1; }
+        }
+        .scroll-hint { animation: floatArrow 2s ease-in-out infinite; }
+
+        /* ── Formulario ── */
+        .form-card {
+            background: rgba(255,255,255,.97);
+            border-top: 4px solid var(--pa-lime);
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,.18);
+        }
+        .form-label { color: var(--pa-dark); font-size: .78rem; font-weight: 600; letter-spacing: .03em; }
+        .form-input {
+            width: 100%; border: 1.5px solid #d1e8d9; border-radius: .45rem;
+            padding: .45rem .7rem; font-size: .82rem; color: #1a3c2a;
+            background: #f7fdf9; transition: border-color .2s, box-shadow .2s;
+            outline: none;
+        }
+        .form-input:focus { border-color: var(--pa-lime); box-shadow: 0 0 0 3px rgba(106,191,69,.2); }
+        .form-radio { accent-color: var(--pa-forest); }
+        .form-submit {
+            width: 100%; padding: .75rem 1rem;
+            background: var(--pa-forest); color: #fff;
+            font-weight: 700; font-size: .9rem; border-radius: .6rem;
+            transition: background .2s, transform .1s;
+            border: none; cursor: pointer;
+        }
+        .form-submit:hover { background: var(--pa-lime); color: var(--pa-dark); transform: translateY(-1px); }
+        .required-star { color: var(--pa-lime); }
+        .form-hp { position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;z-index:-1;pointer-events:none; }
+
+        @keyframes ctaPing {
+            0%, 70%, 100% { transform: scale(1); }
+            78% { transform: scale(1.07); }
+            86% { transform: scale(0.97); }
+        }
+        .cta-pulse { animation: ctaPing 2.4s ease-in-out infinite; }
+        .cta-pulse:hover {
+            animation: none;
+            background: var(--pa-lime) !important;
+            color: var(--pa-dark) !important;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .js .reveal { opacity: 1; transform: none; transition: none; }
+            .cta-pulse, .scroll-hint { animation: none; }
+            .sticky-cta { transition: none; }
+        }
+    </style>
+
+    <!-- Marca que hay JS antes del primer pintado, para que las animaciones de
+         entrada no provoquen un parpadeo. Si esto no corre, .js nunca se pone
+         y todo el contenido queda visible sin animación. -->
+    <script>document.documentElement.className += ' js';</script>
+</head>
+
+<body class="antialiased">
+
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════════════════════ -->
+<header class="pa-navbar sticky top-0 z-50 shadow-lg">
+    <div class="max-w-screen-xl mx-auto px-5 md:px-10">
+        <div class="flex items-center justify-between h-16">
+            <a href="{{ 'inicio'|page }}" class="flex items-center space-x-2 flex-shrink-0">
+                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-9 h-9" alt="Precisión Agrícola">
+                <span class="font-bold text-sm hidden sm:block" style="color:#6abf45">Precisión Agrícola</span>
+            </a>
+            <nav class="flex items-center gap-5">
+                <a href="#ficha" class="text-xs font-semibold hidden md:block" style="color:#c8e6c9">Ficha técnica</a>
+                <a href="{{ 'bioreactores'|page }}" class="text-xs font-semibold hidden md:block" style="color:#c8e6c9">Biorreactores</a>
+                <a href="#diagnostico" class="pa-btn-cta text-xs" style="padding:.5rem 1rem">Diagnóstico gratis</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════
+     HERO — corto a propósito: la ficha empieza casi de inmediato
+════════════════════════════════════════════════════════ -->
+<section class="hero-kit">
+    <div class="max-w-screen-xl mx-auto px-5 md:px-10 py-16 lg:py-20 text-center">
+        <span class="eyebrow reveal">Biofábrica On-Farm 2.0</span>
+
+        <h1 class="text-white font-black uppercase mt-6 reveal reveal-d1"
+            style="font-size:clamp(2rem, 5.6vw, 3.4rem);line-height:1.06;letter-spacing:-.01em">
+            Kit Biorreactor <br class="hidden sm:block">Agrícola
+        </h1>
+
+        <p class="mt-6 mx-auto reveal reveal-d2"
+           style="color:#c8e6c9;max-width:44rem;font-size:clamp(1rem, 1.9vw, 1.15rem);line-height:1.65">
+            Ficha técnica completa: especificaciones del equipo, consorcios microbianos,
+            costos de producción y videos demostrativos del sistema que te permite producir
+            tus propios bioinsumos en el rancho.
+        </p>
+
+        <div class="mt-9 flex flex-wrap gap-3 justify-center reveal reveal-d3">
+            <a href="#diagnostico" class="pa-btn-cta">Solicita tu diagnóstico gratuito</a>
+            <a href="https://wa.me/523311174441" target="_blank" rel="noopener" class="pa-btn-ghost">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+                33 1117 4441
+            </a>
+        </div>
+
+        <a href="#ficha" class="inline-block mt-12 scroll-hint" aria-label="Ir a la ficha técnica">
+            <svg class="w-7 h-7 mx-auto" fill="none" viewBox="0 0 24 24" stroke="#6abf45" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     FICHA TÉCNICA — el diseño de Canva, que es el contenido
+════════════════════════════════════════════════════════ -->
+<section id="ficha" class="ficha-stage px-4 md:px-10 py-16 lg:py-20">
+    <div class="max-w-screen-xl mx-auto">
+
+        <div class="text-center max-w-2xl mx-auto mb-10 reveal">
+            <span class="section-tag">Ficha técnica</span>
+            <h2 class="section-title mt-4" style="color:var(--pa-dark)">
+                Todo el sistema, a detalle
+            </h2>
+            <p class="mt-4" style="color:#3a5a4a;line-height:1.7">
+                Componentes del biorreactor, cepas del consorcio microbiano, comparativa de costos
+                y videos del equipo operando. Puedes recorrerla aquí o abrirla a pantalla completa.
+            </p>
+        </div>
+
+        <div class="ficha-frame reveal reveal-d1">
+            <div class="ficha-bar">
+                <div class="ficha-bar-title">
+                    <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-6 h-6 flex-shrink-0" alt="">
+                    <span>Kit Biorreactor — Biofábrica On-Farm 2.0</span>
+                </div>
+                <a href="{{ canvaView }}?utm_content=DAHGMeBROQs&utm_campaign=designshare&utm_medium=embeds&utm_source=link"
+                   target="_blank" rel="noopener" class="ficha-expand">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/>
+                    </svg>
+                    Pantalla completa
+                </a>
+            </div>
+
+            {# El alto se reserva con la proporción real del diseño, leída de Canva en onStart() #}
+            <div class="canva-ratio" style="padding-top: {{ canvaRatio }}%">
+                <iframe src="{{ canvaEmbed }}" loading="lazy"
+                        allowfullscreen="allowfullscreen" allow="fullscreen"
+                        title="Ficha técnica del Kit Biorreactor — Precisión Agrícola"></iframe>
+            </div>
+        </div>
+
+        <p class="ficha-note reveal">
+            <span class="md:hidden">Desde el celular se lee mucho mejor a pantalla completa.</span>
+            diseño landingpage BIOFABRICA By Precision Agricola 2.0 de Precisión Agrícola
+        </p>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     DIAGNÓSTICO — mismo formulario y pipeline que /bioreactores
+════════════════════════════════════════════════════════ -->
+<section id="diagnostico" class="py-16 lg:py-24 px-4" style="background:var(--pa-dark)">
+    <div class="max-w-md mx-auto">
+
+        <div class="text-center mb-8 reveal">
+            <h2 class="font-title font-black uppercase text-white mb-3" style="font-size:clamp(1.5rem, 3vw, 2.1rem)">
+                Solicita tu diagnóstico
+            </h2>
+            <p style="color:#c8e6c9;font-size:.95rem">
+                Completa el formulario y un especialista te contactará en menos de 24 h.
+            </p>
+        </div>
+
+        <div class="form-card reveal reveal-d1" x-data="{
+            submitted: false,
+            submitting: false,
+            submitError: false,
+            tooFast: false,
+            _t0: Date.now(),
+            _ep: atob('aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZm9ybXMvZC9lLzFGQUlwUUxTZHVGVUxzSElVdmhQN1NBdGZPb1Y0MjJWTzVIUTVBNnZnQjVKMXQxV3k1ekZtcWV3L2Zvcm1SZXNwb25zZQ=='),
+            submitForm(e) {
+                e.preventDefault();
+                const hp = e.target.querySelector('[name=company_url]');
+                if (hp && hp.value) { this.submitted = true; return; }
+                if ((Date.now() - this._t0) < 5000) {
+                    this.tooFast = true;
+                    this.submitting = false;
+                    return;
+                }
+                this.submitting = true;
+                this.submitError = false;
+                const form = e.target;
+                const formData = new FormData(form);
+                const params = new URLSearchParams();
+                for (const [key, val] of formData.entries()) {
+                    if (key === 'company_url') continue;
+                    if (key.includes('.other_option_response') && !val.trim()) continue;
+                    params.append(key, val);
+                }
+                fetch(this._ep, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                })
+                .then(() => {
+                    this.submitting = false;
+                    window.location.href = '/gracias-diagnostico';
+                })
+                .catch(() => {
+                    this.submitting = false;
+                    this.submitError = true;
+                });
+            }
+        }">
+
+            <div class="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-gray-100">
+                <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-8 h-8 flex-shrink-0" alt="">
+                <div>
+                    <p class="text-xs font-semibold tracking-widest uppercase" style="color:#6abf45">
+                        Precisión Agrícola
+                    </p>
+                    <p class="text-sm font-black leading-tight" style="color:#1a3c2a">
+                        Diagnóstico de Necesidad Biotecnológica
+                    </p>
+                </div>
+            </div>
+
+            <div x-show="submitted" style="display:none" class="flex flex-col items-center justify-center px-6 py-20 text-center">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center mb-5" style="background:rgba(106,191,69,.12)">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#6abf45" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <p class="font-bold text-base mb-2" style="color:#1a3c2a">¡Diagnóstico recibido!</p>
+                <p class="text-xs leading-relaxed" style="color:#4a7c59">
+                    Un especialista se pondrá en contacto<br>contigo en menos de 24 h.
+                </p>
+            </div>
+
+            <div x-show="submitError" style="display:none" class="flex flex-col items-center justify-center px-6 py-12 text-center">
+                <div class="w-14 h-14 rounded-full flex items-center justify-center mb-5" style="background:rgba(220,53,69,.12)">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#dc3545" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </div>
+                <p class="font-bold text-base mb-2" style="color:#1a3c2a">Error al enviar</p>
+                <p class="text-xs leading-relaxed mb-4" style="color:#4a7c59">
+                    No se pudo registrar tu diagnóstico.<br>Por favor intenta nuevamente.
+                </p>
+                <button type="button" @click="submitError = false" class="form-submit" style="max-width:200px;margin:0 auto">
+                    Reintentar →
+                </button>
+            </div>
+
+            <form action="#"
+                  method="POST"
+                  x-show="!submitted && !submitError"
+                  @submit.prevent="submitForm($event)"
+                  class="px-6 py-5 space-y-4">
+
+                <div class="form-hp" aria-hidden="true">
+                    <label for="company_url">Website</label>
+                    <input type="text" name="company_url" id="company_url" tabindex="-1" autocomplete="off" value="">
+                </div>
+
+                <div x-show="tooFast" x-cloak class="rounded-lg px-4 py-3 text-xs font-semibold text-center"
+                     style="background:rgba(220,170,50,.12);color:#8a6d00;border:1px solid rgba(220,170,50,.3)">
+                    Por favor tómate un momento para completar el formulario antes de enviarlo.
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Nombre Completo <span class="required-star">*</span></label>
+                    <input type="text" name="entry.717719532" required placeholder="Ej. Juan García López" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Correo electrónico <span class="required-star">*</span></label>
+                    <input type="email" name="entry.418293425" required placeholder="correo@ejemplo.com" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Ubicación de la operación (Municipio / Estado) <span class="required-star">*</span></label>
+                    <input type="text" name="entry.1012014923" required placeholder="Ej. Caborca, Sonora" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">WhatsApp de contacto <span class="required-star">*</span></label>
+                    <input type="tel" name="entry.1936785384" required placeholder="Ej. 644 123 4567" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">Nombre del Rancho / Empresa <span class="required-star">*</span></label>
+                    <input type="text" name="entry.1412966994" required placeholder="Ej. Rancho El Mezquite" class="form-input">
+                </div>
+
+                <div x-data="{ otroCultivo: false }">
+                    <label class="form-label block mb-2">Cultivo Principal <span class="required-star">*</span></label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Berries (Frambuesa, Arándano, Zarzamora)" class="form-radio" @change="otroCultivo = false" required>
+                            Berries (Frambuesa, Arándano, Zarzamora)
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Aguacate" class="form-radio" @change="otroCultivo = false">
+                            Aguacate
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Agave" class="form-radio" @change="otroCultivo = false">
+                            Agave
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="Caña de Azúcar" class="form-radio" @change="otroCultivo = false">
+                            Caña de Azúcar
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.232288433" value="__other_option__" class="form-radio" @change="otroCultivo = true">
+                            Otro:
+                        </label>
+                        <input x-show="otroCultivo" type="text" name="entry.232288433.other_option_response" placeholder="Especifica tu cultivo" class="form-input mt-1" style="display:none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label block mb-2">Superficie total en producción (Hectáreas) <span class="required-star">*</span></label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1112158256" value="Menos de 10 ha" class="form-radio" required>
+                            Menos de 10 ha
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1112158256" value="11 a 50 ha" class="form-radio">
+                            11 a 50 ha
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1112158256" value="Más de 50 ha" class="form-radio">
+                            Más de 50 ha
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label block mb-2">¿Cuál es tu principal problema actualmente? <span class="required-star">*</span></label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Costo excesivo de los Microorganismos Benéficos" class="form-radio mt-0.5" required>
+                            Costo excesivo de los Microorganismos Benéficos
+                        </label>
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Salud del suelo y degradación" class="form-radio mt-0.5">
+                            Salud del suelo y degradación
+                        </label>
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)" class="form-radio mt-0.5">
+                            Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)
+                        </label>
+                        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.745728650" value="Baja eficiencia en la absorción de nutrientes" class="form-radio mt-0.5">
+                            Baja eficiencia en la absorción de nutrientes
+                        </label>
+                    </div>
+                </div>
+
+                <!-- entry.1366426429: opción múltiple. Los valores deben coincidir
+                     exactamente con las opciones del Google Form. -->
+                <div>
+                    <label class="form-label block mb-2">
+                        ¿Utilizas microorganismos actualmente? <span class="required-star">*</span>
+                    </label>
+                    <div class="flex gap-6">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1366426429" value="Sí" class="form-radio" required>
+                            Sí
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1366426429" value="No" class="form-radio">
+                            No
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label block mb-1">
+                        ¿Cuánto gastas aproximadamente al mes en microorganismos / bioinsumos por hectárea? <span class="required-star">*</span>
+                    </label>
+                    <input type="text" name="entry.939413606" required placeholder="Ej. $500 MXN / ha — escribe 0 si aún no usas" class="form-input">
+                </div>
+
+                <!-- entry.1073422398: respuesta corta en el Google Form, admite cualquier valor. -->
+                <div>
+                    <label class="form-label block mb-2">
+                        ¿Qué deseas hacer? <span class="required-star">*</span>
+                    </label>
+                    <div class="space-y-1.5">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1073422398" value="Programar una visita" class="form-radio" required>
+                            Programar una visita
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1073422398" value="Adquirir una biofábrica" class="form-radio">
+                            Adquirir una biofábrica
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+                            <input type="radio" name="entry.1073422398" value="Comprar litros terminados de microorganismos" class="form-radio">
+                            Comprar litros terminados de microorganismos
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-2 pb-1">
+                    <button type="submit" class="form-submit cta-pulse" :disabled="submitting" :style="submitting ? 'opacity:0.7;cursor:wait' : ''">
+                        <span x-show="!submitting">Enviar diagnóstico →</span>
+                        <span x-show="submitting" style="display:none" class="flex items-center justify-center gap-2">
+                            <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            Enviando…
+                        </span>
+                    </button>
+                    <p class="text-center text-xs mt-3" style="color:#7aad8a">
+                        Un especialista se pondrá en contacto contigo en menos de 24 h.
+                    </p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════ -->
+<footer style="background:#333333">
+    <div class="text-center px-8 md:px-16 lg:px-28 pt-16 pb-10">
+        <img src="{{ 'assets/images/bioreactors/pa_letras_logo.png'|theme }}"
+             alt="Precisión Agrícola — Biorreactores agrícolas y biofábricas on-farm"
+             loading="lazy" class="mx-auto mb-10" style="max-width:220px;height:auto">
+        <p class="font-title uppercase text-white font-bold"
+           style="font-size:clamp(1rem, 2vw, 1.3rem);letter-spacing:0.03em">
+            Agenda una cita al teléfono
+            <a href="tel:+523311174441" class="hover:underline" style="color:#ffffff">33 1117 4441</a>
+        </p>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 justify-center mt-8 text-sm">
+            <a href="{{ 'bioreactores'|page }}" class="hover:underline" style="color:#c8e6c9">Biorreactores</a>
+            <a href="{{ 'biofabrica-on-farm'|page }}" class="hover:underline" style="color:#c8e6c9">Biofábrica On-Farm</a>
+            <a href="{{ 'acerca-de'|page }}" class="hover:underline" style="color:#c8e6c9">Acerca de</a>
+            <a href="{{ 'contacto'|page }}" class="hover:underline" style="color:#c8e6c9">Contacto</a>
+        </div>
+    </div>
+    <div class="text-center pb-12 pt-4">
+        <a href="https://www.precisionagricola.com" target="_blank" rel="noopener"
+           class="text-white hover:underline" style="font-size:clamp(1.2rem, 2.5vw, 1.6rem)">
+            www.precisionagricola.com
+        </a>
+    </div>
+</footer>
+
+<!-- ════════════════════════════════════════════════════════
+     CTA flotante — la ficha mide varios miles de píxeles,
+     el formulario tiene que viajar con el lector
+════════════════════════════════════════════════════════ -->
+<div class="sticky-cta" id="sticky-cta">
+    <a href="https://wa.me/523311174441" target="_blank" rel="noopener" class="cta-wa" aria-label="Escríbenos por WhatsApp">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+        <span>WhatsApp</span>
+    </a>
+    <a href="#diagnostico" class="cta-diag">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-6 4h6"/>
+        </svg>
+        <span>Diagnóstico gratis</span>
+    </a>
+</div>
+
+<script>
+(function () {
+    var root  = document.documentElement;
+    var items = document.querySelectorAll('.reveal');
+
+    function mostrarTodo() {
+        Array.prototype.forEach.call(items, function (el) { el.classList.add('is-visible'); });
+    }
+
+    try {
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (reduce || !('IntersectionObserver' in window)) {
+            mostrarTodo();
+        }
+        else {
+            var io = new IntersectionObserver(function (entries) {
+                Array.prototype.forEach.call(entries, function (entry) {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-visible');
+                    io.unobserve(entry.target);
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+            Array.prototype.forEach.call(items, function (el) { io.observe(el); });
+
+            // Red de seguridad: si a los 3 s no se reveló ni un solo bloque,
+            // el observer no está funcionando. Mejor sin animación que con la
+            // página en blanco.
+            window.setTimeout(function () {
+                if (!document.querySelector('.reveal.is-visible')) mostrarTodo();
+            }, 3000);
+        }
+
+        var bar = document.getElementById('scroll-progress');
+        var cta = document.getElementById('sticky-cta');
+        var queued = false;
+
+        function paint() {
+            var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+            var pct = scrollable > 0 ? (window.pageYOffset / scrollable) * 100 : 0;
+
+            if (bar) bar.style.width = pct.toFixed(2) + '%';
+            if (cta) cta.classList.toggle('is-visible', window.pageYOffset > 500);
+
+            queued = false;
+        }
+
+        window.addEventListener('scroll', function () {
+            if (queued) return;
+            queued = true;
+            window.requestAnimationFrame(paint);
+        }, { passive: true });
+
+        paint();
+    }
+    catch (e) {
+        // Pase lo que pase, el contenido se ve.
+        root.className = root.className.replace(/\bjs\b/, '');
+        mostrarTodo();
+    }
+})();
+</script>
+
+</body>
+</html>

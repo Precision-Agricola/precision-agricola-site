@@ -27,3 +27,7 @@ nbproject
 
 # Local-only prospecting / scraping workspace
 /scraping/
+
+# Local PHP-version shims (machine-specific path)
+/php.bat
+/artisan.bat

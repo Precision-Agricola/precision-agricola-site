@@ -1,7 +1,111 @@
 url = "/kit-biorreactor"
 title = "Kit Biorreactor — Biofábrica On-Farm"
-meta_title = "Kit Biorreactor Agrícola | Produce tus Microorganismos a $80/L — Precisión Agrícola"
-meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, cepas madre y medios de cultivo para producir microorganismos benéficos en tu rancho a $80 por litro en vez de $239. Diagnóstico gratuito."
+meta_title = "Kit Biorreactor Agrícola | Ficha Técnica y Diagnóstico — Precisión Agrícola"
+meta_description = "Ficha técnica completa del Kit Biorreactor de Precisión Agrícola: especificaciones del equipo, consorcios microbianos, videos demostrativos y diagnóstico gratuito para tu operación."
+==
+<?php
+
+/**
+ * El diseño de Canva es la fuente de contenido de esta página: el equipo de
+ * ventas actualiza ahí especificaciones, cifras y videos. El código sólo lo
+ * enmarca.
+ *
+ * Para incrustarlo hay que reservarle el alto con el truco del padding-top,
+ * que es un porcentaje del ancho. Si ese porcentaje no coincide con la
+ * proporción real del diseño, Canva lo encoge para que quepa y rellena el
+ * sobrante en negro: bandas a los lados si el porcentaje se queda corto,
+ * arriba y abajo si se pasa. Por eso no se deja escrito a mano.
+ *
+ * La proporción sale del endpoint oEmbed de Canva. Sus thumbnail_width y
+ * thumbnail_height coinciden exactamente con la imagen que Canva renderiza
+ * del diseño completo (verificado: render de 1024x9216 y thumbnail de
+ * 149x1341, ambos 900%).
+ *
+ * OJO: las metaetiquetas og:image:width / og:image:height de la página del
+ * diseño NO sirven — se quedan desactualizadas respecto al render real y
+ * daban 1033% cuando la proporción verdadera era 900%.
+ */
+
+const CANVA_DESIGN = 'DAHGMeBROQs/29SW5kizCSmEC7-jEy9HPw';
+
+// Proporción medida el 2026-08-15. Se usa si Canva no responde o si contesta
+// algo que no tiene sentido.
+const CANVA_RATIO_FALLBACK = 900.0;
+
+function onStart()
+{
+    $view = 'https://www.canva.com/design/' . self::CANVA_DESIGN . '/view';
+
+    $this['canvaView']  = $view;
+    $this['canvaEmbed'] = $view . '?embed';
+    $this['canvaRatio'] = $this->canvaRatio($view);
+}
+
+/**
+ * Alto/ancho del diseño, en porcentaje, según el oEmbed de Canva.
+ */
+function canvaRatio($view)
+{
+    return Cache::remember('kit_biorreactor.canva_ratio', now()->addHours(6), function () use ($view) {
+        $json = $this->fetchUrl('https://www.canva.com/_oembed?url=' . urlencode($view));
+        $data = $json ? json_decode($json, true) : null;
+
+        $width  = isset($data['thumbnail_width'])  ? (float) $data['thumbnail_width']  : 0;
+        $height = isset($data['thumbnail_height']) ? (float) $data['thumbnail_height'] : 0;
+
+        // Una ficha larga va de "casi cuadrada" a "muy larga". Fuera de ese
+        // rango asumimos lectura mala y preferimos el respaldo.
+        $ratio = ($width >= 1 && $height >= 1) ? round(($height / $width) * 100, 4) : 0;
+
+        if ($ratio < 50 || $ratio > 3000) {
+            Log::warning('kit-biorreactor: no se pudo leer la proporción del diseño en Canva; se usa el respaldo de ' . self::CANVA_RATIO_FALLBACK . '%.');
+
+            return self::CANVA_RATIO_FALLBACK;
+        }
+
+        return $ratio;
+    });
+}
+
+/**
+ * GET simple y con timeout corto. Devuelve null ante cualquier problema: esta
+ * petición nunca debe poder tumbar ni retrasar la página.
+ */
+function fetchUrl($url)
+{
+    try {
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_CONNECTTIMEOUT => 3,
+                CURLOPT_TIMEOUT        => 6,
+                CURLOPT_USERAGENT      => 'PrecisionAgricola/1.0 (+https://www.precisionagricola.com)',
+            ]);
+            $body = curl_exec($ch);
+            curl_close($ch);
+
+            return $body ?: null;
+        }
+
+        if (ini_get('allow_url_fopen')) {
+            $ctx = stream_context_create(['http' => [
+                'timeout' => 6,
+                'header'  => "User-Agent: PrecisionAgricola/1.0 (+https://www.precisionagricola.com)\r\n",
+            ]]);
+
+            return @file_get_contents($url, false, $ctx) ?: null;
+        }
+    }
+    catch (\Exception $e) {
+        // Silencio a propósito: caemos al valor de respaldo.
+    }
+
+    return null;
+}
+
+?>
 ==
 <!DOCTYPE html>
 <html lang="es-MX">
@@ -12,24 +116,24 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO — Title & Description -->
-    <title>Kit Biorreactor Agrícola | Produce tus Microorganismos a $80/L — Precisión Agrícola</title>
-    <meta name="description" content="Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, cepas madre y medios de cultivo para producir microorganismos benéficos en tu rancho a $80 por litro en vez de $239. Diagnóstico gratuito.">
-    <meta name="keywords" content="kit biorreactor, biorreactor agrícola, biofábrica on-farm, microorganismos benéficos, bioinsumos, consorcio microbiano, Bacillus subtilis, Trichoderma asperellum, agricultura regenerativa, México">
+    <title>Kit Biorreactor Agrícola | Ficha Técnica y Diagnóstico — Precisión Agrícola</title>
+    <meta name="description" content="Ficha técnica completa del Kit Biorreactor de Precisión Agrícola: especificaciones del equipo, consorcios microbianos, videos demostrativos y diagnóstico gratuito para tu operación.">
+    <meta name="keywords" content="kit biorreactor, biorreactor agrícola, biofábrica on-farm, microorganismos benéficos, bioinsumos, consorcio microbiano, agricultura regenerativa, México">
     <link rel="canonical" href="https://www.precisionagricola.com/kit-biorreactor">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="product">
     <meta property="og:url" content="https://www.precisionagricola.com/kit-biorreactor">
-    <meta property="og:title" content="Kit Biorreactor Agrícola — Produce tus Microorganismos a $80/L">
-    <meta property="og:description" content="Tanque de 190 L en acero inoxidable, cepas madre y medios de cultivo selectivos para producir consorcios microbianos vivos en tu propia unidad de producción.">
+    <meta property="og:title" content="Kit Biorreactor Agrícola — Ficha Técnica">
+    <meta property="og:description" content="Especificaciones del equipo, consorcios microbianos y videos demostrativos del sistema de biofábrica on-farm de Precisión Agrícola.">
     <meta property="og:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/main_bg.jpg">
     <meta property="og:locale" content="es_MX">
     <meta property="og:site_name" content="Precisión Agrícola">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kit Biorreactor Agrícola — Produce tus Microorganismos a $80/L">
-    <meta name="twitter:description" content="Tanque de 190 L en acero inoxidable, cepas madre y medios de cultivo selectivos para producir consorcios microbianos vivos en tu rancho.">
+    <meta name="twitter:title" content="Kit Biorreactor Agrícola — Ficha Técnica">
+    <meta name="twitter:description" content="Especificaciones del equipo, consorcios microbianos y videos demostrativos del sistema de biofábrica on-farm.">
     <meta name="twitter:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/main_bg.jpg">
 
     <!-- Geo targeting -->
@@ -47,63 +151,19 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
     {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": "Kit Biorreactor Agrícola 2.0",
-        "description": "Sistema de biofábrica on-farm compuesto por un biorreactor de 190 litros en acero inoxidable grado alimenticio, cepas madre aisladas, medios de cultivo selectivos y kit de esterilización, para producir consorcios microbianos vivos directamente en la unidad de producción agrícola.",
+        "name": "Kit Biorreactor Agrícola",
+        "description": "Sistema de biofábrica on-farm para producir consorcios microbianos vivos directamente en la unidad de producción agrícola: biorreactor en acero inoxidable, cepas madre aisladas, medios de cultivo selectivos y kit de esterilización.",
         "image": "https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/main_bg.jpg",
-        "brand": {
-            "@type": "Brand",
-            "name": "Precisión Agrícola"
-        },
+        "brand": { "@type": "Brand", "name": "Precisión Agrícola" },
         "category": "Equipo agrícola biotecnológico",
         "url": "https://www.precisionagricola.com/kit-biorreactor"
-    }
-    </script>
-
-    <!-- Schema.org JSON-LD — FAQ -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "¿Cuánto cuesta producir un litro de microorganismos con el Kit Biorreactor?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "El costo de producción on-farm es de aproximadamente $80 MXN por litro de producto final, frente a un precio de venta de mercado de alrededor de $239 MXN por litro. Esto representa un ahorro cercano al 66% en cada litro aplicado."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "¿Qué incluye el Kit Biorreactor?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "El paquete de suministro incluye el biorreactor de 190 litros en acero inoxidable grado alimenticio, cepas madre aisladas, medios de cultivo especializados y kit de esterilización. Los sensores de pH, oxígeno disuelto, temperatura y turbidez son opcionales."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "¿Qué microorganismos se pueden producir?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Bacillus subtilis para fijación de nitrógeno y tolerancia al estrés, Pseudomonas asgharzadehiana para desbloqueo de fósforo y potasio, Trichoderma asperellum como escudo radicular, Bacillus thuringiensis para biocontrol de plagas, Methylobacterium spp. para vigor foliar y Pichia anomala para defensa aérea y movilización de zinc, calcio y hierro."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "¿Cómo se evita la contaminación cruzada entre lotes?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "El sistema incluye ultrafiltración de agua a 1 micra, esterilización por rayos UV para eliminar la carga patógena antes de la inoculación, y protocolos de lavado y esterilización con ozono después de cada ciclo productivo."
-                }
-            }
-        ]
     }
     </script>
 
     <!-- Preconnect para rendimiento -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.canva.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -117,125 +177,136 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
             --pa-light:  #f0faf3;
         }
         html { scroll-behavior: smooth; }
-        body { font-family: 'DM Sans', system-ui, sans-serif; color: #1a3c2a; }
+        body { font-family: 'DM Sans', system-ui, sans-serif; color: #1a3c2a; background: #fff; }
         h1, h2, h3, .font-title { font-family: 'Montserrat', system-ui, sans-serif; }
 
-        /* Evita el parpadeo de los bloques x-show antes de que arranque Alpine */
         [x-cloak] { display: none !important; }
+
+        /* ── Barra de progreso de lectura ─────────────────────────────
+           La ficha es muy larga; saber cuánto falta cambia por completo
+           la sensación de la página. */
+        .scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0;
+            background: linear-gradient(90deg, var(--pa-mid), var(--pa-lime));
+            z-index: 60; transition: width .1s linear;
+        }
 
         /* ── Navbar ── */
         .pa-navbar {
-            background: rgba(26, 60, 42, 0.97);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(26, 60, 42, .97);
+            border-bottom: 1px solid rgba(255,255,255,.08);
             backdrop-filter: saturate(180%) blur(8px);
         }
 
         /* ── Hero ── */
         .hero-kit {
-            position: relative;
+            position: relative; overflow: hidden;
             background:
-                linear-gradient(135deg, rgba(26,60,42,.94) 0%, rgba(45,106,79,.90) 55%, rgba(26,60,42,.96) 100%),
+                linear-gradient(135deg, rgba(26,60,42,.95) 0%, rgba(45,106,79,.90) 55%, rgba(26,60,42,.97) 100%),
                 url("{{ 'assets/images/bioreactors/main_bg.jpg'|theme }}") center/cover no-repeat;
         }
-        .hero-kit::after {
-            content: '';
-            position: absolute; left: 0; right: 0; bottom: -1px; height: 60px;
-            background: linear-gradient(to bottom, transparent, var(--pa-light));
-            pointer-events: none;
+        /* Halo suave detrás del título */
+        .hero-kit::before {
+            content: ''; position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+            width: 900px; height: 900px; pointer-events: none;
+            background: radial-gradient(circle, rgba(106,191,69,.16) 0%, transparent 62%);
+        }
+        .hero-kit > * { position: relative; z-index: 1; }
+
+        .eyebrow {
+            display: inline-block; font-size: .72rem; font-weight: 700;
+            letter-spacing: .16em; text-transform: uppercase;
+            color: var(--pa-lime); background: rgba(106,191,69,.12);
+            border: 1px solid rgba(106,191,69,.28);
+            padding: 7px 16px; border-radius: 999px;
         }
 
-        /* ── Etiquetas de sección ── */
         .section-tag {
-            display: inline-block;
-            font-size: .72rem; font-weight: 700;
+            display: inline-block; font-size: .72rem; font-weight: 700;
             letter-spacing: .09em; text-transform: uppercase;
             color: var(--pa-forest); background: var(--pa-light);
             padding: 6px 14px; border-radius: 999px;
-        }
-        .section-tag-dark {
-            color: var(--pa-lime); background: rgba(106,191,69,.12);
         }
         .section-title {
             font-weight: 900; text-transform: uppercase; line-height: 1.12;
             font-size: clamp(1.5rem, 3.4vw, 2.3rem);
         }
 
-        /* ── Bloque de ahorro ── */
-        .savings-panel {
-            background: linear-gradient(135deg, #1a3c2a 0%, #2d6a4f 100%);
-            border-radius: 1.25rem;
-            box-shadow: 0 18px 45px rgba(26,60,42,.28);
+        /* ── Marco de la ficha técnica ────────────────────────────────
+           El embed va dentro de algo que se lea como documento oficial,
+           no como una imagen suelta pegada en medio de la página. */
+        .ficha-stage {
+            position: relative;
+            background:
+                radial-gradient(ellipse at 50% 0%, #ffffff 0%, var(--pa-light) 55%, #e3f2e8 100%);
         }
-        .price-chip {
-            border-radius: 1rem; padding: 1.25rem 1rem; text-align: center;
-            border: 1px solid rgba(255,255,255,.14);
-            background: rgba(255,255,255,.06);
+        .ficha-frame {
+            max-width: 900px; margin: 0 auto;
+            border-radius: 18px; overflow: hidden;
+            background: #fff;
+            border: 1px solid #cfe7d6;
+            box-shadow:
+                0 2px 4px rgba(26,60,42,.05),
+                0 12px 28px rgba(26,60,42,.10),
+                0 40px 80px rgba(26,60,42,.10);
         }
-        .price-chip .amount { font-family: 'Montserrat', sans-serif; font-weight: 900; line-height: 1; }
+        .ficha-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 1rem; padding: .8rem 1.1rem;
+            background: linear-gradient(180deg, #22503a 0%, var(--pa-dark) 100%);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .ficha-bar-title {
+            display: flex; align-items: center; gap: .6rem; min-width: 0;
+        }
+        .ficha-bar-title span {
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: .78rem; letter-spacing: .04em; color: #fff;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .ficha-expand {
+            display: inline-flex; align-items: center; gap: .4rem; flex-shrink: 0;
+            font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+            color: var(--pa-dark); background: var(--pa-lime);
+            padding: .42rem .8rem; border-radius: 6px;
+            text-decoration: none; transition: background .2s, transform .1s;
+        }
+        .ficha-expand:hover { background: #82d455; color: var(--pa-dark); transform: translateY(-1px); }
 
-        /* ── Tarjetas ── */
-        .pa-card {
-            background: #fff; border: 1px solid #d1e8d9; border-radius: 1rem;
-            padding: 1.5rem; height: 100%;
-            transition: border-color .25s, transform .25s, box-shadow .25s;
-        }
-        .pa-card:hover {
-            border-color: var(--pa-lime); transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(45,106,79,.12);
-        }
-        .pa-icon {
-            width: 46px; height: 46px; display: inline-flex;
-            align-items: center; justify-content: center;
-            background: var(--pa-light); color: var(--pa-forest);
-            border-radius: 12px; margin-bottom: 1rem;
+        /* El alto se reserva con el porcentaje calculado desde Canva */
+        .canva-ratio { position: relative; width: 100%; height: 0; overflow: hidden; background: #0f1f16; }
+        .canva-ratio iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+        .ficha-note {
+            max-width: 900px; margin: 1rem auto 0;
+            font-size: .78rem; color: #6b8578; text-align: center;
         }
 
-        /* ── Cepas ── */
-        .strain-card {
-            background: #fff; border: 1px solid #d1e8d9; border-radius: 1rem;
-            padding: 1.35rem 1.4rem; height: 100%;
-            display: flex; flex-direction: column;
-            transition: border-color .25s, box-shadow .25s;
+        /* ── CTA flotante ─────────────────────────────────────────────
+           En una página de ~10 000 px, el formulario queda inalcanzable
+           si no viaja con el lector. */
+        .sticky-cta {
+            position: fixed; right: 18px; bottom: 18px; z-index: 55;
+            display: flex; flex-direction: column; gap: .6rem; align-items: flex-end;
+            opacity: 0; transform: translateY(16px); pointer-events: none;
+            transition: opacity .35s ease, transform .35s ease;
         }
-        .strain-card:hover { border-color: var(--pa-lime); box-shadow: 0 10px 25px rgba(45,106,79,.10); }
-        .strain-role {
-            display: inline-block; font-size: .66rem; font-weight: 700;
-            letter-spacing: .06em; text-transform: uppercase;
-            background: var(--pa-light); color: var(--pa-forest);
-            padding: 4px 10px; border-radius: 999px; margin-bottom: .7rem;
+        .sticky-cta.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+        .sticky-cta a {
+            display: inline-flex; align-items: center; gap: .5rem;
+            font-weight: 700; font-size: .82rem; text-decoration: none;
+            padding: .8rem 1.1rem; border-radius: 999px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.22);
+            transition: transform .15s ease, background .2s ease;
         }
-        .strain-name { font-style: italic; font-weight: 700; color: var(--pa-dark); font-size: 1.02rem; }
-        .strain-desc { color: #3a5a4a; font-size: .87rem; line-height: 1.6; flex: 1; margin: .5rem 0 1rem; }
-        .strain-prices {
-            display: flex; gap: .5rem; border-top: 1px dashed #cfe7d6; padding-top: .8rem;
-        }
-        .strain-price { flex: 1; }
-        .strain-price .lbl {
-            font-size: .6rem; font-weight: 700; letter-spacing: .05em;
-            text-transform: uppercase; color: var(--pa-forest);
-        }
-        .strain-price .val { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.05rem; }
-
-        /* ── Componentes técnicos ── */
-        .spec-item {
-            background: #fff; border-left: 4px solid var(--pa-lime);
-            padding: 1rem 1.2rem; border-radius: 0 .75rem .75rem 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,.04);
-            height: 100%;
-        }
-        .spec-item h3 { font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; }
-        .spec-item p { font-size: .85rem; color: #3a5a4a; line-height: 1.55; margin-top: .3rem; }
-
-        /* ── Beneficios ── */
-        .benefit-row {
-            display: flex; gap: .9rem; align-items: flex-start;
-            padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,.10);
-        }
-        .benefit-row:last-child { border-bottom: none; }
-        .benefit-bullet {
-            flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
-            background: rgba(106,191,69,.16); color: var(--pa-lime);
-            display: flex; align-items: center; justify-content: center; margin-top: 2px;
+        .sticky-cta a:hover { transform: translateY(-2px); }
+        .cta-diag { background: var(--pa-lime); color: var(--pa-dark); }
+        .cta-diag:hover { background: #82d455; color: var(--pa-dark); }
+        .cta-wa { background: #25d366; color: #0b2e1a; }
+        .cta-wa:hover { background: #3ae078; color: #0b2e1a; }
+        @media (max-width: 640px) {
+            .sticky-cta a span { display: none; }
+            .sticky-cta a { padding: .85rem; }
         }
 
         /* ── Botones ── */
@@ -254,22 +325,24 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
         }
         .pa-btn-ghost:hover { border-color: var(--pa-lime); background: rgba(106,191,69,.12); color: #fff; }
 
-        /* ── Ficha técnica (embed de Canva bajo demanda) ── */
-        .canva-embed-wrap { max-width: 760px; margin: 0 auto; }
-        /* padding-top = alto/ancho del diseño de Canva × 100.
-           Diseño actual: 1080 × 11160 px → 1033.3333%.
-           Si el diseño cambia de largo hay que recalcular este valor; si no, Canva
-           encoge la página para que quepa y aparecen las bandas negras a los lados. */
-        .canva-ratio {
-            position: relative; width: 100%; height: 0;
-            padding-top: 1033.3333%;
-            overflow: hidden; border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(63,69,81,.16);
+        /* ── Animaciones de entrada ──────────────────────────────────
+           Todo esto cuelga de .js, que sólo se pone si el script de
+           abajo llegó a correr. Sin JS —o si el script truena— el
+           contenido se queda visible en vez de desaparecer. */
+        .js .reveal {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity .7s cubic-bezier(.2,.6,.2,1), transform .7s cubic-bezier(.2,.6,.2,1);
         }
-        .canva-ratio iframe {
-            position: absolute; inset: 0; width: 100%; height: 100%;
-            border: none; padding: 0; margin: 0;
+        .js .reveal.is-visible { opacity: 1; transform: none; }
+        .reveal-d1 { transition-delay: .09s; }
+        .reveal-d2 { transition-delay: .18s; }
+        .reveal-d3 { transition-delay: .27s; }
+
+        @keyframes floatArrow {
+            0%, 100% { transform: translateY(0); opacity: .55; }
+            50%      { transform: translateY(7px); opacity: 1; }
         }
+        .scroll-hint { animation: floatArrow 2s ease-in-out infinite; }
 
         /* ── Formulario ── */
         .form-card {
@@ -309,14 +382,24 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
             background: var(--pa-lime) !important;
             color: var(--pa-dark) !important;
         }
+
         @media (prefers-reduced-motion: reduce) {
-            .cta-pulse { animation: none; }
             html { scroll-behavior: auto; }
+            .js .reveal { opacity: 1; transform: none; transition: none; }
+            .cta-pulse, .scroll-hint { animation: none; }
+            .sticky-cta { transition: none; }
         }
     </style>
+
+    <!-- Marca que hay JS antes del primer pintado, para que las animaciones de
+         entrada no provoquen un parpadeo. Si esto no corre, .js nunca se pone
+         y todo el contenido queda visible sin animación. -->
+    <script>document.documentElement.className += ' js';</script>
 </head>
 
 <body class="antialiased">
+
+<div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
 <!-- ════════════════════════════════════════════════════════
      NAVBAR
@@ -329,9 +412,8 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
                 <span class="font-bold text-sm hidden sm:block" style="color:#6abf45">Precisión Agrícola</span>
             </a>
             <nav class="flex items-center gap-5">
-                <a href="#consorcio" class="text-xs font-semibold hidden md:block" style="color:#c8e6c9">Consorcio</a>
-                <a href="#equipo" class="text-xs font-semibold hidden md:block" style="color:#c8e6c9">El equipo</a>
                 <a href="#ficha" class="text-xs font-semibold hidden md:block" style="color:#c8e6c9">Ficha técnica</a>
+                <a href="{{ 'bioreactores'|page }}" class="text-xs font-semibold hidden md:block" style="color:#c8e6c9">Biorreactores</a>
                 <a href="#diagnostico" class="pa-btn-cta text-xs" style="padding:.5rem 1rem">Diagnóstico gratis</a>
             </nav>
         </div>
@@ -339,444 +421,86 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
 </header>
 
 <!-- ════════════════════════════════════════════════════════
-     HERO
+     HERO — corto a propósito: la ficha empieza casi de inmediato
 ════════════════════════════════════════════════════════ -->
-<section class="hero-kit relative overflow-hidden">
-    <div class="max-w-screen-xl mx-auto px-5 md:px-10 py-20 lg:py-28 relative z-10">
-        <div class="max-w-3xl">
-            <span class="section-tag section-tag-dark mb-5">Biofábrica On-Farm 2.0</span>
-            <h1 class="text-white font-black uppercase leading-none mt-4"
-                style="font-size:clamp(2rem, 6vw, 3.6rem);letter-spacing:-.01em">
-                Biorreactor <br class="hidden sm:block">Agrícola Inteligente
-            </h1>
-            <p class="mt-6 max-w-2xl" style="color:#c8e6c9;font-size:clamp(1rem, 1.9vw, 1.2rem);line-height:1.65">
-                Produce y aplica microorganismos benéficos <strong style="color:#fff">en tu propia unidad de
-                producción</strong>. Biomasa viva, cosechada en su pico máximo de desarrollo y lista para
-                colonizar tu suelo el mismo día.
-            </p>
+<section class="hero-kit">
+    <div class="max-w-screen-xl mx-auto px-5 md:px-10 py-16 lg:py-20 text-center">
+        <span class="eyebrow reveal">Biofábrica On-Farm 2.0</span>
 
-            <div class="mt-9 flex flex-wrap gap-3">
-                <a href="#diagnostico" class="pa-btn-cta">Solicita tu diagnóstico gratuito</a>
-                <a href="https://wa.me/523311174441" target="_blank" rel="noopener" class="pa-btn-ghost">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                    </svg>
-                    33 1117 4441
-                </a>
-            </div>
+        <h1 class="text-white font-black uppercase mt-6 reveal reveal-d1"
+            style="font-size:clamp(2rem, 5.6vw, 3.4rem);line-height:1.06;letter-spacing:-.01em">
+            Kit Biorreactor <br class="hidden sm:block">Agrícola
+        </h1>
 
-            <p class="mt-8 text-xs uppercase tracking-widest" style="color:#8fbf9e">
-                Agricultura regenerativa y sostenible · Jalisco y Michoacán
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     AHORRO — el argumento económico
-════════════════════════════════════════════════════════ -->
-<section class="px-5 md:px-10 py-16 lg:py-20" style="background:var(--pa-light)">
-    <div class="max-w-screen-xl mx-auto">
-        <div class="text-center max-w-2xl mx-auto mb-10">
-            <span class="section-tag">Ahorro masivo de costos operativos</span>
-            <h2 class="section-title mt-4" style="color:var(--pa-dark)">
-                El mismo litro, a un tercio del precio
-            </h2>
-            <p class="mt-4" style="color:#3a5a4a;line-height:1.7">
-                Dejas de comprar bioinsumos terminados y empiezas a producirlos. La diferencia por litro
-                se multiplica por cada hectárea y por cada aplicación del ciclo.
-            </p>
-        </div>
-
-        <div class="savings-panel px-6 md:px-10 py-9 max-w-4xl mx-auto">
-            <div class="grid gap-4" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
-                <div class="price-chip">
-                    <p class="text-xs uppercase tracking-widest mb-2" style="color:#8fbf9e">Precio de venta / litro</p>
-                    <p class="amount" style="color:#f0faf3;font-size:2.2rem;text-decoration:line-through;text-decoration-color:rgba(255,255,255,.35)">$239</p>
-                    <p class="text-xs mt-2" style="color:#8fbf9e">producto terminado de mercado</p>
-                </div>
-                <div class="price-chip" style="background:rgba(106,191,69,.16);border-color:rgba(106,191,69,.45)">
-                    <p class="text-xs uppercase tracking-widest mb-2" style="color:#c8e6c9">Tu costo on-farm / litro</p>
-                    <p class="amount" style="color:var(--pa-lime);font-size:2.6rem">$80</p>
-                    <p class="text-xs mt-2" style="color:#c8e6c9">producido en tu biorreactor</p>
-                </div>
-                <div class="price-chip">
-                    <p class="text-xs uppercase tracking-widest mb-2" style="color:#8fbf9e">Ahorro por litro</p>
-                    <p class="amount" style="color:#fff;font-size:2.2rem">66%</p>
-                    <p class="text-xs mt-2" style="color:#8fbf9e">$159 MXN menos en cada litro</p>
-                </div>
-            </div>
-            <p class="text-center text-xs mt-6" style="color:#8fbf9e">
-                Cifras de referencia por litro de producto final para cualquiera de las seis cepas del consorcio.
-                El costo real depende del cultivo, la superficie y el plan de aplicación de tu operación.
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     QUÉ INCLUYE — los tres pilares
-════════════════════════════════════════════════════════ -->
-<section class="px-5 md:px-10 py-16 lg:py-20 bg-white">
-    <div class="max-w-screen-xl mx-auto">
-        <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="section-tag">Biofábrica On-Farm</span>
-            <h2 class="section-title mt-4" style="color:var(--pa-dark)">Qué incluye el kit</h2>
-            <p class="mt-4" style="color:#3a5a4a;line-height:1.7">
-                Tres piezas que se compran una sola vez y producen ciclo tras ciclo.
-            </p>
-        </div>
-
-        <div class="grid gap-6" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-            <article class="pa-card">
-                <div class="pa-icon">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 3v6.5L4.8 17a2 2 0 001.7 3h11a2 2 0 001.7-3L15 9.5V3M8 3h8"/>
-                    </svg>
-                </div>
-                <h3 class="font-black uppercase text-sm tracking-wide" style="color:var(--pa-dark)">Inóculos locales</h3>
-                <p class="mt-2 text-sm" style="color:#3a5a4a;line-height:1.65">
-                    Cepas madre aisladas en forma líquida, listas para multiplicación en biorreactor. Al ser
-                    endémicas se establecen rápido, sin estrés de adaptación.
-                </p>
-            </article>
-
-            <article class="pa-card">
-                <div class="pa-icon">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v4a6 6 0 01-1.5 4l-.5.5.5.5A6 6 0 0118 17v3H6v-3a6 6 0 011.5-4l.5-.5-.5-.5A6 6 0 016 8V4z"/>
-                    </svg>
-                </div>
-                <h3 class="font-black uppercase text-sm tracking-wide" style="color:var(--pa-dark)">Biorreactor agrícola</h3>
-                <p class="mt-2 text-sm" style="color:#3a5a4a;line-height:1.65">
-                    Tanque de 190 litros en acero inoxidable grado alimenticio, con control automático de
-                    temperatura, aireación y recirculación.
-                </p>
-            </article>
-
-            <article class="pa-card">
-                <div class="pa-icon">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m9-9h-3M6 12H3m14.5-6.5l-2 2m-7 7l-2 2m0-11l2 2m7 7l2 2"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                </div>
-                <h3 class="font-black uppercase text-sm tracking-wide" style="color:var(--pa-dark)">Medios de cultivo selectivos</h3>
-                <p class="mt-2 text-sm" style="color:#3a5a4a;line-height:1.65">
-                    Formulaciones específicas que optimizan la inducción microbiana, la vitalidad y la
-                    eficiencia metabólica de cada cepa. Incluye kit de esterilización.
-                </p>
-            </article>
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     CONSORCIO MICROBIANO — las seis cepas
-════════════════════════════════════════════════════════ -->
-<section id="consorcio" class="px-5 md:px-10 py-16 lg:py-20" style="background:var(--pa-light)">
-    <div class="max-w-screen-xl mx-auto">
-        <div class="text-center max-w-3xl mx-auto mb-12">
-            <span class="section-tag">Consorcio microbiano</span>
-            <h2 class="section-title mt-4" style="color:var(--pa-dark)">
-                Biomasa activa de alta concentración
-            </h2>
-            <p class="mt-4" style="color:#3a5a4a;line-height:1.7">
-                Cada lote es el resultado de la propagación de un consorcio de cepas nativas cosechadas en su
-                pico máximo de desarrollo poblacional. Seis funciones biológicas distintas, todas producidas
-                con el mismo equipo.
-            </p>
-        </div>
-
-        <div class="grid gap-5" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-
-            <article class="strain-card">
-                <span class="strain-role">Fijación de nitrógeno</span>
-                <h3 class="strain-name">Bacillus subtilis</h3>
-                <p class="strain-desc">
-                    Fija nitrógeno atmosférico para la planta y la ayuda a sobrevivir en suelos salinos o con
-                    estrés por sequía. Además compite por espacio con hongos patógenos.
-                </p>
-                <div class="strain-prices">
-                    <div class="strain-price">
-                        <p class="lbl">Tu costo</p>
-                        <p class="val" style="color:var(--pa-forest)">$80</p>
-                    </div>
-                    <div class="strain-price">
-                        <p class="lbl">Precio venta</p>
-                        <p class="val" style="color:#9aa8a0;text-decoration:line-through">$239</p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="strain-card">
-                <span class="strain-role">Desbloqueo de nutrientes</span>
-                <h3 class="strain-name">Pseudomonas asgharzadehiana</h3>
-                <p class="strain-desc">
-                    Solubiliza el fósforo (P) y el potasio (K) atrapados en el suelo y los vuelve
-                    biodisponibles para la raíz.
-                </p>
-                <div class="strain-prices">
-                    <div class="strain-price">
-                        <p class="lbl">Tu costo</p>
-                        <p class="val" style="color:var(--pa-forest)">$80</p>
-                    </div>
-                    <div class="strain-price">
-                        <p class="lbl">Precio venta</p>
-                        <p class="val" style="color:#9aa8a0;text-decoration:line-through">$239</p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="strain-card">
-                <span class="strain-role">Escudo radicular</span>
-                <h3 class="strain-name">Trichoderma asperellum</h3>
-                <p class="strain-desc">
-                    Hongo agresivo contra patógenos del suelo. Potencia masivamente el crecimiento de la raíz
-                    y mejora la estructura del suelo a largo plazo.
-                </p>
-                <div class="strain-prices">
-                    <div class="strain-price">
-                        <p class="lbl">Tu costo</p>
-                        <p class="val" style="color:var(--pa-forest)">$80</p>
-                    </div>
-                    <div class="strain-price">
-                        <p class="lbl">Precio venta</p>
-                        <p class="val" style="color:#9aa8a0;text-decoration:line-through">$239</p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="strain-card">
-                <span class="strain-role">Biocontrol de plagas</span>
-                <h3 class="strain-name">Bacillus thuringiensis</h3>
-                <p class="strain-desc">
-                    Insecticida biológico: enemigo natural de larvas y orugas. Controla plagas sin dejar
-                    residuos químicos, ideal para agricultura de exportación.
-                </p>
-                <div class="strain-prices">
-                    <div class="strain-price">
-                        <p class="lbl">Tu costo</p>
-                        <p class="val" style="color:var(--pa-forest)">$80</p>
-                    </div>
-                    <div class="strain-price">
-                        <p class="lbl">Precio venta</p>
-                        <p class="val" style="color:#9aa8a0;text-decoration:line-through">$239</p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="strain-card">
-                <span class="strain-role">Vigor foliar</span>
-                <h3 class="strain-name">Methylobacterium spp.</h3>
-                <p class="strain-desc">
-                    Bacterias que viven en las hojas. Estimulan el crecimiento vegetal aéreo e incrementan la
-                    eficiencia fotosintética.
-                </p>
-                <div class="strain-prices">
-                    <div class="strain-price">
-                        <p class="lbl">Tu costo</p>
-                        <p class="val" style="color:var(--pa-forest)">$80</p>
-                    </div>
-                    <div class="strain-price">
-                        <p class="lbl">Precio venta</p>
-                        <p class="val" style="color:#9aa8a0;text-decoration:line-through">$239</p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="strain-card">
-                <span class="strain-role">Defensa aérea y nutrición</span>
-                <h3 class="strain-name">Pichia anomala <span class="not-italic text-xs font-normal" style="color:#6b8578">(levadura)</span></h3>
-                <p class="strain-desc">
-                    Moviliza zinc, calcio y hierro. Actúa como barrera natural y aumenta la resistencia contra
-                    enfermedades foliares como oídio, botrytis y mildiu.
-                </p>
-                <div class="strain-prices">
-                    <div class="strain-price">
-                        <p class="lbl">Tu costo</p>
-                        <p class="val" style="color:var(--pa-forest)">$80</p>
-                    </div>
-                    <div class="strain-price">
-                        <p class="lbl">Precio venta</p>
-                        <p class="val" style="color:#9aa8a0;text-decoration:line-through">$239</p>
-                    </div>
-                </div>
-            </article>
-
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     EL EQUIPO — anatomía del biorreactor
-════════════════════════════════════════════════════════ -->
-<section id="equipo" class="px-5 md:px-10 py-16 lg:py-20 bg-white">
-    <div class="max-w-screen-xl mx-auto">
-        <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="section-tag">Biorreactor agrícola inteligente</span>
-            <h2 class="section-title mt-4" style="color:var(--pa-dark)">Cómo está construido</h2>
-            <p class="mt-4" style="color:#3a5a4a;line-height:1.7">
-                Cada componente existe para una sola cosa: que el consorcio llegue vivo y activo a tu suelo,
-                sin contaminación cruzada entre lotes.
-            </p>
-        </div>
-
-        <div class="grid gap-4" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Tanque de 190 L</h3>
-                <p>Acero inoxidable grado alimenticio / farmacéutico, diseñado para resistir las condiciones
-                   del entorno agrícola. Bridas y empaques de seguridad para sellado hermético.</p>
-            </div>
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Caja de control</h3>
-                <p>Automatiza los ciclos de aireación, recirculación y control térmico para mantener el
-                   consorcio en su fase exponencial óptima.</p>
-            </div>
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Ultrafiltración a 1 micra</h3>
-                <p>Elimina las partículas suspendidas del agua antes de la inoculación.</p>
-            </div>
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Esterilización UV</h3>
-                <p>Rayos ultravioleta sobre el agua de proceso para eliminar la carga patógena antes de
-                   arrancar el ciclo.</p>
-            </div>
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Oxigenación y recirculación</h3>
-                <p>Bomba de oxigenación con filtro incluido, sistema de recirculación y agitación interna
-                   de líquidos.</p>
-            </div>
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Control térmico interno</h3>
-                <p>Mantiene la temperatura del cultivo dentro del rango objetivo durante toda la
-                   fermentación.</p>
-            </div>
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Válvulas y vaciado</h3>
-                <p>Válvula de desahogo con filtro y sistema de vaciado completo con válvula de servido
-                   de 1&Prime;.</p>
-            </div>
-            <div class="spec-item">
-                <h3 style="color:var(--pa-dark)">Protocolo de ozono</h3>
-                <p>Lavado y esterilización con ozono después de cada ciclo, para mitigar el riesgo de
-                   contaminación cruzada.</p>
-            </div>
-            <div class="spec-item" style="border-left-color:var(--pa-forest)">
-                <h3 style="color:var(--pa-dark)">Sensores <span class="font-normal lowercase tracking-normal" style="color:#6b8578">(opcionales)</span></h3>
-                <p>Monitoreo continuo de pH, oxígeno disuelto, temperatura y turbidez.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     BENEFICIOS AGRONÓMICOS
-════════════════════════════════════════════════════════ -->
-<section class="px-5 md:px-10 py-16 lg:py-20" style="background:linear-gradient(135deg,#1a3c2a 0%,#2d6a4f 70%,#1a3c2a 100%)">
-    <div class="max-w-screen-xl mx-auto">
-        <div class="grid gap-10 items-start" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-            <div>
-                <span class="section-tag section-tag-dark">Beneficios biológicos y agronómicos</span>
-                <h2 class="section-title mt-4 text-white">Lo que cambia en tu suelo</h2>
-                <p class="mt-4" style="color:#c8e6c9;line-height:1.7">
-                    Las soluciones de Precisión Agrícola mejoran la fertilidad del suelo, optimizan la
-                    nutrición vegetal y reducen la dependencia de insumos químicos.
-                </p>
-                <a href="#diagnostico" class="pa-btn-cta mt-8">Solicita tu diagnóstico gratuito</a>
-            </div>
-
-            <div>
-                <div class="benefit-row">
-                    <span class="benefit-bullet">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    </span>
-                    <p style="color:#e4f3e8;font-size:.95rem;line-height:1.6">
-                        <strong class="text-white">Restauración edáfica.</strong>
-                        Reactiva la biología y mejora la estructura física del suelo.
-                    </p>
-                </div>
-                <div class="benefit-row">
-                    <span class="benefit-bullet">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    </span>
-                    <p style="color:#e4f3e8;font-size:.95rem;line-height:1.6">
-                        <strong class="text-white">Adaptación inmediata.</strong>
-                        Al ser cepas endémicas, se establecen rápidamente en el entorno sin sufrir estrés
-                        de adaptación.
-                    </p>
-                </div>
-                <div class="benefit-row">
-                    <span class="benefit-bullet">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    </span>
-                    <p style="color:#e4f3e8;font-size:.95rem;line-height:1.6">
-                        <strong class="text-white">Mayor resiliencia.</strong>
-                        Aumenta el vigor y la tolerancia de los cultivos frente a estrés biótico y abiótico.
-                    </p>
-                </div>
-                <div class="benefit-row">
-                    <span class="benefit-bullet">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    </span>
-                    <p style="color:#e4f3e8;font-size:.95rem;line-height:1.6">
-                        <strong class="text-white">Eficiencia nutricional.</strong>
-                        Solubiliza y mineraliza los nutrientes ya existentes en el suelo para su mejor
-                        aprovechamiento.
-                    </p>
-                </div>
-                <div class="benefit-row">
-                    <span class="benefit-bullet">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    </span>
-                    <p style="color:#e4f3e8;font-size:.95rem;line-height:1.6">
-                        <strong class="text-white">Impulso radicular.</strong>
-                        Genera una rizosfera activa que estimula un crecimiento de raíces sano y expansivo.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     FICHA TÉCNICA — embed de Canva bajo demanda
-════════════════════════════════════════════════════════ -->
-<section id="ficha" class="px-5 md:px-10 py-16 lg:py-20 bg-white"
-         x-data="{ open: false, src: '' }">
-    <div class="max-w-screen-xl mx-auto text-center">
-        <span class="section-tag">Documentación</span>
-        <h2 class="section-title mt-4" style="color:var(--pa-dark)">Ficha técnica completa</h2>
-        <p class="mt-4 max-w-2xl mx-auto" style="color:#3a5a4a;line-height:1.7">
-            El desplegable de diseño con todas las especificaciones, diagramas y videos demostrativos
-            del Kit Biorreactor.
+        <p class="mt-6 mx-auto reveal reveal-d2"
+           style="color:#c8e6c9;max-width:44rem;font-size:clamp(1rem, 1.9vw, 1.15rem);line-height:1.65">
+            Ficha técnica completa: especificaciones del equipo, consorcios microbianos,
+            costos de producción y videos demostrativos del sistema que te permite producir
+            tus propios bioinsumos en el rancho.
         </p>
 
-        <div class="mt-8 flex flex-wrap gap-3 justify-center">
-            <!-- El iframe pesa varios miles de píxeles de alto: sólo se carga si el usuario lo pide -->
-            <button type="button"
-                    @click="open = !open; if (open && !src) src = 'https://www.canva.com/design/DAHGMeBROQs/29SW5kizCSmEC7-jEy9HPw/view?embed'"
-                    class="pa-btn-cta">
-                <span x-text="open ? 'Ocultar ficha técnica' : 'Ver ficha técnica aquí'">Ver ficha técnica aquí</span>
-            </button>
-            <a href="https://www.canva.com/design/DAHGMeBROQs/29SW5kizCSmEC7-jEy9HPw/view?utm_content=DAHGMeBROQs&utm_campaign=designshare&utm_medium=embeds&utm_source=link"
-               target="_blank" rel="noopener"
-               class="pa-btn-ghost" style="border-color:#d1e8d9;color:var(--pa-forest)">
-                Abrir en pantalla completa
+        <div class="mt-9 flex flex-wrap gap-3 justify-center reveal reveal-d3">
+            <a href="#diagnostico" class="pa-btn-cta">Solicita tu diagnóstico gratuito</a>
+            <a href="https://wa.me/523311174441" target="_blank" rel="noopener" class="pa-btn-ghost">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+                33 1117 4441
             </a>
         </div>
 
-        <div class="canva-embed-wrap mt-10" x-show="open" x-cloak>
-            <div class="canva-ratio">
-                <template x-if="src">
-                    <iframe :src="src" loading="eager" allowfullscreen="allowfullscreen" allow="fullscreen"
-                            title="Ficha técnica del Kit Biorreactor — Precisión Agrícola"></iframe>
-                </template>
-            </div>
-            <p class="text-xs mt-3" style="color:#8a8a8a">
-                diseño landingpage BIOFABRICA By Precision Agricola 2.0 de Precisión Agrícola
+        <a href="#ficha" class="inline-block mt-12 scroll-hint" aria-label="Ir a la ficha técnica">
+            <svg class="w-7 h-7 mx-auto" fill="none" viewBox="0 0 24 24" stroke="#6abf45" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     FICHA TÉCNICA — el diseño de Canva, que es el contenido
+════════════════════════════════════════════════════════ -->
+<section id="ficha" class="ficha-stage px-4 md:px-10 py-16 lg:py-20">
+    <div class="max-w-screen-xl mx-auto">
+
+        <div class="text-center max-w-2xl mx-auto mb-10 reveal">
+            <span class="section-tag">Ficha técnica</span>
+            <h2 class="section-title mt-4" style="color:var(--pa-dark)">
+                Todo el sistema, a detalle
+            </h2>
+            <p class="mt-4" style="color:#3a5a4a;line-height:1.7">
+                Componentes del biorreactor, cepas del consorcio microbiano, comparativa de costos
+                y videos del equipo operando. Puedes recorrerla aquí o abrirla a pantalla completa.
             </p>
         </div>
+
+        <div class="ficha-frame reveal reveal-d1">
+            <div class="ficha-bar">
+                <div class="ficha-bar-title">
+                    <img src="{{ 'assets/images/logo-pa.png'|theme }}" class="w-6 h-6 flex-shrink-0" alt="">
+                    <span>Kit Biorreactor — Biofábrica On-Farm 2.0</span>
+                </div>
+                <a href="{{ canvaView }}?utm_content=DAHGMeBROQs&utm_campaign=designshare&utm_medium=embeds&utm_source=link"
+                   target="_blank" rel="noopener" class="ficha-expand">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/>
+                    </svg>
+                    Pantalla completa
+                </a>
+            </div>
+
+            {# El alto se reserva con la proporción real del diseño, leída de Canva en onStart() #}
+            <div class="canva-ratio" style="padding-top: {{ canvaRatio }}%">
+                <iframe src="{{ canvaEmbed }}" loading="lazy"
+                        allowfullscreen="allowfullscreen" allow="fullscreen"
+                        title="Ficha técnica del Kit Biorreactor — Precisión Agrícola"></iframe>
+            </div>
+        </div>
+
+        <p class="ficha-note reveal">
+            <span class="md:hidden">Desde el celular se lee mucho mejor a pantalla completa.</span>
+            diseño landingpage BIOFABRICA By Precision Agricola 2.0 de Precisión Agrícola
+        </p>
     </div>
 </section>
 
@@ -786,7 +510,7 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
 <section id="diagnostico" class="py-16 lg:py-24 px-4" style="background:var(--pa-dark)">
     <div class="max-w-md mx-auto">
 
-        <div class="text-center mb-8">
+        <div class="text-center mb-8 reveal">
             <h2 class="font-title font-black uppercase text-white mb-3" style="font-size:clamp(1.5rem, 3vw, 2.1rem)">
                 Solicita tu diagnóstico
             </h2>
@@ -795,7 +519,7 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
             </p>
         </div>
 
-        <div class="form-card" x-data="{
+        <div class="form-card reveal reveal-d1" x-data="{
             submitted: false,
             submitting: false,
             submitError: false,
@@ -1079,6 +803,89 @@ meta_description = "Kit Biorreactor 2.0: tanque de 190 L en acero inoxidable, ce
         </a>
     </div>
 </footer>
+
+<!-- ════════════════════════════════════════════════════════
+     CTA flotante — la ficha mide varios miles de píxeles,
+     el formulario tiene que viajar con el lector
+════════════════════════════════════════════════════════ -->
+<div class="sticky-cta" id="sticky-cta">
+    <a href="https://wa.me/523311174441" target="_blank" rel="noopener" class="cta-wa" aria-label="Escríbenos por WhatsApp">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+        <span>WhatsApp</span>
+    </a>
+    <a href="#diagnostico" class="cta-diag">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-6 4h6"/>
+        </svg>
+        <span>Diagnóstico gratis</span>
+    </a>
+</div>
+
+<script>
+(function () {
+    var root  = document.documentElement;
+    var items = document.querySelectorAll('.reveal');
+
+    function mostrarTodo() {
+        Array.prototype.forEach.call(items, function (el) { el.classList.add('is-visible'); });
+    }
+
+    try {
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (reduce || !('IntersectionObserver' in window)) {
+            mostrarTodo();
+        }
+        else {
+            var io = new IntersectionObserver(function (entries) {
+                Array.prototype.forEach.call(entries, function (entry) {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-visible');
+                    io.unobserve(entry.target);
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+            Array.prototype.forEach.call(items, function (el) { io.observe(el); });
+
+            // Red de seguridad: si a los 3 s no se reveló ni un solo bloque,
+            // el observer no está funcionando. Mejor sin animación que con la
+            // página en blanco.
+            window.setTimeout(function () {
+                if (!document.querySelector('.reveal.is-visible')) mostrarTodo();
+            }, 3000);
+        }
+
+        var bar = document.getElementById('scroll-progress');
+        var cta = document.getElementById('sticky-cta');
+        var queued = false;
+
+        function paint() {
+            var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+            var pct = scrollable > 0 ? (window.pageYOffset / scrollable) * 100 : 0;
+
+            if (bar) bar.style.width = pct.toFixed(2) + '%';
+            if (cta) cta.classList.toggle('is-visible', window.pageYOffset > 500);
+
+            queued = false;
+        }
+
+        window.addEventListener('scroll', function () {
+            if (queued) return;
+            queued = true;
+            window.requestAnimationFrame(paint);
+        }, { passive: true });
+
+        paint();
+    }
+    catch (e) {
+        // Pase lo que pase, el contenido se ve.
+        root.className = root.className.replace(/\bjs\b/, '');
+        mostrarTodo();
+    }
+})();
+</script>
 
 </body>
 </html>

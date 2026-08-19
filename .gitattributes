@@ -1,1 +1,5 @@
 * text=auto
+
+# Los scripts de shell deben conservar finales de linea LF aunque se
+# clonen en Windows: con CRLF, bash falla nada mas arrancarlos.
+*.sh text eol=lf

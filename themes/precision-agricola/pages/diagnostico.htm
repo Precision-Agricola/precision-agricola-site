@@ -184,6 +184,38 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         .dato p { margin: 0; font-size: .86rem; color: var(--txt-2); line-height: 1.5; }
         .dato strong { color: var(--txt); font-weight: 700; }
 
+        .meses-bloque {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,.035);
+            border: 1px solid var(--line);
+            border-radius: .85rem;
+        }
+        .meses-head {
+            display: flex; justify-content: space-between; gap: .75rem;
+            align-items: baseline; margin-bottom: .8rem;
+        }
+        .meses-head h3 {
+            margin: 0; font-size: .94rem; line-height: 1.25;
+            font-family: 'Montserrat', sans-serif; font-weight: 800;
+        }
+        .meses-head span { font-size: .8rem; color: var(--lime); font-weight: 700; white-space: nowrap; }
+        .presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: .45rem; margin-bottom: .75rem; }
+        .preset,
+        .mes-chip {
+            border: 1px solid var(--line); border-radius: .65rem;
+            background: transparent; color: var(--txt-2); cursor: pointer;
+            font: inherit; font-size: .78rem; font-weight: 700; padding: .55rem .4rem;
+        }
+        .preset:hover,
+        .mes-chip:hover { border-color: rgba(126,217,87,.45); }
+        .meses-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .45rem; }
+        .mes-chip[aria-pressed="true"] {
+            background: rgba(126,217,87,.14);
+            border-color: var(--lime);
+            color: var(--txt);
+        }
+
         /* ── Resultado ──────────────────────────────────── */
         .veredicto {
             background: linear-gradient(150deg, var(--bg-2), var(--card));
@@ -211,6 +243,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             font-variant-numeric: tabular-nums; display: block;
         }
         .metrica .l { font-size: .72rem; color: var(--txt-3); margin-top: .35rem; display: block; line-height: 1.35; }
+        .metrica.ancha { grid-column: 1 / -1; }
 
         /* ── Configurador ───────────────────────────────── */
         .cfg-tit {
@@ -320,15 +353,16 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             <div>
                 <p class="paso-n surge">Diagnóstico en 1 minuto</p>
                 <h1 class="pregunta surge surge-1" style="font-size:clamp(1.9rem,8vw,2.6rem)">
-                    El mismo litro,<br>a la mitad de precio.
+                    Microbiología on farm,<br>más de 40% menos costo.
                 </h1>
                 <p class="apoyo surge surge-2">
-                    Compras microorganismos a <strong style="color:var(--txt)">$239 el litro</strong>.
-                    Produciéndolos en tu rancho te salen en <strong style="color:var(--lime)">$133</strong>.
-                    Calcula qué significa eso con tus números.
+                    Si compras microorganismos entre <strong style="color:var(--txt)">$250 y $600+ por litro</strong>,
+                    al producirlos en tu rancho tus costos bajarían a unos <strong style="color:var(--lime)">$140/L</strong>
+                    para producir biomasa metabólicamente activa en su fase óptima para colonizar la rizósfera.
+                    Calcula qué significa por hectárea y por ciclo.
                 </p>
                 <div class="surge surge-3">
-                    <button class="btn" @click="ir(1)">Calcular lo mío →</button>
+                    <button class="btn" @click="ir(1)">Cotizar lo mío →</button>
                 </div>
             </div>
         </template>
@@ -394,25 +428,43 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <button class="atras" @click="ir(3)">← Atrás</button>
                 <p class="paso-n">Paso 4 de 5</p>
                 <h2 class="pregunta" x-text="preguntaGasto"></h2>
-                <p class="apoyo">Un aproximado basta.</p>
+                <p class="apoyo">Primero pon el gasto mensual por hectárea. Luego marca en qué meses se repite.</p>
 
                 <div style="margin:1.4rem 0 .5rem">
                     <span class="cifra-viva">$<span x-text="gasto"></span></span>
                     <span class="cifra-viva u"> / ha al mes</span>
                 </div>
-                <input type="range" min="0" max="2500" step="50" x-model.number="gasto" aria-label="Gasto por hectárea al mes">
-                <div class="rango-topes"><span>$0</span><span>$2,500</span></div>
+                <input type="range" min="0" max="6000" step="50" x-model.number="gasto" aria-label="Gasto por hectárea al mes">
+                <div class="rango-topes"><span>$0</span><span>$6,000+</span></div>
 
-                <template x-if="gasto > 0">
+                <div class="meses-bloque">
+                    <div class="meses-head">
+                        <h3>¿En qué meses tienes ese gasto?</h3>
+                        <span x-text="mesesSeleccionadosTxt"></span>
+                    </div>
+                    <div class="presets">
+                        <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
+                        <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
+                        <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
+                    </div>
+                    <div class="meses-grid">
+                        <template x-for="m in mesesDisponibles" :key="m.id">
+                            <button type="button" class="mes-chip" :aria-pressed="mesesActivos.includes(m.id)" @click="toggleMes(m.id)" x-text="m.nom"></button>
+                        </template>
+                    </div>
+                </div>
+
+                <template x-if="gasto > 0 && mesesGasto > 0">
                     <div class="dato">
                         <span class="ico">📊</span>
-                        <p>Al año eso son <strong x-text="mxn(gastoAnual)"></strong> en tu operación completa.
-                           Produciéndolo tú, ese gasto baja a <strong x-text="mxn(gastoAnual - ahorroAnual)"></strong>.</p>
+                        <p>Por hectárea son <strong x-text="mxn(gastoHaAnual)"></strong> al año.
+                           En tus <strong x-text="ha + ' ha'"></strong>, son <strong x-text="mxn(gastoAnual)"></strong>.
+                           Produciéndolo on farm, baja a <strong x-text="mxn(costoOnFarmAnual)"></strong>.</p>
                     </div>
                 </template>
 
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="ir(5)" :disabled="gasto === 0">Continuar →</button>
+                    <button class="btn" @click="continuarGasto()" :disabled="gasto === 0 || mesesGasto === 0">Continuar →</button>
                     <button class="btn-txt" @click="gasto = 0; noSabe = true; ir(5)">No sé cuánto gasto</button>
                 </div>
             </div>
@@ -424,14 +476,17 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <button class="atras" @click="ir(4)">← Atrás</button>
                 <p class="paso-n">Paso 5 de 5</p>
                 <h2 class="pregunta">¿Qué te está costando más trabajo?</h2>
-                <p class="apoyo">Elige lo que más te pesa hoy.</p>
+                <p class="apoyo">Elige uno o varios problemas que tengas hoy.</p>
                 <div class="ops">
                     <template x-for="p in problemasOrdenados" :key="p.id">
-                        <button class="op" :aria-pressed="problema === p.id" @click="problema = p.id; calcular()">
+                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)" @click="toggleProblema(p.id)">
                             <span class="ico" x-text="p.ico"></span>
                             <span class="cuerpo" x-text="p.nom"></span>
                         </button>
                     </template>
+                </div>
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="calcular()" :disabled="problemas.length === 0">Continuar →</button>
                 </div>
             </div>
         </template>
@@ -439,6 +494,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         <!-- ══ 6 · Resultado y configurador ════════════ -->
         <template x-if="paso === 6">
             <div>
+                <button class="atras" @click="ir(5)">← Atrás</button>
                 <div class="veredicto surge">
                     <span class="et" x-text="veredicto.etiqueta"></span>
                     <h2 x-text="veredicto.titulo"></h2>
@@ -448,12 +504,16 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <template x-if="palanca !== 'campo'">
                     <div class="metricas surge surge-1">
                         <div class="metrica">
-                            <span class="v" x-text="mxn(ahorroAnual)"></span>
-                            <span class="l">que dejas de gastar al año</span>
+                            <span class="v" x-text="mxn(ahorroHaAnual)"></span>
+                            <span class="l">ahorro por ha al año</span>
                         </div>
                         <div class="metrica">
+                            <span class="v" x-text="mxn(ahorroAnual)"></span>
+                            <span class="l">ahorro total al año</span>
+                        </div>
+                        <div class="metrica ancha">
                             <span class="v" x-text="palanca === 'litros' ? litrosMes + ' L' : mesesTxt"></span>
-                            <span class="l" x-text="palanca === 'litros' ? 'cubres al mes con tu gasto actual' : 'para recuperar la inversión'"></span>
+                            <span class="l" x-text="palanca === 'litros' ? 'cubres al mes activo con tu gasto actual' : 'para recuperar la inversión'"></span>
                         </div>
                     </div>
                 </template>
@@ -590,8 +650,8 @@ function diagnostico() {
     const P_REACTOR   = 129000;
     const P_MONITOREO = 39000;
     const P_CEPA      = 24000;
-    const COSTO_LITRO = 133;   // producido en el reactor
-    const VENTA_LITRO = 239;   // precio de venta del litro terminado
+    const COSTO_LITRO = 140;   // producido on farm, biomasa activa en fase optima
+    const VENTA_LITRO = 250;   // referencia conservadora; en mercado puede subir a 600+
     const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
 
     const CEPAS = [
@@ -641,7 +701,7 @@ function diagnostico() {
     /* Banco inicial de datos, escrito a mano y revisable.
        Fase 2 lo amplía desde los papers. */
     const DATOS = {
-        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde 180 litros. Comprado te costaría <strong>$43,020</strong>; producido, <strong>$24,000</strong>.',
+        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde 180 litros. A $250/L comprado te costaría <strong>$45,000</strong>; producido on farm, unos <strong>$25,200</strong>.',
         pseudomonas:  'El fósforo que ya está en tu suelo suele estar bloqueado. <strong>Pseudomonas</strong> lo libera sin que compres más fertilizante.',
         trichoderma:  '<strong>Trichoderma</strong> no solo frena patógenos: mejora la estructura del suelo, y ese efecto se acumula ciclo tras ciclo.',
         thuringiensis:'<strong>Bacillus thuringiensis</strong> no deja residuos químicos, lo que importa si exportas.',
@@ -655,8 +715,10 @@ function diagnostico() {
         ha: 20,
         practica: null,
         gasto: 500,
+        mesesActivos: ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],
         noSabe: false,
         problema: null,
+        problemas: [],
         monitoreo: false,
         cepas: [],
         quiereFinanciamiento: false,
@@ -678,14 +740,27 @@ function diagnostico() {
             { id:'quimicos',ico:'🧪', nom:'Solo uso químicos',        sub:'Fungicidas y fertilizantes de síntesis' },
             { id:'nada',    ico:'🌱', nom:'Todavía no uso nada',      sub:'Quiero empezar' }
         ],
+        mesesDisponibles: [
+            { id:'ene', nom:'Ene' }, { id:'feb', nom:'Feb' }, { id:'mar', nom:'Mar' },
+            { id:'abr', nom:'Abr' }, { id:'may', nom:'May' }, { id:'jun', nom:'Jun' },
+            { id:'jul', nom:'Jul' }, { id:'ago', nom:'Ago' }, { id:'sep', nom:'Sep' },
+            { id:'oct', nom:'Oct' }, { id:'nov', nom:'Nov' }, { id:'dic', nom:'Dic' }
+        ],
 
         get avance() { return Math.round((Math.min(this.paso, 7) / 7) * 100); },
 
         get preguntaGasto() {
-            if (this.practica === 'compro')   return '¿Cuánto pagas al mes por hectárea en microorganismos?';
-            if (this.practica === 'produzco') return '¿Cuánto te cuesta al mes por hectárea producirlos?';
-            if (this.practica === 'quimicos') return '¿Cuánto gastas al mes por hectárea en fungicidas y fertilizantes?';
-            return '¿Cuánto gastas al mes por hectárea en sanidad y nutrición?';
+            if (this.practica === 'compro')   return '¿Cuánto pagas por ha en un mes activo de microorganismos?';
+            if (this.practica === 'produzco') return '¿Cuánto te cuesta por ha en un mes activo producirlos?';
+            if (this.practica === 'quimicos') return '¿Cuánto gastas por ha en un mes activo de fungicidas y fertilizantes?';
+            return '¿Cuánto gastas por ha en un mes activo de sanidad y nutrición?';
+        },
+
+        get mesesGasto() { return this.mesesActivos.length; },
+        get mesesSeleccionadosTxt() {
+            if (this.mesesGasto === 0) return 'Elige meses';
+            if (this.mesesGasto === 12) return 'Todo el año';
+            return this.mesesGasto + (this.mesesGasto === 1 ? ' mes' : ' meses');
         },
 
         get problemasOrdenados() {
@@ -693,16 +768,29 @@ function diagnostico() {
             return orden.map(id => PROBLEMAS[id]);
         },
 
+        get problemaPrincipal() {
+            return this.problemas[0] || this.problema || null;
+        },
+
         get cepasOrdenadas() {
-            const pp = POR_PROBLEMA[this.problema] || {};
+            const seleccionados = this.problemas.length ? this.problemas : (this.problema ? [this.problema] : []);
             const pc = POR_CULTIVO[this.cultivo] || {};
             return CEPAS
-                .map(c => ({ ...c, _p: (pp[c.id] || 0) * 2 + (pc[c.id] || 0) }))
+                .map(c => {
+                    const puntosProblema = seleccionados.reduce((total, id) => {
+                        const pp = POR_PROBLEMA[id] || {};
+                        return total + (pp[c.id] || 0);
+                    }, 0);
+                    return { ...c, _p: puntosProblema * 2 + (pc[c.id] || 0) };
+                })
                 .sort((a, b) => b._p - a._p);
         },
 
-        get gastoAnual()  { return this.gasto * this.ha * 12; },
+        get gastoHaAnual() { return this.gasto * this.mesesGasto; },
+        get gastoAnual()  { return this.gastoHaAnual * this.ha; },
+        get ahorroHaAnual() { return Math.round(this.gastoHaAnual * TASA_AHORRO); },
         get ahorroAnual() { return Math.round(this.gastoAnual * TASA_AHORRO); },
+        get costoOnFarmAnual() { return this.gastoAnual - this.ahorroAnual; },
         get litrosMes()   { return Math.round((this.gasto * this.ha) / VENTA_LITRO); },
 
         /* Quien ya produce tiene reactor: no se le vuelve a cobrar.
@@ -727,9 +815,9 @@ function diagnostico() {
 
         /* Hectáreas a las que, con su mismo gasto por ha, el equipo se paga en 18 meses. */
         get haUmbral() {
-            if (this.gasto <= 0) return null;
+            if (this.gasto <= 0 || this.mesesGasto <= 0) return null;
             const minimo = P_REACTOR + P_CEPA;
-            return Math.ceil(minimo / (1.5 * this.gasto * 12 * TASA_AHORRO));
+            return Math.ceil(minimo / (1.5 * this.gasto * this.mesesGasto * TASA_AHORRO));
         },
 
         /* La palanca: qué se le ofrece. Nadie sale sin oferta. */
@@ -747,21 +835,21 @@ function diagnostico() {
                 completa: {
                     etiqueta: 'Te conviene, y por mucho',
                     titulo: 'Tu biofábrica se paga en ' + this.mesesTxt,
-                    texto: 'Con tus ' + this.ha + ' hectáreas y lo que gastas hoy, el equipo se paga solo y a partir de ahí todo es ahorro.',
+                    texto: 'Con tus ' + this.ha + ' hectáreas, ' + this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación y lo que gastas hoy, el equipo se paga solo y después todo es ahorro.',
                     cta: 'Recibir mi cotización →',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 gradual: {
                     etiqueta: 'Empieza en chico',
                     titulo: 'Arranca con una cepa y crece',
-                    texto: 'Con una sola cepa el equipo entra en ' + this.mxn(P_REACTOR + P_CEPA) + '. Añade cepas o hectáreas y el número mejora rápido: pruébalo abajo.',
+                    texto: 'Con una sola cepa el equipo entra en ' + this.mxn(P_REACTOR + P_CEPA) + '. Añade cepas, hectáreas o meses de aplicación y el número mejora rápido: pruébalo abajo.',
                     cta: 'Recibir mi cotización →',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 litros: {
                     etiqueta: 'Empieza sin comprar equipo',
                     titulo: 'Te surtimos los litros ya producidos',
-                    texto: 'A tu escala conviene que nosotros los produzcamos. Cuando llegues a unas ' + (this.haUmbral || '—') + ' hectáreas con este gasto, el equipo propio empieza a convenirte más.',
+                    texto: 'A tu escala conviene que nosotros los produzcamos. Cuando llegues a unas ' + (this.haUmbral || '—') + ' hectáreas con este gasto y estos meses de aplicación, el equipo propio empieza a convenirte más.',
                     cta: 'Cotizar mis litros →',
                     cierreTitulo: '¿A dónde te enviamos la cotización de litros?'
                 },
@@ -795,7 +883,39 @@ function diagnostico() {
 
         ir(n) { this.paso = n; window.scrollTo({ top: 0, behavior: 'instant' }); },
 
+        seleccionarMeses(tipo) {
+            const grupos = {
+                corto: ['mar','abr','may','jun'],
+                medio: ['feb','mar','abr','may','jun','jul'],
+                todo:  this.mesesDisponibles.map(m => m.id)
+            };
+            this.mesesActivos = grupos[tipo] ? grupos[tipo].slice() : grupos.todo.slice();
+        },
+
+        toggleMes(id) {
+            const i = this.mesesActivos.indexOf(id);
+            if (i === -1) this.mesesActivos.push(id);
+            else this.mesesActivos.splice(i, 1);
+            const orden = this.mesesDisponibles.map(m => m.id);
+            this.mesesActivos.sort((a, b) => orden.indexOf(a) - orden.indexOf(b));
+        },
+
+        continuarGasto() {
+            this.noSabe = false;
+            this.ir(5);
+        },
+
+        toggleProblema(id) {
+            const i = this.problemas.indexOf(id);
+            if (i === -1) this.problemas.push(id);
+            else this.problemas.splice(i, 1);
+            const orden = this.problemasOrdenados.map(p => p.id);
+            this.problemas.sort((a, b) => orden.indexOf(a) - orden.indexOf(b));
+        },
+
         calcular() {
+            if (this.problemas.length === 0) return;
+            this.problema = this.problemaPrincipal;
             /* Preselecciona según puntaje: 2 cepas si va completo, 1 si va gradual. */
             const orden = this.cepasOrdenadas;
             const cuantas = (this.practica === 'produzco') ? 2 : 1;
@@ -816,13 +936,17 @@ function diagnostico() {
         /* Resumen legible que viaja con el lead. */
         get resumen() {
             const nom = id => (CEPAS.find(c => c.id === id) || {}).nombre || id;
+            const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
             const partes = [
                 'RUTA: ' + this.palanca,
                 'Cultivo: ' + this.cultivo,
                 'Superficie: ' + this.ha + ' ha',
                 'Practica: ' + this.practica,
                 'Gasto: $' + this.gasto + '/ha/mes',
-                'Problema: ' + this.problema
+                'Meses con gasto: ' + this.mesesActivos.join(','),
+                'Gasto anual por ha: ' + this.mxn(this.gastoHaAnual),
+                'Problema principal: ' + this.problemaPrincipal,
+                'Problemas seleccionados: ' + this.problemas.map(nomProblema).join(' / ')
             ];
             if (this.palanca !== 'litros' && this.palanca !== 'campo') {
                 partes.push('Monitoreo: ' + (this.monitoreo ? 'si' : 'no'));
@@ -830,7 +954,8 @@ function diagnostico() {
                 partes.push('Total: ' + this.mxn(this.precioConfig));
                 partes.push('Recuperacion: ' + this.mesesTxt);
             }
-            partes.push('Ahorro anual estimado: ' + this.mxn(this.ahorroAnual));
+            partes.push('Ahorro anual por ha estimado: ' + this.mxn(this.ahorroHaAnual));
+            partes.push('Ahorro anual total estimado: ' + this.mxn(this.ahorroAnual));
             partes.push('Financiamiento: ' + (this.quiereFinanciamiento ? 'INTERESADO' : 'no'));
             return partes.join(' | ');
         },
@@ -877,8 +1002,8 @@ function diagnostico() {
                 p.append('entry.232288433.other_option_response', 'Otro cultivo');
             }
             p.append('entry.1112158256', superficie);
-            p.append('entry.745728650',  mapaProblema[this.problema] || mapaProblema.costo);
-            p.append('entry.939413606',  '$' + this.gasto + ' / ha al mes');
+            p.append('entry.745728650',  mapaProblema[this.problemaPrincipal] || mapaProblema.costo);
+            p.append('entry.939413606',  '$' + this.gasto + ' / ha al mes activo | meses: ' + this.mesesActivos.join(','));
             p.append('entry.1073422398', this.resumen);
             /* Campo obligatorio de opción múltiple: se pasa por su opción "Otro". */
             p.append('entry.1366426429', '__other_option__');

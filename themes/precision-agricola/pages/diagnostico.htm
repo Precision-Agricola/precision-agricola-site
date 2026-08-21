@@ -27,6 +27,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
@@ -111,7 +112,13 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         .op:hover, .op:focus-visible { border-color: rgba(126,217,87,.5); outline: none; }
         .op:active { transform: scale(.985); }
         .op[aria-pressed="true"] { border-color: var(--lime); background: rgba(126,217,87,.10); }
-        .op .ico { font-size: 1.15rem; line-height: 1; flex-shrink: 0; }
+        .ico {
+            width: 1.35rem; height: 1.35rem; flex-shrink: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--lime);
+        }
+        .ico .fi { display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; line-height: 1; }
+        .op[aria-pressed="true"] .ico { color: var(--txt); }
         .op .cuerpo { flex: 1; min-width: 0; }
         .op .sub { display: block; font-size: .8rem; color: var(--txt-3); font-weight: 400; margin-top: .1rem; }
 
@@ -180,7 +187,8 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             border: 1px solid rgba(126,217,87,.22);
             border-radius: .85rem; padding: .9rem 1rem; margin-top: 1.4rem;
         }
-        .dato .ico { font-size: 1rem; line-height: 1.3; }
+        .dato .ico { width: 1.2rem; height: 1.2rem; color: var(--lime); }
+        .dato .ico .fi { font-size: 1rem; }
         .dato p { margin: 0; font-size: .86rem; color: var(--txt-2); line-height: 1.5; }
         .dato strong { color: var(--txt); font-weight: 700; }
 
@@ -295,13 +303,29 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         /* ── Formulario ─────────────────────────────────── */
         .campo { margin-bottom: .85rem; }
         .campo label { display: block; font-size: .78rem; font-weight: 600; color: var(--txt-2); margin-bottom: .35rem; }
-        .campo input {
+        .campo input,
+        .campo select {
             width: 100%; padding: .95rem 1rem; font: inherit; font-size: 1rem;
             background: var(--card); border: 1.5px solid var(--line);
             border-radius: .75rem; color: var(--txt);
             transition: border-color .18s;
         }
-        .campo input:focus { outline: none; border-color: var(--lime); }
+        .campo select {
+            cursor: pointer;
+            appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, var(--lime) 50%),
+                linear-gradient(135deg, var(--lime) 50%, transparent 50%);
+            background-position:
+                calc(100% - 1.15rem) 50%,
+                calc(100% - .82rem) 50%;
+            background-size: .35rem .35rem, .35rem .35rem;
+            background-repeat: no-repeat;
+            padding-right: 2.4rem;
+        }
+        .campo select option { color: #0d1a12; background: #f2f7f3; }
+        .campo input:focus,
+        .campo select:focus { outline: none; border-color: var(--lime); }
         .campo input::placeholder { color: var(--txt-3); }
         .honeypot { position: absolute; left: -9999px; opacity: 0; height: 0; width: 0; pointer-events: none; }
 
@@ -357,7 +381,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 </h1>
                 <p class="apoyo surge surge-2">
                     Si compras microorganismos entre <strong style="color:var(--txt)">$250 y $600+ por litro</strong>,
-                    al producirlos en tu rancho tus costos bajarían a unos <strong style="color:var(--lime)">$140/L</strong>
+                    al producirlos en tu rancho tus costos bajarían a unos <strong style="color:var(--lime)">$155/L</strong>
                     para producir biomasa metabólicamente activa en su fase óptima para colonizar la rizósfera.
                     Calcula qué significa por hectárea y por ciclo.
                 </p>
@@ -367,28 +391,61 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             </div>
         </template>
 
-        <!-- ══ 1 · Cultivo ═════════════════════════════ -->
+        <!-- ══ 1 · Problema ════════════════════════════ -->
         <template x-if="paso === 1">
             <div>
                 <p class="paso-n">Paso 1 de 5</p>
-                <h2 class="pregunta">¿Qué cultivas?</h2>
-                <p class="apoyo">Con esto priorizamos las cepas que atacan lo tuyo.</p>
+                <h2 class="pregunta">¿Qué te está costando más trabajo?</h2>
+                <p class="apoyo">Elige uno o varios problemas que tengas hoy.</p>
                 <div class="ops">
-                    <template x-for="c in cultivos" :key="c.id">
-                        <button class="op" :aria-pressed="cultivo === c.id" @click="cultivo = c.id; ir(2)">
-                            <span class="ico" x-text="c.ico"></span>
-                            <span class="cuerpo" x-text="c.nom"></span>
+                    <template x-for="p in problemasOrdenados" :key="p.id">
+                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)" @click="toggleProblema(p.id)">
+                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo" x-text="p.nom"></span>
                         </button>
                     </template>
+                </div>
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="ir(2)" :disabled="problemas.length === 0">Continuar →</button>
                 </div>
             </div>
         </template>
 
-        <!-- ══ 2 · Superficie ══════════════════════════ -->
+        <!-- ══ 2 · Cultivo ═════════════════════════════ -->
         <template x-if="paso === 2">
             <div>
                 <button class="atras" @click="ir(1)">← Atrás</button>
                 <p class="paso-n">Paso 2 de 5</p>
+                <h2 class="pregunta">¿Qué cultivas?</h2>
+                <p class="apoyo">Con esto priorizamos las cepas que atacan lo tuyo.</p>
+                <div class="ops">
+                    <template x-for="c in cultivos" :key="c.id">
+                        <button class="op" :aria-pressed="cultivo === c.id" @click="cultivo = c.id">
+                            <span class="ico"><i class="fi" :class="c.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo" x-text="c.nom"></span>
+                        </button>
+                    </template>
+                </div>
+                <div class="campo" style="margin-top:1.2rem">
+                    <label for="estado-operacion">Estado de la República donde está tu operación</label>
+                    <select id="estado-operacion" x-model="estado">
+                        <option value="">Selecciona un estado</option>
+                        <template x-for="e in estadosMexico" :key="e">
+                            <option :value="e" x-text="e"></option>
+                        </template>
+                    </select>
+                </div>
+                <div style="margin-top:1.2rem">
+                    <button class="btn" @click="ir(3)" :disabled="!cultivo || !estado">Continuar →</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 3 · Superficie ══════════════════════════ -->
+        <template x-if="paso === 3">
+            <div>
+                <button class="atras" @click="ir(2)">← Atrás</button>
+                <p class="paso-n">Paso 3 de 5</p>
                 <h2 class="pregunta">¿Cuánta superficie tienes en producción?</h2>
                 <div style="margin:1.8rem 0 .5rem">
                     <span class="cifra-viva" x-text="ha"></span>
@@ -397,21 +454,21 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
                 <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="ir(3)">Continuar →</button>
+                    <button class="btn" @click="ir(4)">Continuar →</button>
                 </div>
             </div>
         </template>
 
-        <!-- ══ 3 · Práctica actual ═════════════════════ -->
-        <template x-if="paso === 3">
+        <!-- ══ 4 · Práctica actual ═════════════════════ -->
+        <template x-if="paso === 4">
             <div>
-                <button class="atras" @click="ir(2)">← Atrás</button>
-                <p class="paso-n">Paso 3 de 5</p>
+                <button class="atras" @click="ir(3)">← Atrás</button>
+                <p class="paso-n">Paso 4 de 5</p>
                 <h2 class="pregunta">¿Qué haces hoy con los microorganismos?</h2>
                 <div class="ops">
                     <template x-for="p in practicas" :key="p.id">
-                        <button class="op" :aria-pressed="practica === p.id" @click="practica = p.id; ir(4)">
-                            <span class="ico" x-text="p.ico"></span>
+                        <button class="op" :aria-pressed="practica === p.id" @click="practica = p.id; ir(5)">
+                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
                             <span class="cuerpo">
                                 <span x-text="p.nom"></span>
                                 <span class="sub" x-text="p.sub"></span>
@@ -422,11 +479,11 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             </div>
         </template>
 
-        <!-- ══ 4 · Gasto ═══════════════════════════════ -->
-        <template x-if="paso === 4">
+        <!-- ══ 5 · Gasto ═══════════════════════════════ -->
+        <template x-if="paso === 5">
             <div>
-                <button class="atras" @click="ir(3)">← Atrás</button>
-                <p class="paso-n">Paso 4 de 5</p>
+                <button class="atras" @click="ir(4)">← Atrás</button>
+                <p class="paso-n">Paso 5 de 5</p>
                 <h2 class="pregunta" x-text="preguntaGasto"></h2>
                 <p class="apoyo">Primero pon el gasto mensual por hectárea. Luego marca en qué meses se repite.</p>
 
@@ -456,7 +513,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
                 <template x-if="gasto > 0 && mesesGasto > 0">
                     <div class="dato">
-                        <span class="ico">📊</span>
+                        <span class="ico"><i class="fi fi-rr-chart-histogram" aria-hidden="true"></i></span>
                         <p>Por hectárea son <strong x-text="mxn(gastoHaAnual)"></strong> al año.
                            En tus <strong x-text="ha + ' ha'"></strong>, son <strong x-text="mxn(gastoAnual)"></strong>.
                            Produciéndolo on farm, baja a <strong x-text="mxn(costoOnFarmAnual)"></strong>.</p>
@@ -465,28 +522,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
                 <div style="margin-top:1.6rem">
                     <button class="btn" @click="continuarGasto()" :disabled="gasto === 0 || mesesGasto === 0">Continuar →</button>
-                    <button class="btn-txt" @click="gasto = 0; noSabe = true; ir(5)">No sé cuánto gasto</button>
-                </div>
-            </div>
-        </template>
-
-        <!-- ══ 5 · Problema ════════════════════════════ -->
-        <template x-if="paso === 5">
-            <div>
-                <button class="atras" @click="ir(4)">← Atrás</button>
-                <p class="paso-n">Paso 5 de 5</p>
-                <h2 class="pregunta">¿Qué te está costando más trabajo?</h2>
-                <p class="apoyo">Elige uno o varios problemas que tengas hoy.</p>
-                <div class="ops">
-                    <template x-for="p in problemasOrdenados" :key="p.id">
-                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)" @click="toggleProblema(p.id)">
-                            <span class="ico" x-text="p.ico"></span>
-                            <span class="cuerpo" x-text="p.nom"></span>
-                        </button>
-                    </template>
-                </div>
-                <div style="margin-top:1.6rem">
-                    <button class="btn" @click="calcular()" :disabled="problemas.length === 0">Continuar →</button>
+                    <button class="btn-txt" @click="gasto = 0; noSabe = true; calcular()">No sé cuánto gasto</button>
                 </div>
             </div>
         </template>
@@ -520,7 +556,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
                 <template x-if="datoCepa">
                     <div class="dato surge surge-2">
-                        <span class="ico">🔬</span>
+                        <span class="ico"><i class="fi fi-rr-microscope-bacteria" aria-hidden="true"></i></span>
                         <p x-html="datoCepa"></p>
                     </div>
                 </template>
@@ -568,7 +604,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                                     <span class="rol" x-text="c.rol"></span>
                                     <span class="det" x-text="c.desc"></span>
                                 </span>
-                                <span class="precio">$24,000</span>
+                                <span class="precio" x-text="mxn(c.precio)"></span>
                             </button>
                         </template>
                     </div>
@@ -620,8 +656,8 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         <input id="f-mail" name="correo" type="email" required autocomplete="email" placeholder="correo@ejemplo.com">
                     </div>
                     <div class="campo">
-                        <label for="f-lugar">Municipio y estado</label>
-                        <input id="f-lugar" name="lugar" type="text" required placeholder="Caborca, Sonora">
+                        <label for="f-lugar">Municipio o localidad</label>
+                        <input id="f-lugar" name="lugar" type="text" required placeholder="Caborca">
                     </div>
                     <div class="campo">
                         <label for="f-rancho">Nombre del rancho o empresa</label>
@@ -649,19 +685,19 @@ function diagnostico() {
     /* ── Catálogo confirmado (cotización 348) ─────────── */
     const P_REACTOR   = 129000;
     const P_MONITOREO = 39000;
-    const P_CEPA      = 24000;
-    const COSTO_LITRO = 140;   // producido on farm, biomasa activa en fase optima
+    const COSTO_LITRO = 155;   // costo por litro de referencia en cotización comercial
     const VENTA_LITRO = 250;   // referencia conservadora; en mercado puede subir a 600+
     const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
 
     const CEPAS = [
-        { id:'subtilis',     nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
-        { id:'pseudomonas',  nombre:'Pseudomonas asgharzadehiana',  rol:'Desbloqueo de nutrientes',desc:'Solubiliza el fósforo y el potasio atrapados en el suelo y los vuelve disponibles para la raíz.' },
-        { id:'trichoderma',  nombre:'Trichoderma asperellum',       rol:'Escudo radicular',        desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo.' },
-        { id:'thuringiensis',nombre:'Bacillus thuringiensis',       rol:'Biocontrol de plagas',    desc:'Enemigo natural de larvas y orugas. Controla plagas sin dejar residuos químicos.' },
-        { id:'methylo',      nombre:'Methylobacterium spp.',        rol:'Vigor foliar',            desc:'Vive en las hojas. Estimula el crecimiento aéreo e incrementa la eficiencia fotosintética.' },
-        { id:'pichia',       nombre:'Pichia anomala',               rol:'Defensa aérea',           desc:'Moviliza zinc, calcio y hierro. Barrera natural contra oídio, botrytis y mildiu.' }
+        { id:'subtilis',     precio:24000, nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
+        { id:'pseudomonas',  precio:29850, nombre:'Pseudomonas asgharzadehiana',  rol:'Desbloqueo de nutrientes',desc:'Solubiliza el fósforo y el potasio atrapados en el suelo y los vuelve disponibles para la raíz.' },
+        { id:'trichoderma',  precio:35000, nombre:'Trichoderma asperellum',       rol:'Escudo radicular',        desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo.' },
+        { id:'thuringiensis',precio:35850, nombre:'Bacillus thuringiensis',       rol:'Biocontrol de plagas',    desc:'Enemigo natural de larvas y orugas. Controla plagas sin dejar residuos químicos.' },
+        { id:'methylo',      precio:29850, nombre:'Methylobacterium spp.',        rol:'Vigor foliar',            desc:'Vive en las hojas. Estimula el crecimiento aéreo e incrementa la eficiencia fotosintética.' },
+        { id:'pichia',       precio:27000, nombre:'Pichia anomala',               rol:'Defensa aérea',           desc:'Moviliza zinc, calcio y hierro. Barrera natural contra oídio, botrytis y mildiu.' }
     ];
+    const PRECIO_CEPA_MIN = Math.min(...CEPAS.map(c => c.precio));
 
     /* Puntajes: el problema pesa más que el cultivo. */
     const POR_PROBLEMA = {
@@ -676,7 +712,9 @@ function diagnostico() {
         berries:  { pichia:2, thuringiensis:1, trichoderma:1 },
         aguacate: { trichoderma:2, pseudomonas:1 },
         agave:    { subtilis:2, trichoderma:1 },
-        cana:     { pseudomonas:2, subtilis:1 },
+        frutales: { trichoderma:2, pseudomonas:1, pichia:1 },
+        hortalizas:{ pichia:2, thuringiensis:2, trichoderma:1 },
+        granos:   { pseudomonas:2, subtilis:2, thuringiensis:1 },
         otro:     {}
     };
 
@@ -685,23 +723,25 @@ function diagnostico() {
         berries:  ['foliar','plagas','patogenos','costo','suelo','nutrientes'],
         aguacate: ['patogenos','suelo','nutrientes','costo','foliar','plagas'],
         agave:    ['suelo','nutrientes','costo','patogenos','foliar','plagas'],
-        cana:     ['nutrientes','suelo','costo','plagas','patogenos','foliar'],
+        frutales: ['patogenos','suelo','nutrientes','foliar','costo','plagas'],
+        hortalizas:['foliar','plagas','patogenos','nutrientes','suelo','costo'],
+        granos:   ['nutrientes','suelo','costo','plagas','patogenos','foliar'],
         otro:     ['costo','suelo','patogenos','nutrientes','foliar','plagas']
     };
 
     const PROBLEMAS = {
-        costo:      { id:'costo',      ico:'💸', nom:'Me cuestan demasiado los bioinsumos' },
-        suelo:      { id:'suelo',      ico:'🪱', nom:'Mi suelo está degradado' },
-        patogenos:  { id:'patogenos',  ico:'🦠', nom:'Patógenos en la raíz' },
-        nutrientes: { id:'nutrientes', ico:'🌱', nom:'La planta no aprovecha los nutrientes' },
-        foliar:     { id:'foliar',     ico:'🍃', nom:'Enfermedades en hoja' },
-        plagas:     { id:'plagas',     ico:'🐛', nom:'Plagas de larvas y orugas' }
+        costo:      { id:'costo',      icon:'fi-rr-sack-dollar',       nom:'Me cuestan demasiado los bioinsumos' },
+        suelo:      { id:'suelo',      icon:'fi-rr-land-layers',       nom:'Mi suelo está degradado' },
+        patogenos:  { id:'patogenos',  icon:'fi-rr-shield-virus',      nom:'Patógenos en la raíz' },
+        nutrientes: { id:'nutrientes', icon:'fi-rr-plant-growth',      nom:'La planta no aprovecha los nutrientes' },
+        foliar:     { id:'foliar',     icon:'fi-rr-leaf',              nom:'Enfermedades en hoja' },
+        plagas:     { id:'plagas',     icon:'fi-rr-bug',               nom:'Plagas de larvas y orugas' }
     };
 
     /* Banco inicial de datos, escrito a mano y revisable.
        Fase 2 lo amplía desde los papers. */
     const DATOS = {
-        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde 180 litros. A $250/L comprado te costaría <strong>$45,000</strong>; producido on farm, unos <strong>$25,200</strong>.',
+        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde 180 litros. A $250/L comprado te costaría <strong>$45,000</strong>; con referencia on farm de $155/L, unos <strong>$27,900</strong>.',
         pseudomonas:  'El fósforo que ya está en tu suelo suele estar bloqueado. <strong>Pseudomonas</strong> lo libera sin que compres más fertilizante.',
         trichoderma:  '<strong>Trichoderma</strong> no solo frena patógenos: mejora la estructura del suelo, y ese efecto se acumula ciclo tras ciclo.',
         thuringiensis:'<strong>Bacillus thuringiensis</strong> no deja residuos químicos, lo que importa si exportas.',
@@ -712,6 +752,7 @@ function diagnostico() {
     return {
         paso: 0,
         cultivo: null,
+        estado: '',
         ha: 20,
         practica: null,
         gasto: 500,
@@ -728,17 +769,28 @@ function diagnostico() {
         _t0: Date.now(),
 
         cultivos: [
-            { id:'berries',  ico:'🫐', nom:'Berries' },
-            { id:'aguacate', ico:'🥑', nom:'Aguacate' },
-            { id:'agave',    ico:'🌵', nom:'Agave' },
-            { id:'cana',     ico:'🎋', nom:'Caña de azúcar' },
-            { id:'otro',     ico:'🌾', nom:'Otro cultivo' }
+            { id:'berries',  icon:'fi-rr-grape',          nom:'Berries' },
+            { id:'aguacate', icon:'fi-rr-avocado',        nom:'Aguacate' },
+            { id:'agave',    icon:'fi-rr-cactus',         nom:'Agave' },
+            { id:'frutales', icon:'fi-rr-tree-deciduous', nom:'Árboles frutales' },
+            { id:'hortalizas', icon:'fi-rr-carrot',       nom:'Hortalizas' },
+            { id:'granos',   icon:'fi-rr-wheat-awn',      nom:'Granos' },
+            { id:'otro',     icon:'fi-rr-seedling',       nom:'Otro cultivo' }
+        ],
+        estadosMexico: [
+            'Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche',
+            'Chiapas', 'Chihuahua', 'Ciudad de México', 'Coahuila', 'Colima',
+            'Durango', 'Estado de México', 'Guanajuato', 'Guerrero', 'Hidalgo',
+            'Jalisco', 'Michoacán', 'Morelos', 'Nayarit', 'Nuevo León', 'Oaxaca',
+            'Puebla', 'Querétaro', 'Quintana Roo', 'San Luis Potosí', 'Sinaloa',
+            'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán',
+            'Zacatecas'
         ],
         practicas: [
-            { id:'compro',  ico:'🛒', nom:'Los compro ya preparados', sub:'Le pago a un proveedor por litro' },
-            { id:'produzco',ico:'⚗️', nom:'Ya los produzco yo',       sub:'Tengo equipo propio' },
-            { id:'quimicos',ico:'🧪', nom:'Solo uso químicos',        sub:'Fungicidas y fertilizantes de síntesis' },
-            { id:'nada',    ico:'🌱', nom:'Todavía no uso nada',      sub:'Quiero empezar' }
+            { id:'quimicos',icon:'fi-rr-ban',             nom:'No uso microorganismos',   sub:'Trabajo con químicos u otros manejos' },
+            { id:'compro',  icon:'fi-rr-shopping-cart',   nom:'Los compro ya preparados', sub:'Le pago a un proveedor por litro' },
+            { id:'produzco',icon:'fi-rr-flask',           nom:'Ya los produzco yo',       sub:'Tengo equipo propio' },
+            { id:'nada',    icon:'fi-rr-seedling',        nom:'Todavía no uso nada',      sub:'Quiero empezar' }
         ],
         mesesDisponibles: [
             { id:'ene', nom:'Ene' }, { id:'feb', nom:'Feb' }, { id:'mar', nom:'Mar' },
@@ -792,6 +844,18 @@ function diagnostico() {
         get ahorroAnual() { return Math.round(this.gastoAnual * TASA_AHORRO); },
         get costoOnFarmAnual() { return this.gastoAnual - this.ahorroAnual; },
         get litrosMes()   { return Math.round((this.gasto * this.ha) / VENTA_LITRO); },
+        cepaPorId(id) { return CEPAS.find(c => c.id === id) || null; },
+        get precioCepas() {
+            return this.cepas.reduce((total, id) => {
+                const cepa = this.cepaPorId(id);
+                return total + (cepa ? cepa.precio : 0);
+            }, 0);
+        },
+        get precioCepaBase() {
+            const cepa = this.cepaPorId(this.cepas[0]) || this.cepasOrdenadas[0];
+            return (cepa && cepa.precio) || PRECIO_CEPA_MIN;
+        },
+        get precioEntrada() { return P_REACTOR + this.precioCepaBase; },
 
         /* Quien ya produce tiene reactor: no se le vuelve a cobrar.
            Depende de 'practica' y no de 'palanca' para no crear un ciclo,
@@ -800,7 +864,7 @@ function diagnostico() {
         get precioConfig() {
             return (this.incluyeReactor ? P_REACTOR : 0)
                  + (this.monitoreo ? P_MONITOREO : 0)
-                 + this.cepas.length * P_CEPA;
+                 + this.precioCepas;
         },
 
         get meses() {
@@ -816,7 +880,7 @@ function diagnostico() {
         /* Hectáreas a las que, con su mismo gasto por ha, el equipo se paga en 18 meses. */
         get haUmbral() {
             if (this.gasto <= 0 || this.mesesGasto <= 0) return null;
-            const minimo = P_REACTOR + P_CEPA;
+            const minimo = this.precioEntrada;
             return Math.ceil(minimo / (1.5 * this.gasto * this.mesesGasto * TASA_AHORRO));
         },
 
@@ -842,7 +906,7 @@ function diagnostico() {
                 gradual: {
                     etiqueta: 'Empieza en chico',
                     titulo: 'Arranca con una cepa y crece',
-                    texto: 'Con una sola cepa el equipo entra en ' + this.mxn(P_REACTOR + P_CEPA) + '. Añade cepas, hectáreas o meses de aplicación y el número mejora rápido: pruébalo abajo.',
+                    texto: 'Con una sola cepa el equipo entra en ' + this.mxn(this.precioEntrada) + '. Añade cepas, hectáreas o meses de aplicación y el número mejora rápido: pruébalo abajo.',
                     cta: 'Recibir mi cotización →',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
@@ -902,7 +966,7 @@ function diagnostico() {
 
         continuarGasto() {
             this.noSabe = false;
-            this.ir(5);
+            this.calcular();
         },
 
         toggleProblema(id) {
@@ -940,6 +1004,7 @@ function diagnostico() {
             const partes = [
                 'RUTA: ' + this.palanca,
                 'Cultivo: ' + this.cultivo,
+                'Estado: ' + this.estado,
                 'Superficie: ' + this.ha + ' ha',
                 'Practica: ' + this.practica,
                 'Gasto: $' + this.gasto + '/ha/mes',
@@ -985,21 +1050,27 @@ function diagnostico() {
             const mapaCultivo = {
                 berries: 'Berries (Frambuesa, Arándano, Zarzamora)',
                 aguacate:'Aguacate',
-                agave:   'Agave',
-                cana:    'Caña de Azúcar'
+                agave:   'Agave'
             };
+            const mapaCultivoOtro = {
+                frutales: 'Árboles frutales',
+                hortalizas: 'Hortalizas',
+                granos: 'Granos',
+                otro: 'Otro cultivo'
+            };
+            const lugar = f.lugar.value + (this.estado ? ' | Estado: ' + this.estado : '');
 
             const p = new URLSearchParams();
             p.append('entry.717719532',  f.nombre.value);
             p.append('entry.418293425',  f.correo.value);
-            p.append('entry.1012014923', f.lugar.value);
+            p.append('entry.1012014923', lugar);
             p.append('entry.1936785384', f.whatsapp.value);
             p.append('entry.1412966994', f.rancho.value);
             if (mapaCultivo[this.cultivo]) {
                 p.append('entry.232288433', mapaCultivo[this.cultivo]);
             } else {
                 p.append('entry.232288433', '__other_option__');
-                p.append('entry.232288433.other_option_response', 'Otro cultivo');
+                p.append('entry.232288433.other_option_response', mapaCultivoOtro[this.cultivo] || 'Otro cultivo');
             }
             p.append('entry.1112158256', superficie);
             p.append('entry.745728650',  mapaProblema[this.problemaPrincipal] || mapaProblema.costo);

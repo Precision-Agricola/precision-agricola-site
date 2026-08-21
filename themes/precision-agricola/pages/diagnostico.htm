@@ -396,7 +396,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             <div>
                 <p class="paso-n">Paso 1 de 5</p>
                 <h2 class="pregunta">¿Qué te está costando más trabajo?</h2>
-                <p class="apoyo">Elige uno o varios problemas que tengas hoy.</p>
+                <p class="apoyo">Elige uno o varios problemas que tengas.</p>
                 <div class="ops">
                     <template x-for="p in problemasOrdenados" :key="p.id">
                         <button type="button" class="op" :aria-pressed="problemas.includes(p.id)" @click="toggleProblema(p.id)">
@@ -417,7 +417,6 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <button class="atras" @click="ir(1)">← Atrás</button>
                 <p class="paso-n">Paso 2 de 5</p>
                 <h2 class="pregunta">¿Qué cultivas?</h2>
-                <p class="apoyo">Con esto priorizamos las cepas que atacan lo tuyo.</p>
                 <div class="ops">
                     <template x-for="c in cultivos" :key="c.id">
                         <button class="op" :aria-pressed="cultivo === c.id" @click="cultivo = c.id">
@@ -897,38 +896,38 @@ function diagnostico() {
         get veredicto() {
             const v = {
                 completa: {
-                    etiqueta: 'Te conviene, y por mucho',
-                    titulo: 'Tu biofábrica se paga en ' + this.mesesTxt,
-                    texto: 'Con tus ' + this.ha + ' hectáreas, ' + this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación y lo que gastas hoy, el equipo se paga solo y después todo es ahorro.',
+                    etiqueta: 'Alta viabilidad de inversión',
+                    titulo: 'La biofábrica puede recuperarse en ' + this.mesesTxt,
+                    texto: 'Con una superficie de ' + this.ha + ' ha, ' + this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación y tu gasto actual, el ahorro estimado permite recuperar la inversión y reducir el costo operativo posteriormente.',
                     cta: 'Recibir mi cotización →',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 gradual: {
-                    etiqueta: 'Empieza en chico',
-                    titulo: 'Arranca con una cepa y crece',
-                    texto: 'Con una sola cepa el equipo entra en ' + this.mxn(this.precioEntrada) + '. Añade cepas, hectáreas o meses de aplicación y el número mejora rápido: pruébalo abajo.',
+                    etiqueta: 'Inicio gradual recomendado',
+                    titulo: 'Inicia con una cepa y escala progresivamente',
+                    texto: 'Con una sola cepa, el equipo cuesta ' + this.mxn(this.precioEntrada) + '. Al sumar cepas, superficie o meses de aplicación, la recuperación estimada mejora.',
                     cta: 'Recibir mi cotización →',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 litros: {
-                    etiqueta: 'Empieza sin comprar equipo',
-                    titulo: 'Te surtimos los litros ya producidos',
-                    texto: 'A tu escala conviene que nosotros los produzcamos. Cuando llegues a unas ' + (this.haUmbral || '—') + ' hectáreas con este gasto y estos meses de aplicación, el equipo propio empieza a convenirte más.',
-                    cta: 'Cotizar mis litros →',
+                    etiqueta: 'Servicio sin inversión en equipo',
+                    titulo: 'Podemos suministrarte litros ya producidos',
+                    texto: 'Por tu escala actual, puede convenir iniciar con litros producidos por nosotros. Al alcanzar una superficie aproximada de ' + (this.haUmbral || '—') + ' ha con este gasto y estos meses de aplicación, el equipo propio puede ser más conveniente.',
+                    cta: 'Solicitar cotización de litros →',
                     cierreTitulo: '¿A dónde te enviamos la cotización de litros?'
                 },
                 mejoras: {
-                    etiqueta: 'Ya vas por buen camino',
-                    titulo: 'Súbele el rendimiento a lo que ya produces',
-                    texto: 'Ya produces, así que no hay que convencerte de nada. Lo que sigue es control de lote y cepas que todavía no tengas.',
+                    etiqueta: 'Equipo propio en operación',
+                    titulo: 'Sube el rendimiento a lo que ya produces',
+                    texto: 'Como ya produces microorganismos, la siguiente mejora es optimizar el control de lote e incorporar cepas adicionales según tus necesidades.',
                     cta: 'Recibir mi cotización →',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 campo: {
-                    etiqueta: 'Vamos a verlo en tu terreno',
+                    etiqueta: 'Diagnóstico en campo',
                     titulo: 'Te proponemos un diagnóstico en campo',
-                    texto: 'Sin saber cuánto gastas hoy, cualquier número que te demos sería inventado. Un especialista lo levanta contigo y te cotiza sobre datos reales.',
-                    cta: 'Agendar mi diagnóstico →',
+                    texto: 'Para estimar el ahorro con precisión, necesitamos conocer tu gasto actual. Un especialista puede recabar la información contigo y preparar una cotización con datos reales.',
+                    cta: 'Solicitar diagnóstico en campo →',
                     cierreTitulo: '¿Cómo te contactamos?'
                 }
             };

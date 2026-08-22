@@ -394,13 +394,14 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             <div>
                 <p class="paso-n surge">Diagnóstico en 1 minuto</p>
                 <h1 class="pregunta surge surge-1" style="font-size:clamp(1.9rem,8vw,2.6rem)">
-                    Microbiología on farm,<br>más de 40% menos costo.
+                    Microbiología on farm,<br>a una fracción del costo.
                 </h1>
                 <p class="apoyo surge surge-2">
-                    Si compras microorganismos entre <strong style="color:var(--txt)">$250 y $600+ por litro</strong>,
-                    al producirlos en tu rancho tus costos bajarían a unos <strong style="color:var(--lime)">$155/L</strong>
-                    para producir biomasa metabólicamente activa en su fase óptima para colonizar la rizósfera.
-                    Calcula qué significa por hectárea y por ciclo.
+                    Si compras microorganismos desde <strong style="color:var(--txt)">$250 por litro</strong>,
+                    produciéndolos en tu rancho tu costo baja a unos
+                    <strong style="color:var(--lime)">$<span x-text="costoLitro"></span>/L</strong>,
+                    con biomasa viva cosechada en su fase óptima para colonizar la rizósfera.
+                    Calcula qué significa con tus hectáreas y tu gasto.
                 </p>
                 <!-- Prueba de que el equipo existe. Va antes del botón porque
                      el visitante viene de un anuncio y no sabe quiénes somos. -->
@@ -622,7 +623,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                             <span class="precio">$39,000</span>
                         </button>
 
-                        <p class="cfg-tit">Cepas · cada una rinde 180 L por lote</p>
+                        <p class="cfg-tit">Cepas · cada una rinde <span x-text="loteLitros"></span> L por lote, para <span x-text="loteHa"></span> ha</p>
 
                         <template x-for="c in cepasOrdenadas" :key="c.id">
                             <button class="pieza" :aria-pressed="cepas.includes(c.id)" @click="alternarCepa(c.id)">
@@ -731,21 +732,37 @@ function medir(evento, datos) {
 
 function diagnostico() {
     /* ── Catálogo confirmado (cotización 348) ─────────── */
-    const P_REACTOR   = 129000;
-    const P_MONITOREO = 39000;
-    const COSTO_LITRO = 155;   // costo por litro de referencia en cotización comercial
-    const VENTA_LITRO = 250;   // referencia conservadora; en mercado puede subir a 600+
-    const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
+    /* ── Catálogo · cotización 353 del 21/08/2026 ─────────────────────
+       Todos los precios son ANTES DE IVA, igual que la cotización.
+       Si se actualizan, se cambian aquí y todo lo demás se recalcula. */
+    const P_REACTOR   = 149000;   // biorreactor 190 L acero inoxidable
+    const P_MONITOREO = 49000;    // pH, oxígeno disuelto, temperatura y turbidez
+
+    const LOTE_L  = 200;          // litros que rinde un paquete de cepa
+    const LOTE_HA = 50;           // hectáreas que cubre ese lote
+
+    /* Precio de mercado del litro terminado. NO sale de ninguna cotización
+       nuestra: es el único número sin respaldo documental, y de él cuelga
+       todo el ahorro que se le muestra al productor. Pendiente de fuente. */
+    const VENTA_LITRO = 250;
 
     const CEPAS = [
-        { id:'subtilis',     precio:24000, nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
+        { id:'subtilis',     precio:29850, nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
         { id:'pseudomonas',  precio:29850, nombre:'Pseudomonas asgharzadehiana',  rol:'Desbloqueo de nutrientes',desc:'Solubiliza el fósforo y el potasio atrapados en el suelo y los vuelve disponibles para la raíz.' },
-        { id:'trichoderma',  precio:35000, nombre:'Trichoderma asperellum',       rol:'Escudo radicular',        desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo.' },
-        { id:'thuringiensis',precio:35850, nombre:'Bacillus thuringiensis',       rol:'Biocontrol de plagas',    desc:'Enemigo natural de larvas y orugas. Controla plagas sin dejar residuos químicos.' },
-        { id:'methylo',      precio:29850, nombre:'Methylobacterium spp.',        rol:'Vigor foliar',            desc:'Vive en las hojas. Estimula el crecimiento aéreo e incrementa la eficiencia fotosintética.' },
+        { id:'trichoderma',  precio:33450, nombre:'Trichoderma asperellum',       rol:'Escudo radicular',        desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo.' },
+        { id:'thuringiensis',precio:29850, nombre:'Bacillus thuringiensis',       rol:'Biocontrol de plagas',    desc:'Enemigo natural de larvas y orugas. Controla plagas sin dejar residuos químicos.' },
+        { id:'methylo',      precio:35850, nombre:'Methylobacterium spp.',        rol:'Vigor foliar',            desc:'Vive en las hojas. Estimula el crecimiento aéreo e incrementa la eficiencia fotosintética.' },
+        /* Pichia anomala no aparece en la cotización 353. Se conserva con su
+           precio anterior para no retirar del catálogo un producto que quizá
+           siga vigente, pero Ventas debe confirmar si sigue o si se descontinuó. */
         { id:'pichia',       precio:27000, nombre:'Pichia anomala',               rol:'Defensa aérea',           desc:'Moviliza zinc, calcio y hierro. Barrera natural contra oídio, botrytis y mildiu.' }
     ];
     const PRECIO_CEPA_MIN = Math.min(...CEPAS.map(c => c.precio));
+
+    /* El costo por litro ya no es un número suelto: sale de los precios de
+       arriba, así que no puede quedar desincronizado del catálogo. */
+    const COSTO_LITRO = CEPAS.reduce((s, c) => s + c.precio, 0) / CEPAS.length / LOTE_L;
+    const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
 
     /* Puntajes: el problema pesa más que el cultivo. */
     const POR_PROBLEMA = {
@@ -789,7 +806,12 @@ function diagnostico() {
     /* Banco inicial de datos, escrito a mano y revisable.
        Fase 2 lo amplía desde los papers. */
     const DATOS = {
-        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde 180 litros. A $250/L comprado te costaría <strong>$45,000</strong>; con referencia on farm de $155/L, unos <strong>$27,900</strong>.',
+        /* Las cifras se arman con las constantes del catálogo para que no
+           puedan quedar contradiciendo a los precios de arriba. */
+        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde ' + LOTE_L + ' litros y cubre ' + LOTE_HA +
+                      ' hectáreas. Comprados a $' + VENTA_LITRO + '/L costarían <strong>$' +
+                      (VENTA_LITRO * LOTE_L).toLocaleString('es-MX') + '</strong>; producirlos te cuesta <strong>$' +
+                      CEPAS[0].precio.toLocaleString('es-MX') + '</strong>.',
         pseudomonas:  'El fósforo que ya está en tu suelo suele estar bloqueado. <strong>Pseudomonas</strong> lo libera sin que compres más fertilizante.',
         trichoderma:  '<strong>Trichoderma</strong> no solo frena patógenos: mejora la estructura del suelo, y ese efecto se acumula ciclo tras ciclo.',
         thuringiensis:'<strong>Bacillus thuringiensis</strong> no deja residuos químicos, lo que importa si exportas.',
@@ -887,6 +909,12 @@ function diagnostico() {
         },
 
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
+        /* Expuestos para la plantilla: así el texto que ve el visitante sale
+           del catálogo y no de un número escrito a mano que se desincroniza. */
+        get costoLitro()  { return Math.round(COSTO_LITRO); },
+        get loteLitros()  { return LOTE_L; },
+        get loteHa()      { return LOTE_HA; },
+
         get gastoAnual()  { return this.gastoHaAnual * this.ha; },
         get ahorroHaAnual() { return Math.round(this.gastoHaAnual * TASA_AHORRO); },
         get ahorroAnual() { return Math.round(this.gastoAnual * TASA_AHORRO); },

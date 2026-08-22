@@ -357,6 +357,23 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
         }
+        /* ── Equipo en el gancho ──────────────────────────
+           La imagen es 2.47 veces mas alta que ancha: sin topar
+           su altura se come la pantalla del telefono entera. */
+        .gancho-equipo {
+            margin: 1.4rem 0 0;
+            display: flex; align-items: center; gap: .9rem;
+        }
+        .gancho-equipo img {
+            width: auto; height: 32vh; max-height: 258px;
+            aspect-ratio: 283 / 700;
+            object-fit: contain; flex-shrink: 0;
+            filter: drop-shadow(0 10px 16px rgba(0,0,0,.45));
+        }
+        .gancho-equipo figcaption {
+            font-size: .74rem; line-height: 1.5; color: var(--txt-3);
+            letter-spacing: .02em;
+        }
     </style>
 </head>
 
@@ -385,6 +402,18 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     para producir biomasa metabólicamente activa en su fase óptima para colonizar la rizósfera.
                     Calcula qué significa por hectárea y por ciclo.
                 </p>
+                <!-- Prueba de que el equipo existe. Va antes del botón porque
+                     el visitante viene de un anuncio y no sabe quiénes somos. -->
+                <figure class="gancho-equipo surge surge-3">
+                    <img src="{{ 'assets/images/biofabrica/biofabrica-2-700.webp'|theme }}"
+                         srcset="{{ 'assets/images/biofabrica/biofabrica-2-700.webp'|theme }} 283w,
+                                 {{ 'assets/images/biofabrica/biofabrica-2-1200.webp'|theme }} 485w"
+                         sizes="(max-width: 420px) 40vw, 170px"
+                         width="283" height="700" decoding="async"
+                         alt="Biofábrica 2.0: biorreactor agrícola de 190 litros en acero inoxidable">
+                    <figcaption>Biofábrica 2.0 · 190 L · acero inoxidable</figcaption>
+                </figure>
+
                 <div class="surge surge-3">
                     <button class="btn" @click="ir(1)">Cotizar lo mío →</button>
                 </div>
@@ -680,6 +709,26 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 </div>
 
 <script>
+/**
+ * Medición del embudo.
+ *
+ * Sin esto no hay forma de saber en qué paso abandona la gente, y afinar una
+ * campaña de paga a ciegas es tirar dinero. Queda montado y neutral: si un día
+ * se instala el pixel de Meta o Google Tag Manager, los eventos empiezan a
+ * fluir solos, sin tocar esta página. Mientras tanto no hace nada y no pesa.
+ */
+function medir(evento, datos) {
+    try {
+        const carga = Object.assign({ embudo: 'diagnostico' }, datos || {});
+        if (window.dataLayer) window.dataLayer.push(Object.assign({ event: evento }, carga));
+        if (typeof window.fbq === 'function') window.fbq('trackCustom', evento, carga);
+        if (typeof window.gtag === 'function') window.gtag('event', evento, carga);
+    }
+    catch (e) {
+        /* La medición nunca puede romper el embudo. */
+    }
+}
+
 function diagnostico() {
     /* ── Catálogo confirmado (cotización 348) ─────────── */
     const P_REACTOR   = 129000;
@@ -944,7 +993,11 @@ function diagnostico() {
             return '$' + Math.round(n).toLocaleString('es-MX');
         },
 
-        ir(n) { this.paso = n; window.scrollTo({ top: 0, behavior: 'instant' }); },
+        ir(n) {
+            if (n > this.paso) medir('paso_' + n, { desde: this.paso });
+            this.paso = n;
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        },
 
         seleccionarMeses(tipo) {
             const grupos = {
@@ -987,6 +1040,14 @@ function diagnostico() {
                 this.cepas = orden.slice(0, 2).map(c => c.id);
                 this.monitoreo = true;
             }
+            /* El evento que de verdad importa: con qué perfil llegó y qué se le ofreció. */
+            medir('resultado', {
+                palanca: this.palanca,
+                cultivo: this.cultivo,
+                hectareas: this.ha,
+                gasto_ha_mes: this.gasto,
+                total: this.precioConfig
+            });
             this.ir(6);
         },
 
@@ -1085,7 +1146,11 @@ function diagnostico() {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: p.toString()
             })
-            .then(() => { window.location.href = '/gracias-diagnostico'; })
+            .then(() => {
+                medir('lead', { palanca: this.palanca, total: this.precioConfig,
+                                financiamiento: this.quiereFinanciamiento ? 1 : 0 });
+                window.location.href = '/gracias-diagnostico';
+            })
             .catch(() => { this.enviando = false; this.errorEnvio = true; });
         }
     };

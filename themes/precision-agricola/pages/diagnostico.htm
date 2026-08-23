@@ -357,6 +357,20 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
         }
+        /* ── Formas de pago ── */
+        .pagos { display: flex; flex-direction: column; gap: .55rem; }
+        .pago {
+            display: flex; align-items: flex-start; gap: .85rem;
+            width: 100%; text-align: left;
+            background: var(--card); border: 1.5px solid var(--line);
+            color: var(--txt); font: inherit;
+            padding: .9rem 1rem; border-radius: .85rem; cursor: pointer;
+            transition: border-color .18s, background .18s;
+        }
+        .pago[aria-pressed="true"] { border-color: var(--lime); background: rgba(126,217,87,.09); }
+        .pago .nom { font-weight: 700; font-size: .93rem; display: block; }
+        .pago .det { font-size: .8rem; color: var(--txt-3); display: block; margin-top: .2rem; line-height: 1.45; }
+
         /* ── Equipo en el gancho ──────────────────────────
            La imagen es 2.47 veces mas alta que ancha: sin topar
            su altura se come la pantalla del telefono entera. */
@@ -639,10 +653,31 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </div>
                 </template>
 
+                <!-- Formas de pago. Se muestran tal como las cotiza Ventas:
+                     no se calcula ninguna tabla de amortización porque el
+                     plazo no está definido, y no vamos a inventarlo. -->
+                <template x-if="palanca !== 'litros' && palanca !== 'campo'">
+                    <div class="surge surge-3">
+                        <p class="cfg-tit">Cómo pagarlo</p>
+                        <div class="pagos">
+                            <template x-for="p in FORMAS_PAGO" :key="p.id">
+                                <button class="pago" :aria-pressed="formaPago === p.id" @click="formaPago = p.id">
+                                    <span class="marca-check" x-text="formaPago === p.id ? '✓' : ''"></span>
+                                    <span style="flex:1">
+                                        <span class="nom" x-text="p.nom"></span>
+                                        <span class="det" x-text="p.det"></span>
+                                    </span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
                 <div class="total">
                     <template x-if="palanca !== 'litros' && palanca !== 'campo'">
                         <div class="total-fila">
-                            <span class="et">Total de tu configuración</span>
+                            <span class="et">Total de tu configuración<br>
+                                <span style="font-size:.72rem;color:var(--txt-3)">más IVA</span></span>
                             <span class="v" x-text="mxn(precioConfig)"></span>
                         </div>
                     </template>
@@ -752,6 +787,16 @@ function diagnostico() {
        todo el ahorro que se le muestra al productor. Pendiente de fuente. */
     const VENTA_LITRO = 250;
 
+    /* Formas de pago, tal como las cotiza Ventas en la 353.
+       El plazo de las mensualidades no está definido todavía, así que aquí
+       no se calcula ninguna amortización ni se promete un total: sólo se
+       presentan las condiciones y se registra cuál le interesa al productor. */
+    const FORMAS_PAGO = [
+        { id:'contado',      nom:'De contado',    det:'Precio de lista, sin plazos.' },
+        { id:'financiado',   nom:'Con enganche',  det:'Desde $60,000 de enganche y mensualidades de $6,000.' },
+        { id:'arrendamiento',nom:'Arrendamiento', det:'$21,500 al mes, con plazo mínimo de 3 meses.' }
+    ];
+
     const CEPAS = [
         { id:'subtilis',     precio:29850, nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
         { id:'pseudomonas',  precio:29850, nombre:'Pseudomonas asgharzadehiana',  rol:'Desbloqueo de nutrientes',desc:'Solubiliza el fósforo y el potasio atrapados en el suelo y los vuelve disponibles para la raíz.' },
@@ -839,6 +884,8 @@ function diagnostico() {
         monitoreo: false,
         cepas: [],
         quiereFinanciamiento: false,
+        formaPago: "contado",
+        FORMAS_PAGO: FORMAS_PAGO,
         enviando: false,
         errorEnvio: false,
         muyRapido: false,
@@ -1115,6 +1162,7 @@ function diagnostico() {
             }
             partes.push('Ahorro anual por ha estimado: ' + this.mxn(this.ahorroHaAnual));
             partes.push('Ahorro anual total estimado: ' + this.mxn(this.ahorroAnual));
+            partes.push('Forma de pago: ' + this.formaPago);
             partes.push('Financiamiento: ' + (this.quiereFinanciamiento ? 'INTERESADO' : 'no'));
             return partes.join(' | ');
         },

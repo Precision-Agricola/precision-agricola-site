@@ -738,8 +738,14 @@ function diagnostico() {
     const P_REACTOR   = 149000;   // biorreactor 190 L acero inoxidable
     const P_MONITOREO = 49000;    // pH, oxígeno disuelto, temperatura y turbidez
 
-    const LOTE_L  = 200;          // litros que rinde un paquete de cepa
-    const LOTE_HA = 50;           // hectáreas que cubre ese lote
+    /* El lote vuelve a 180 L: es lo que cabe en un tanque de 190 dejando
+       cabeza para la espuma de la aireación. La cotización 353 decía 200 L,
+       que no caben. Los precios de los paquetes NO cambian.
+       La cobertura se deriva de la dosis declarada en la 353 (200 L para
+       50 ha, o sea 4 L/ha), así que 180 L alcanzan para 45. */
+    const LOTE_L  = 180;
+    const DOSIS_L_HA = 4;
+    const LOTE_HA = LOTE_L / DOSIS_L_HA;
 
     /* Precio de mercado del litro terminado. NO sale de ninguna cotización
        nuestra: es el único número sin respaldo documental, y de él cuelga

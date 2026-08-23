@@ -384,10 +384,27 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             object-fit: contain; flex-shrink: 0;
             filter: drop-shadow(0 10px 16px rgba(0,0,0,.45));
         }
-        .gancho-equipo figcaption {
-            font-size: .74rem; line-height: 1.5; color: var(--txt-3);
-            letter-spacing: .02em;
+        .gancho-equipo figcaption { min-width: 0; }
+        .gancho-equipo .marca-equipo {
+            display: block; font-family: 'Montserrat', sans-serif;
+            font-weight: 800; font-size: .82rem; letter-spacing: .04em;
+            color: var(--txt); margin-bottom: .5rem;
         }
+        .gancho-equipo ul {
+            list-style: none; margin: 0; padding: 0;
+            display: flex; flex-direction: column; gap: .34rem;
+        }
+        .gancho-equipo li {
+            position: relative; padding-left: .95rem;
+            font-size: .78rem; line-height: 1.35; color: var(--txt-2);
+        }
+        .gancho-equipo li::before {
+            content: ""; position: absolute; left: 0; top: .42em;
+            width: .38rem; height: .38rem; border-radius: 50%;
+            background: var(--lime);
+        }
+        /* Aire entre la ficha del equipo y el botón, que quedaban pegados */
+        .gancho-cta { margin-top: 1.5rem; }
     </style>
 </head>
 
@@ -423,14 +440,23 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     <img src="{{ 'assets/images/biofabrica/biofabrica-2-700.webp'|theme }}"
                          srcset="{{ 'assets/images/biofabrica/biofabrica-2-700.webp'|theme }} 283w,
                                  {{ 'assets/images/biofabrica/biofabrica-2-1200.webp'|theme }} 485w"
-                         sizes="(max-width: 420px) 40vw, 170px"
+                         sizes="(max-width: 420px) 42vw, 180px"
                          width="283" height="700" decoding="async"
                          alt="Biofábrica 2.0: biorreactor agrícola de 190 litros en acero inoxidable">
-                    <figcaption>Biofábrica 2.0 · 190 L · acero inoxidable</figcaption>
+                    <figcaption>
+                        <span class="marca-equipo">Biofábrica 2.0</span>
+                        <ul>
+                            <li>190 litros de capacidad</li>
+                            <li>Acero inoxidable grado farmacéutico</li>
+                            <li>Ultrafiltración y esterilización UV-C</li>
+                            <li>Aireación, agitación y control térmico</li>
+                            <li>Sanitizado con ozono</li>
+                        </ul>
+                    </figcaption>
                 </figure>
 
-                <div class="surge surge-3">
-                    <button class="btn" @click="ir(1)">Calcular con mis datos →</button>
+                <div class="surge surge-3 gancho-cta">
+                    <button class="btn" @click="ir(1)">Calcular con mis datos</button>
                 </div>
             </div>
         </template>
@@ -1029,35 +1055,35 @@ function diagnostico() {
                     etiqueta: 'Alta viabilidad de inversión',
                     titulo: 'La biofábrica puede recuperarse en ' + this.mesesTxt,
                     texto: 'Con una superficie de ' + this.ha + ' ha, ' + this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación y tu gasto actual, el ahorro estimado permite recuperar la inversión y reducir el costo operativo posteriormente.',
-                    cta: 'Recibir mi cotización →',
+                    cta: 'Recibir mi cotización',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 gradual: {
                     etiqueta: 'Inicio gradual recomendado',
                     titulo: 'Inicia con una cepa y escala progresivamente',
                     texto: 'Con una sola cepa, el equipo cuesta ' + this.mxn(this.precioEntrada) + '. Al sumar cepas, superficie o meses de aplicación, la recuperación estimada mejora.',
-                    cta: 'Recibir mi cotización →',
+                    cta: 'Recibir mi cotización',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 litros: {
                     etiqueta: 'Servicio sin inversión en equipo',
                     titulo: 'Podemos suministrarte litros ya producidos',
                     texto: 'Por tu escala actual, puede convenir iniciar con litros producidos por nosotros. Al alcanzar una superficie aproximada de ' + (this.haUmbral || '—') + ' ha con este gasto y estos meses de aplicación, el equipo propio puede ser más conveniente.',
-                    cta: 'Solicitar cotización de litros →',
+                    cta: 'Solicitar cotización de litros',
                     cierreTitulo: '¿A dónde te enviamos la cotización de litros?'
                 },
                 mejoras: {
                     etiqueta: 'Equipo propio en operación',
                     titulo: 'Aumenta el rendimiento de tu producción actual',
                     texto: 'Como ya produces microorganismos, la siguiente mejora es optimizar el control de lote e incorporar cepas adicionales según tus necesidades.',
-                    cta: 'Recibir mi cotización →',
+                    cta: 'Recibir mi cotización',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 campo: {
                     etiqueta: 'Diagnóstico en campo',
                     titulo: 'Te proponemos un diagnóstico en campo',
                     texto: 'Para estimar el ahorro con precisión, necesitamos conocer tu gasto actual. Un especialista puede recabar la información contigo y preparar una cotización con datos reales.',
-                    cta: 'Solicitar diagnóstico en campo →',
+                    cta: 'Solicitar diagnóstico en campo',
                     cierreTitulo: '¿Cómo te contactamos?'
                 }
             };

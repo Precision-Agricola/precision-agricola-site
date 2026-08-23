@@ -357,6 +357,54 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
         }
+        /* ── Formas de pago ── */
+        .pagos { display: flex; flex-direction: column; gap: .55rem; }
+        .pago {
+            display: flex; align-items: flex-start; gap: .85rem;
+            width: 100%; text-align: left;
+            background: var(--card); border: 1.5px solid var(--line);
+            color: var(--txt); font: inherit;
+            padding: .9rem 1rem; border-radius: .85rem; cursor: pointer;
+            transition: border-color .18s, background .18s;
+        }
+        .pago[aria-pressed="true"] { border-color: var(--lime); background: rgba(126,217,87,.09); }
+        .pago .nom { font-weight: 700; font-size: .93rem; display: block; }
+        .pago .det { font-size: .8rem; color: var(--txt-3); display: block; margin-top: .2rem; line-height: 1.45; }
+
+        /* ── Equipo en el gancho ──────────────────────────
+           La imagen es 2.47 veces mas alta que ancha: sin topar
+           su altura se come la pantalla del telefono entera. */
+        .gancho-equipo {
+            margin: 1.4rem 0 0;
+            display: flex; align-items: center; gap: .9rem;
+        }
+        .gancho-equipo img {
+            width: auto; height: 32vh; max-height: 258px;
+            aspect-ratio: 283 / 700;
+            object-fit: contain; flex-shrink: 0;
+            filter: drop-shadow(0 10px 16px rgba(0,0,0,.45));
+        }
+        .gancho-equipo figcaption { min-width: 0; }
+        .gancho-equipo .marca-equipo {
+            display: block; font-family: 'Montserrat', sans-serif;
+            font-weight: 800; font-size: .82rem; letter-spacing: .04em;
+            color: var(--txt); margin-bottom: .5rem;
+        }
+        .gancho-equipo ul {
+            list-style: none; margin: 0; padding: 0;
+            display: flex; flex-direction: column; gap: .34rem;
+        }
+        .gancho-equipo li {
+            position: relative; padding-left: .95rem;
+            font-size: .78rem; line-height: 1.35; color: var(--txt-2);
+        }
+        .gancho-equipo li::before {
+            content: ""; position: absolute; left: 0; top: .42em;
+            width: .38rem; height: .38rem; border-radius: 50%;
+            background: var(--lime);
+        }
+        /* Aire entre la ficha del equipo y el botón, que quedaban pegados */
+        .gancho-cta { margin-top: 1.5rem; }
     </style>
 </head>
 
@@ -377,16 +425,38 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             <div>
                 <p class="paso-n surge">Diagnóstico en 1 minuto</p>
                 <h1 class="pregunta surge surge-1" style="font-size:clamp(1.9rem,8vw,2.6rem)">
-                    Microbiología on farm,<br>más de 40% menos costo.
+                    Microbiología on farm,<br>a una fracción del costo.
                 </h1>
                 <p class="apoyo surge surge-2">
-                    Si compras microorganismos entre <strong style="color:var(--txt)">$250 y $600+ por litro</strong>,
-                    al producirlos en tu rancho tus costos bajarían a unos <strong style="color:var(--lime)">$155/L</strong>
-                    para producir biomasa metabólicamente activa en su fase óptima para colonizar la rizósfera.
-                    Calcula qué significa por hectárea y por ciclo.
+                    Si compras microorganismos desde <strong style="color:var(--txt)">$250 por litro</strong>,
+                    al producirlos en tu rancho el costo baja a unos
+                    <strong style="color:var(--lime)">$<span x-text="costoLitro"></span>/L</strong>,
+                    con biomasa viva cosechada en su fase óptima para colonizar la rizósfera.
+                    Haz el cálculo con los números de tu operación.
                 </p>
-                <div class="surge surge-3">
-                    <button class="btn" @click="ir(1)">Cotizar lo mío →</button>
+                <!-- Prueba de que el equipo existe. Va antes del botón porque
+                     el visitante viene de un anuncio y no sabe quiénes somos. -->
+                <figure class="gancho-equipo surge surge-3">
+                    <img src="{{ 'assets/images/biofabrica/biofabrica-2-700.webp'|theme }}"
+                         srcset="{{ 'assets/images/biofabrica/biofabrica-2-700.webp'|theme }} 283w,
+                                 {{ 'assets/images/biofabrica/biofabrica-2-1200.webp'|theme }} 485w"
+                         sizes="(max-width: 420px) 42vw, 180px"
+                         width="283" height="700" decoding="async"
+                         alt="Biofábrica 2.0: biorreactor agrícola de 190 litros en acero inoxidable">
+                    <figcaption>
+                        <span class="marca-equipo">Biofábrica 2.0</span>
+                        <ul>
+                            <li>190 litros de capacidad</li>
+                            <li>Acero inoxidable grado farmacéutico</li>
+                            <li>Ultrafiltración y esterilización UV-C</li>
+                            <li>Aireación, agitación y control térmico</li>
+                            <li>Sanitizado con ozono</li>
+                        </ul>
+                    </figcaption>
+                </figure>
+
+                <div class="surge surge-3 gancho-cta">
+                    <button class="btn" @click="ir(1)">Calcular con mis datos</button>
                 </div>
             </div>
         </template>
@@ -593,7 +663,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                             <span class="precio">$39,000</span>
                         </button>
 
-                        <p class="cfg-tit">Cepas · cada una rinde 180 L por lote</p>
+                        <p class="cfg-tit">Cepas · cada una rinde <span x-text="loteLitros"></span> L por lote, para <span x-text="loteHa"></span> ha</p>
 
                         <template x-for="c in cepasOrdenadas" :key="c.id">
                             <button class="pieza" :aria-pressed="cepas.includes(c.id)" @click="alternarCepa(c.id)">
@@ -609,10 +679,31 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </div>
                 </template>
 
+                <!-- Formas de pago. Se muestran tal como las cotiza Ventas:
+                     no se calcula ninguna tabla de amortización porque el
+                     plazo no está definido, y no vamos a inventarlo. -->
+                <template x-if="palanca !== 'litros' && palanca !== 'campo'">
+                    <div class="surge surge-3">
+                        <p class="cfg-tit">Cómo pagarlo</p>
+                        <div class="pagos">
+                            <template x-for="p in FORMAS_PAGO" :key="p.id">
+                                <button class="pago" :aria-pressed="formaPago === p.id" @click="formaPago = p.id">
+                                    <span class="marca-check" x-text="formaPago === p.id ? '✓' : ''"></span>
+                                    <span style="flex:1">
+                                        <span class="nom" x-text="p.nom"></span>
+                                        <span class="det" x-text="p.det"></span>
+                                    </span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
                 <div class="total">
                     <template x-if="palanca !== 'litros' && palanca !== 'campo'">
                         <div class="total-fila">
-                            <span class="et">Total de tu configuración</span>
+                            <span class="et">Total de tu configuración<br>
+                                <span style="font-size:.72rem;color:var(--txt-3)">más IVA</span></span>
                             <span class="v" x-text="mxn(precioConfig)"></span>
                         </div>
                     </template>
@@ -680,23 +771,75 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 </div>
 
 <script>
+/**
+ * Medición del embudo.
+ *
+ * Sin esto no hay forma de saber en qué paso abandona la gente, y afinar una
+ * campaña de paga a ciegas es tirar dinero. Queda montado y neutral: si un día
+ * se instala el pixel de Meta o Google Tag Manager, los eventos empiezan a
+ * fluir solos, sin tocar esta página. Mientras tanto no hace nada y no pesa.
+ */
+function medir(evento, datos) {
+    try {
+        const carga = Object.assign({ embudo: 'diagnostico' }, datos || {});
+        if (window.dataLayer) window.dataLayer.push(Object.assign({ event: evento }, carga));
+        if (typeof window.fbq === 'function') window.fbq('trackCustom', evento, carga);
+        if (typeof window.gtag === 'function') window.gtag('event', evento, carga);
+    }
+    catch (e) {
+        /* La medición nunca puede romper el embudo. */
+    }
+}
+
 function diagnostico() {
     /* ── Catálogo confirmado (cotización 348) ─────────── */
-    const P_REACTOR   = 129000;
-    const P_MONITOREO = 39000;
-    const COSTO_LITRO = 155;   // costo por litro de referencia en cotización comercial
-    const VENTA_LITRO = 250;   // referencia conservadora; en mercado puede subir a 600+
-    const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
+    /* ── Catálogo · cotización 353 del 21/08/2026 ─────────────────────
+       Todos los precios son ANTES DE IVA, igual que la cotización.
+       Si se actualizan, se cambian aquí y todo lo demás se recalcula. */
+    const P_REACTOR   = 149000;   // biorreactor 190 L acero inoxidable
+    const P_MONITOREO = 49000;    // pH, oxígeno disuelto, temperatura y turbidez
+
+    /* El lote vuelve a 180 L: es lo que cabe en un tanque de 190 dejando
+       cabeza para la espuma de la aireación. La cotización 353 decía 200 L,
+       que no caben. Los precios de los paquetes NO cambian.
+       La cobertura se deriva de la dosis declarada en la 353 (200 L para
+       50 ha, o sea 4 L/ha), así que 180 L alcanzan para 45. */
+    const LOTE_L  = 180;
+    const DOSIS_L_HA = 4;
+    const LOTE_HA = LOTE_L / DOSIS_L_HA;
+
+    /* Precio de mercado del litro terminado. NO sale de ninguna cotización
+       nuestra: es el único número sin respaldo documental, y de él cuelga
+       todo el ahorro que se le muestra al productor. Pendiente de fuente. */
+    const VENTA_LITRO = 250;
+
+    /* Formas de pago, tal como las cotiza Ventas en la 353.
+       El plazo de las mensualidades no está definido todavía, así que aquí
+       no se calcula ninguna amortización ni se promete un total: sólo se
+       presentan las condiciones y se registra cuál le interesa al productor. */
+    const FORMAS_PAGO = [
+        { id:'contado',      nom:'De contado',    det:'Precio de lista, sin plazos.' },
+        { id:'financiado',   nom:'Con enganche',  det:'Desde $60,000 de enganche y mensualidades de $6,000.' },
+        { id:'arrendamiento',nom:'Arrendamiento', det:'$21,500 al mes, con plazo mínimo de 3 meses.' }
+    ];
 
     const CEPAS = [
-        { id:'subtilis',     precio:24000, nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
+        { id:'subtilis',     precio:29850, nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
         { id:'pseudomonas',  precio:29850, nombre:'Pseudomonas asgharzadehiana',  rol:'Desbloqueo de nutrientes',desc:'Solubiliza el fósforo y el potasio atrapados en el suelo y los vuelve disponibles para la raíz.' },
-        { id:'trichoderma',  precio:35000, nombre:'Trichoderma asperellum',       rol:'Escudo radicular',        desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo.' },
-        { id:'thuringiensis',precio:35850, nombre:'Bacillus thuringiensis',       rol:'Biocontrol de plagas',    desc:'Enemigo natural de larvas y orugas. Controla plagas sin dejar residuos químicos.' },
-        { id:'methylo',      precio:29850, nombre:'Methylobacterium spp.',        rol:'Vigor foliar',            desc:'Vive en las hojas. Estimula el crecimiento aéreo e incrementa la eficiencia fotosintética.' },
+        { id:'trichoderma',  precio:33450, nombre:'Trichoderma asperellum',       rol:'Escudo radicular',        desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo.' },
+        { id:'thuringiensis',precio:29850, nombre:'Bacillus thuringiensis',       rol:'Biocontrol de plagas',    desc:'Enemigo natural de larvas y orugas. Controla plagas sin dejar residuos químicos.' },
+        { id:'methylo',      precio:35850, nombre:'Methylobacterium spp.',        rol:'Vigor foliar',            desc:'Vive en las hojas. Estimula el crecimiento aéreo e incrementa la eficiencia fotosintética.' },
+        /* Pichia anomala no aparece en la cotización 353. Se conserva con su
+           precio anterior para no retirar del catálogo un producto que quizá
+           siga vigente, pero Ventas debe confirmar si sigue o si se descontinuó. */
         { id:'pichia',       precio:27000, nombre:'Pichia anomala',               rol:'Defensa aérea',           desc:'Moviliza zinc, calcio y hierro. Barrera natural contra oídio, botrytis y mildiu.' }
     ];
     const PRECIO_CEPA_MIN = Math.min(...CEPAS.map(c => c.precio));
+
+    /* El costo por litro ya no es un número suelto: sale de los precios de
+       arriba, así que no puede quedar desincronizado del catálogo. */
+    const COSTO_LITRO = CEPAS.reduce((s, c) => s + c.precio, 0) / CEPAS.length / LOTE_L;
+    const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
 
     /* Puntajes: el problema pesa más que el cultivo. */
     const POR_PROBLEMA = {
@@ -740,7 +883,12 @@ function diagnostico() {
     /* Banco inicial de datos, escrito a mano y revisable.
        Fase 2 lo amplía desde los papers. */
     const DATOS = {
-        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde 180 litros. A $250/L comprado te costaría <strong>$45,000</strong>; con referencia on farm de $155/L, unos <strong>$27,900</strong>.',
+        /* Las cifras se arman con las constantes del catálogo para que no
+           puedan quedar contradiciendo a los precios de arriba. */
+        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde ' + LOTE_L + ' litros y cubre ' + LOTE_HA +
+                      ' hectáreas. Comprados a $' + VENTA_LITRO + '/L costarían <strong>$' +
+                      (VENTA_LITRO * LOTE_L).toLocaleString('es-MX') + '</strong>; producirlos te cuesta <strong>$' +
+                      CEPAS[0].precio.toLocaleString('es-MX') + '</strong>.',
         pseudomonas:  'El fósforo que ya está en tu suelo suele estar bloqueado. <strong>Pseudomonas</strong> lo libera sin que compres más fertilizante.',
         trichoderma:  '<strong>Trichoderma</strong> no solo frena patógenos: mejora la estructura del suelo, y ese efecto se acumula ciclo tras ciclo.',
         thuringiensis:'<strong>Bacillus thuringiensis</strong> no deja residuos químicos, lo que importa si exportas.',
@@ -762,6 +910,8 @@ function diagnostico() {
         monitoreo: false,
         cepas: [],
         quiereFinanciamiento: false,
+        formaPago: "contado",
+        FORMAS_PAGO: FORMAS_PAGO,
         enviando: false,
         errorEnvio: false,
         muyRapido: false,
@@ -838,6 +988,12 @@ function diagnostico() {
         },
 
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
+        /* Expuestos para la plantilla: así el texto que ve el visitante sale
+           del catálogo y no de un número escrito a mano que se desincroniza. */
+        get costoLitro()  { return Math.round(COSTO_LITRO); },
+        get loteLitros()  { return LOTE_L; },
+        get loteHa()      { return LOTE_HA; },
+
         get gastoAnual()  { return this.gastoHaAnual * this.ha; },
         get ahorroHaAnual() { return Math.round(this.gastoHaAnual * TASA_AHORRO); },
         get ahorroAnual() { return Math.round(this.gastoAnual * TASA_AHORRO); },
@@ -899,35 +1055,35 @@ function diagnostico() {
                     etiqueta: 'Alta viabilidad de inversión',
                     titulo: 'La biofábrica puede recuperarse en ' + this.mesesTxt,
                     texto: 'Con una superficie de ' + this.ha + ' ha, ' + this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación y tu gasto actual, el ahorro estimado permite recuperar la inversión y reducir el costo operativo posteriormente.',
-                    cta: 'Recibir mi cotización →',
+                    cta: 'Recibir mi cotización',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 gradual: {
                     etiqueta: 'Inicio gradual recomendado',
                     titulo: 'Inicia con una cepa y escala progresivamente',
                     texto: 'Con una sola cepa, el equipo cuesta ' + this.mxn(this.precioEntrada) + '. Al sumar cepas, superficie o meses de aplicación, la recuperación estimada mejora.',
-                    cta: 'Recibir mi cotización →',
+                    cta: 'Recibir mi cotización',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 litros: {
                     etiqueta: 'Servicio sin inversión en equipo',
                     titulo: 'Podemos suministrarte litros ya producidos',
                     texto: 'Por tu escala actual, puede convenir iniciar con litros producidos por nosotros. Al alcanzar una superficie aproximada de ' + (this.haUmbral || '—') + ' ha con este gasto y estos meses de aplicación, el equipo propio puede ser más conveniente.',
-                    cta: 'Solicitar cotización de litros →',
+                    cta: 'Solicitar cotización de litros',
                     cierreTitulo: '¿A dónde te enviamos la cotización de litros?'
                 },
                 mejoras: {
                     etiqueta: 'Equipo propio en operación',
-                    titulo: 'Sube el rendimiento a lo que ya produces',
+                    titulo: 'Aumenta el rendimiento de tu producción actual',
                     texto: 'Como ya produces microorganismos, la siguiente mejora es optimizar el control de lote e incorporar cepas adicionales según tus necesidades.',
-                    cta: 'Recibir mi cotización →',
+                    cta: 'Recibir mi cotización',
                     cierreTitulo: '¿A dónde te enviamos la cotización?'
                 },
                 campo: {
                     etiqueta: 'Diagnóstico en campo',
                     titulo: 'Te proponemos un diagnóstico en campo',
                     texto: 'Para estimar el ahorro con precisión, necesitamos conocer tu gasto actual. Un especialista puede recabar la información contigo y preparar una cotización con datos reales.',
-                    cta: 'Solicitar diagnóstico en campo →',
+                    cta: 'Solicitar diagnóstico en campo',
                     cierreTitulo: '¿Cómo te contactamos?'
                 }
             };
@@ -944,7 +1100,11 @@ function diagnostico() {
             return '$' + Math.round(n).toLocaleString('es-MX');
         },
 
-        ir(n) { this.paso = n; window.scrollTo({ top: 0, behavior: 'instant' }); },
+        ir(n) {
+            if (n > this.paso) medir('paso_' + n, { desde: this.paso });
+            this.paso = n;
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        },
 
         seleccionarMeses(tipo) {
             const grupos = {
@@ -987,6 +1147,14 @@ function diagnostico() {
                 this.cepas = orden.slice(0, 2).map(c => c.id);
                 this.monitoreo = true;
             }
+            /* El evento que de verdad importa: con qué perfil llegó y qué se le ofreció. */
+            medir('resultado', {
+                palanca: this.palanca,
+                cultivo: this.cultivo,
+                hectareas: this.ha,
+                gasto_ha_mes: this.gasto,
+                total: this.precioConfig
+            });
             this.ir(6);
         },
 
@@ -1020,6 +1188,7 @@ function diagnostico() {
             }
             partes.push('Ahorro anual por ha estimado: ' + this.mxn(this.ahorroHaAnual));
             partes.push('Ahorro anual total estimado: ' + this.mxn(this.ahorroAnual));
+            partes.push('Forma de pago: ' + this.formaPago);
             partes.push('Financiamiento: ' + (this.quiereFinanciamiento ? 'INTERESADO' : 'no'));
             return partes.join(' | ');
         },
@@ -1085,7 +1254,11 @@ function diagnostico() {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: p.toString()
             })
-            .then(() => { window.location.href = '/gracias-diagnostico'; })
+            .then(() => {
+                medir('lead', { palanca: this.palanca, total: this.precioConfig,
+                                financiamiento: this.quiereFinanciamiento ? 1 : 0 });
+                window.location.href = '/gracias-diagnostico';
+            })
             .catch(() => { this.enviando = false; this.errorEnvio = true; });
         }
     };

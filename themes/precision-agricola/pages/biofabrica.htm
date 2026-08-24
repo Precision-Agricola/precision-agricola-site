@@ -425,13 +425,13 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             <div>
                 <p class="paso-n surge">Diagnóstico en 1 minuto</p>
                 <h1 class="pregunta surge surge-1" style="font-size:clamp(1.9rem,8vw,2.6rem)">
-                    Microbiología on farm,<br>a una fracción del costo.
+                    Microbiología on farm,<br>producida en tu rancho.
                 </h1>
                 <p class="apoyo surge surge-2">
-                    Si compras microorganismos desde <strong style="color:var(--txt)">$250 por litro</strong>,
-                    al producirlos en tu rancho el costo baja a unos
-                    <strong style="color:var(--lime)">$<span x-text="costoLitro"></span>/L</strong>,
-                    con biomasa viva cosechada en su fase óptima para colonizar la rizósfera.
+                    Si ya usas microorganismos o estás por empezar, producirlos en tu propia
+                    unidad cambia la relación entre <strong style="color:var(--txt)">calidad y precio</strong>:
+                    biomasa viva, cosechada en su fase óptima para colonizar la rizósfera, sin las
+                    semanas de traslado y almacén que le restan viabilidad.
                     Haz el cálculo con los números de tu operación.
                 </p>
                 <!-- Prueba de que el equipo existe. Va antes del botón porque
@@ -1032,7 +1032,6 @@ function diagnostico() {
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
         /* Expuestos para la plantilla: así el texto que ve el visitante sale
            del catálogo y no de un número escrito a mano que se desincroniza. */
-        get costoLitro()  { return Math.round(COSTO_LITRO); },
         get loteLitros()  { return LOTE_L; },
         get loteHa()      { return LOTE_HA; },
 

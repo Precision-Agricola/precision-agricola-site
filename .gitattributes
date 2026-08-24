@@ -3,3 +3,7 @@
 # Los scripts de shell deben conservar finales de linea LF aunque se
 # clonen en Windows: con CRLF, bash falla nada mas arrancarlos.
 *.sh text eol=lf
+
+# El codigo de Apps Script se sincroniza con clasp, que compara contra lo que
+# hay en Google. Con CRLF cada push veria diferencias que no existen.
+tools/apps-script-leads/** text eol=lf

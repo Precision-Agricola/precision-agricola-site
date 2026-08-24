@@ -493,7 +493,10 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         <button type="button" class="op" :aria-pressed="cultivos.includes(c.id)"
                                 @click="toggleCultivo(c.id)">
                             <span class="ico"><i class="fi" :class="c.icon" aria-hidden="true"></i></span>
-                            <span class="cuerpo" x-text="c.nom"></span>
+                            <span class="cuerpo">
+                                <span x-text="c.nom"></span>
+                                <span class="sub" x-show="c.det" x-text="c.det"></span>
+                            </span>
                         </button>
                     </template>
                 </div>
@@ -560,7 +563,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
                 <div style="margin:1.4rem 0 .5rem">
                     <span class="cifra-viva">$<span x-text="gasto"></span></span>
-                    <span class="cifra-viva u"> / ha al mes</span>
+                    <span class="cifra-viva u"> MXN / ha al mes</span>
                 </div>
                 <input type="range" min="0" max="6000" step="50" x-model.number="gasto" aria-label="Gasto por hectárea al mes">
                 <div class="rango-topes"><span>$0</span><span>$6,000+</span></div>
@@ -705,7 +708,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     <template x-if="palanca !== 'litros' && palanca !== 'campo'">
                         <div class="total-fila">
                             <span class="et">Total de tu configuración<br>
-                                <span style="font-size:.72rem;color:var(--txt-3)">más IVA</span></span>
+                                <span style="font-size:.72rem;color:var(--txt-3)">pesos mexicanos, más IVA</span></span>
                             <span class="v" x-text="mxn(precioConfig)"></span>
                         </div>
                     </template>
@@ -843,13 +846,18 @@ function diagnostico() {
     const COSTO_LITRO = CEPAS.reduce((s, c) => s + c.precio, 0) / CEPAS.length / LOTE_L;
     const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
 
+    /* Aguacate se deja aparte de los demas frutales aunque lo sea: es el de
+       mayor peso comercial y tiene patologia propia (Phytophthora) que cambia
+       la cepa recomendada. Por eso los otros se nombran "otros frutales", para
+       que las categorias no se encimen. */
     const CULTIVOS = [
-        { id:'berries',    icon:'fi-rr-grape',          nom:'Berries' },
+        { id:'berries',    icon:'fi-rr-grape',          nom:'Berries',        det:'frambuesa, arándano, zarzamora' },
         { id:'aguacate',   icon:'fi-rr-avocado',        nom:'Aguacate' },
+        { id:'frutales',   icon:'fi-rr-tree-deciduous', nom:'Otros frutales', det:'limón, manzana, nogal' },
         { id:'agave',      icon:'fi-rr-cactus',         nom:'Agave' },
-        { id:'frutales',   icon:'fi-rr-tree-deciduous', nom:'Árboles frutales' },
+        { id:'cana',       icon:'fi-rr-leaf',           nom:'Caña de azúcar' },
+        { id:'granos',     icon:'fi-rr-wheat-awn',      nom:'Granos',         det:'maíz, trigo, sorgo' },
         { id:'hortalizas', icon:'fi-rr-carrot',         nom:'Hortalizas' },
-        { id:'granos',     icon:'fi-rr-wheat-awn',      nom:'Granos' },
         { id:'otro',       icon:'fi-rr-seedling',       nom:'Otro cultivo' }
     ];
 
@@ -869,6 +877,7 @@ function diagnostico() {
         frutales: { trichoderma:2, pseudomonas:1, pichia:1 },
         hortalizas:{ pichia:2, thuringiensis:2, trichoderma:1 },
         granos:   { pseudomonas:2, subtilis:2, thuringiensis:1 },
+        cana:     { subtilis:2, thuringiensis:2, pseudomonas:1 },
         otro:     {}
     };
 
@@ -880,16 +889,17 @@ function diagnostico() {
         frutales: ['patogenos','suelo','nutrientes','foliar','costo','plagas'],
         hortalizas:['foliar','plagas','patogenos','nutrientes','suelo','costo'],
         granos:   ['nutrientes','suelo','costo','plagas','patogenos','foliar'],
+        cana:     ['nutrientes','suelo','plagas','costo','patogenos','foliar'],
         otro:     ['costo','suelo','patogenos','nutrientes','foliar','plagas']
     };
 
     const PROBLEMAS = {
-        costo:      { id:'costo',      icon:'fi-rr-sack-dollar',       nom:'Me cuestan demasiado los bioinsumos' },
-        suelo:      { id:'suelo',      icon:'fi-rr-land-layers',       nom:'Mi suelo está degradado' },
-        patogenos:  { id:'patogenos',  icon:'fi-rr-shield-virus',      nom:'Patógenos en la raíz' },
-        nutrientes: { id:'nutrientes', icon:'fi-rr-plant-growth',      nom:'La planta no aprovecha los nutrientes' },
-        foliar:     { id:'foliar',     icon:'fi-rr-leaf',              nom:'Enfermedades en hoja' },
-        plagas:     { id:'plagas',     icon:'fi-rr-bug',               nom:'Plagas de larvas y orugas' }
+        costo:      { id:'costo',      icon:'fi-rr-sack-dollar',       nom:'Costo elevado de insumos biológicos' },
+        suelo:      { id:'suelo',      icon:'fi-rr-land-layers',       nom:'Degradación del suelo' },
+        patogenos:  { id:'patogenos',  icon:'fi-rr-shield-virus',      nom:'Patógenos radiculares' },
+        nutrientes: { id:'nutrientes', icon:'fi-rr-plant-growth',      nom:'Baja eficiencia en absorción de nutrientes' },
+        foliar:     { id:'foliar',     icon:'fi-rr-leaf',              nom:'Enfermedades foliares' },
+        plagas:     { id:'plagas',     icon:'fi-rr-bug',               nom:'Presión de plagas (larvas y barrenadores)' }
     };
 
     /* Banco inicial de datos, escrito a mano y revisable.
@@ -914,7 +924,9 @@ function diagnostico() {
         ha: 20,
         practica: null,
         gasto: 500,
-        mesesActivos: ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],
+        /* Arranca con un mes y el productor va sumando. Antes venian los doce
+           marcados y habia que ir quitando, que se lee como error. */
+        mesesActivos: ['mar'],
         noSabe: false,
         problema: null,
         problemas: [],
@@ -941,11 +953,12 @@ function diagnostico() {
             'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán',
             'Zacatecas'
         ],
+        /* "No uso" y "todavía no uso nada" eran la misma respuesta partida en
+           dos, y obligaban a elegir entre matices que no cambian la oferta. */
         practicas: [
-            { id:'quimicos',icon:'fi-rr-ban',             nom:'No uso microorganismos',   sub:'Trabajo con químicos u otros manejos' },
-            { id:'compro',  icon:'fi-rr-shopping-cart',   nom:'Los compro ya preparados', sub:'Le pago a un proveedor por litro' },
-            { id:'produzco',icon:'fi-rr-flask',           nom:'Ya los produzco yo',       sub:'Tengo equipo propio' },
-            { id:'nada',    icon:'fi-rr-seedling',        nom:'Todavía no uso nada',      sub:'Quiero empezar' }
+            { id:'quimicos',icon:'fi-rr-ban',           nom:'Todavía no uso microorganismos', sub:'Manejo con químicos, o quiero empezar' },
+            { id:'compro',  icon:'fi-rr-shopping-cart', nom:'Los compro ya preparados',       sub:'Le pago a un proveedor por litro' },
+            { id:'produzco',icon:'fi-rr-flask',         nom:'Ya los produzco yo',             sub:'Tengo equipo propio' }
         ],
         mesesDisponibles: [
             { id:'ene', nom:'Ene' }, { id:'feb', nom:'Feb' }, { id:'mar', nom:'Mar' },
@@ -1253,6 +1266,7 @@ function diagnostico() {
                 frutales: 'Árboles frutales',
                 hortalizas: 'Hortalizas',
                 granos: 'Granos',
+                cana: 'Caña de azúcar',
                 otro: 'Otro cultivo'
             };
             const lugar = f.lugar.value + (this.estado ? ' | Estado: ' + this.estado : '');

@@ -394,8 +394,11 @@ function calcularPuntaje_(d) {
   const porRuta = { completa: 35, gradual: 25, mejoras: 25, litros: 10, campo: 5 };
   p += porRuta[String(d.ruta).toLowerCase()] || 0;
 
-  const porPractica = { compro: 20, produzco: 15, quimicos: 8, nada: 5 };
-  p += porPractica[String(d.practica).toLowerCase()] || 0;
+  /* artesanal: ya propaga por su cuenta, asi que la intencion esta probada
+     y le falta el equipo. Se pone entre compro y produzco por criterio, no
+     por dato: cuando haya ventas suficientes habra que revisarlo. */
+  const porPractica = { compro: 20, artesanal: 18, produzco: 15, quimicos: 8, nada: 5 };
+  p += porPractica[idPractica_(d.practica)] || 0;
 
   if (d.recuperacion) {
     if (d.recuperacion <= 12) p += 20;
@@ -584,6 +587,23 @@ function etiquetaCultivos_(c) {
   return String(c).trim();
 }
 
+/**
+ * El embudo mandaba el id ("compro") y desde la actualizacion de venta por
+ * litros manda la etiqueta completa. La hoja tiene filas de las dos epocas,
+ * asi que se reconocen ambas. Se busca por palabra distintiva y no por la
+ * cadena exacta, para que un retoque de redaccion no vuelva a romper esto.
+ */
+function idPractica_(v) {
+  const s = String(v || '').toLowerCase();
+  if (!s) return '';
+  if (/^(compro|produzco|quimicos|artesanal|nada)$/.test(s)) return s;
+  if (s.indexOf('convencional') !== -1 || s.indexOf('no utilizo') !== -1) return 'quimicos';
+  if (s.indexOf('artesanal') !== -1 || s.indexOf('propag') !== -1) return 'artesanal';
+  if (s.indexOf('biorreactor') !== -1 || s.indexOf('equipo propio') !== -1) return 'produzco';
+  if (s.indexOf('compro') !== -1 || s.indexOf('comercial') !== -1) return 'compro';
+  return '';
+}
+
 /** Debe seguir al catalogo PROBLEMAS de biofabrica.htm. */
 function etiquetaProblema_(p) {
   const m = { costo:'Costo elevado de insumos biológicos', suelo:'Degradación del suelo',
@@ -593,8 +613,9 @@ function etiquetaProblema_(p) {
 }
 
 function etiquetaPractica_(p) {
-  const m = { compro:'Compra preparados', produzco:'Ya produce', quimicos:'Sólo químicos', nada:'No usa' };
-  return m[String(p).toLowerCase()] || p || '';
+  const m = { compro:'Compra formulados', artesanal:'Propaga artesanal',
+              produzco:'Tiene equipo propio', quimicos:'Convencional', nada:'No usa' };
+  return m[idPractica_(p)] || p || '';
 }
 
 function ordenarPorPuntaje_(leads) {

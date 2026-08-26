@@ -395,6 +395,69 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             width: min(100%, 9.5rem); height: auto; max-height: 212px;
             aspect-ratio: 336 / 447;
         }
+        /* ── Camino de litros ────────────────────────────────────── */
+        .litros-panel {
+            margin-top: 1.4rem; padding: 1.3rem 1.2rem;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 14px;
+        }
+        .litros-cifra {
+            margin: 0 0 .2rem; text-align: center;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: clamp(2.6rem, 13vw, 3.6rem); line-height: 1;
+            color: var(--lime); font-variant-numeric: tabular-nums;
+        }
+        .litros-cifra .u { font-size: .42em; color: var(--txt-2); margin-left: .1em; }
+
+        .litros-barra {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 34px; margin: .5rem 0 0;
+            background: transparent; cursor: pointer;
+        }
+        .litros-barra::-webkit-slider-runnable-track {
+            height: 6px; border-radius: 3px; background: rgba(255,255,255,.16);
+        }
+        .litros-barra::-moz-range-track {
+            height: 6px; border-radius: 3px; background: rgba(255,255,255,.16);
+        }
+        .litros-barra::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 30px; height: 30px; margin-top: -12px; border-radius: 50%;
+            background: var(--lime); border: 3px solid var(--bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,.45);
+        }
+        .litros-barra::-moz-range-thumb {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--lime); border: 3px solid var(--bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,.45);
+        }
+        .litros-barra:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--txt); outline-offset: 2px; }
+        .litros-barra:focus-visible::-moz-range-thumb     { outline: 2px solid var(--txt); outline-offset: 2px; }
+
+        .litros-topes {
+            display: flex; justify-content: space-between;
+            font-size: .78rem; color: var(--txt-2); margin-top: -.2rem;
+        }
+
+        .litros-total {
+            margin: 1.2rem 0 0; padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,.10);
+            display: flex; flex-direction: column; gap: .15rem; text-align: center;
+        }
+        .litros-total .et {
+            font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--txt-2);
+        }
+        .litros-total strong {
+            font-family: 'Montserrat', sans-serif; font-size: 1.9rem;
+            color: var(--txt); font-variant-numeric: tabular-nums;
+        }
+        .litros-total .unit { font-size: .82rem; color: var(--txt-2); }
+
+        /* El segundo camino se ofrece en texto: presente, sin competirle
+           al boton del diagnostico. */
+        .gancho-cta { display: flex; flex-direction: column; align-items: center; gap: .25rem; }
+
         .gancho-equipo figcaption { min-width: 0; }
         .gancho-equipo .marca-equipo {
             display: block; font-family: 'Montserrat', sans-serif;
@@ -485,7 +548,8 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 </figure>
 
                 <div class="surge surge-3 gancho-cta">
-                    <button class="btn" @click="ir(1)">Calcular con mis datos</button>
+                    <button class="btn" @click="via = 'equipo'; ir(1)">Calcular con mis datos</button>
+                    <button class="btn-txt" @click="via = 'litros'; ir(10)">Prefiero comprar litros ya producidos</button>
                 </div>
             </div>
         </template>
@@ -746,10 +810,112 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             </div>
         </template>
 
+        <!-- ══ 10 · Litros · cultivo ═══════════════════ -->
+        <template x-if="paso === 10">
+            <div>
+                <button class="atras" @click="ir(0)">← Atrás</button>
+                <p class="paso-n">Paso 1 de 3</p>
+                <h2 class="pregunta">¿Qué cultivas?</h2>
+                <p class="apoyo">Elige uno o varios.</p>
+                <div class="ops">
+                    <template x-for="c in CULTIVOS" :key="c.id">
+                        <button type="button" class="op" :aria-pressed="cultivos.includes(c.id)"
+                                @click="toggleCultivo(c.id)">
+                            <span class="ico"><i class="fi" :class="c.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo">
+                                <span x-text="c.nom"></span>
+                                <span class="sub" x-show="c.det" x-text="c.det"></span>
+                            </span>
+                        </button>
+                    </template>
+                </div>
+                <div class="campo" style="margin-top:1.2rem">
+                    <label for="estado-litros">Estado de la República donde está tu operación</label>
+                    <select id="estado-litros" x-model="estado">
+                        <option value="">Selecciona un estado</option>
+                        <template x-for="e in estadosMexico" :key="e">
+                            <option :value="e" x-text="e"></option>
+                        </template>
+                    </select>
+                </div>
+                <div style="margin-top:1.2rem">
+                    <button class="btn" @click="ir(11)" :disabled="cultivos.length === 0 || !estado">Continuar →</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 11 · Litros · problema ══════════════════ -->
+        <template x-if="paso === 11">
+            <div>
+                <button class="atras" @click="ir(10)">← Atrás</button>
+                <p class="paso-n">Paso 2 de 3</p>
+                <h2 class="pregunta">¿Cuál es el principal desafío limitante en tu operación hoy?</h2>
+                <p class="apoyo">Elige uno o varios. Con eso te sugerimos qué cepas pedir.</p>
+                <div class="ops">
+                    <template x-for="p in problemasOrdenados" :key="p.id">
+                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)"
+                                @click="toggleProblema(p.id)">
+                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo"><span x-text="p.nom"></span></span>
+                        </button>
+                    </template>
+                </div>
+                <div style="margin-top:1.2rem">
+                    <button class="btn" @click="ir(12)" :disabled="problemas.length === 0">Continuar →</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 12 · Litros · cantidad y precio ═════════ -->
+        <template x-if="paso === 12">
+            <div>
+                <button class="atras" @click="ir(11)">← Atrás</button>
+                <p class="paso-n">Paso 3 de 3</p>
+                <h2 class="pregunta">¿Cuántos litros te interesan?</h2>
+                <p class="apoyo">Mueve la barra. Se vende la cantidad que necesites.</p>
+
+                <div class="litros-panel">
+                    <p class="litros-cifra"><span x-text="litrosPedido"></span> <span class="u">L</span></p>
+                    <input type="range" class="litros-barra" min="20" max="1000" step="20"
+                           x-model.number="litrosPedido"
+                           aria-label="Litros que quieres comprar">
+                    <div class="litros-topes"><span>20 L</span><span>1,000 L</span></div>
+
+                    <div class="presets" style="margin-top:1rem">
+                        <template x-for="n in [50, 100, 250, 500]" :key="n">
+                            <button type="button" class="preset" :aria-pressed="litrosPedido === n"
+                                    @click="litrosPedido = n" x-text="n + ' L'"></button>
+                        </template>
+                    </div>
+
+                    <p class="litros-total">
+                        <span class="et">Tu pedido</span>
+                        <strong x-text="mxn(totalLitros)"></strong>
+                        <span class="unit" x-text="mxn(PRECIO_LITRO) + ' por litro · MXN'"></span>
+                    </p>
+                </div>
+
+                <template x-if="cepasSugeridas.length">
+                    <div class="dato">
+                        <span class="ico"><i class="fi fi-rr-flask" aria-hidden="true"></i></span>
+                        <p>Para lo que nos dijiste, te sugerimos
+                           <strong x-text="cepasSugeridas.map(c => c.nombre).join(' y ')"></strong>.
+                           En la cotización lo afinamos contigo.</p>
+                    </div>
+                </template>
+
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="registrarLitros()">Recibir mi cotización →</button>
+                    <button class="btn-txt" @click="via = 'equipo'; ir(1)">¿Y si mejor produzco los míos?</button>
+                </div>
+            </div>
+        </template>
+
         <!-- ══ 7 · Captura ═════════════════════════════ -->
         <template x-if="paso === 7">
             <div>
-                <button class="atras" @click="ir(6)">← Volver a mi configuración</button>
+                <button class="atras" @click="ir(via === 'litros' ? 12 : 6)"
+                        x-text="via === 'litros' ? '← Volver a mi pedido' : '← Volver a mi configuración'"></button>
                 <p class="paso-n">Último paso</p>
                 <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
@@ -842,10 +1008,11 @@ function diagnostico() {
     const DOSIS_L_HA = 4;
     const LOTE_HA = LOTE_L / DOSIS_L_HA;
 
-    /* Precio de mercado del litro terminado. NO sale de ninguna cotización
-       nuestra: es el único número sin respaldo documental, y de él cuelga
-       todo el ahorro que se le muestra al productor. Pendiente de fuente. */
-    const VENTA_LITRO = 250;
+    /* Precio del litro terminado que vendemos ya producido. Sale de la
+       cotización 348, que es la unica que lo trae por escrito. Ojo: los
+       precios de equipo de arriba son de la 353, mas reciente. Si Ventas
+       actualiza el litro, se cambia aqui y nada mas. */
+    const VENTA_LITRO = 239;
 
     /* Formas de pago, tal como las cotiza Ventas en la 353.
        El plazo de las mensualidades no está definido todavía, así que aquí
@@ -949,6 +1116,11 @@ function diagnostico() {
 
     return {
         paso: 0,
+        /* Que vino a comprar. 'equipo' recorre el diagnostico completo y le
+           calcula recuperacion; 'litros' es una compra, y a una compra no se
+           le proyecta retorno: son tres preguntas y un precio. */
+        via: 'equipo',
+        litrosPedido: 100,
         estado: '',
         ha: 20,
         practica: null,
@@ -1058,6 +1230,13 @@ function diagnostico() {
                 .sort((a, b) => b._p - a._p);
         },
 
+        /* Camino de litros: precio fijo por litro, sin derivar nada. */
+        get PRECIO_LITRO() { return VENTA_LITRO; },
+        get totalLitros()  { return this.litrosPedido * VENTA_LITRO; },
+        /* Las dos que mejor responden a lo que dijo. Solo para orientar la
+           conversacion con Ventas, no para cerrar el pedido aqui. */
+        get cepasSugeridas() { return this.cepasOrdenadas.slice(0, 2); },
+
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
         /* Expuestos para la plantilla: así el texto que ve el visitante sale
            del catálogo y no de un número escrito a mano que se desincroniza. */
@@ -1111,6 +1290,7 @@ function diagnostico() {
 
         /* La palanca: qué se le ofrece. Nadie sale sin oferta. */
         get palanca() {
+            if (this.via === 'litros') return 'litros';
             if (this.noSabe || this.gasto <= 0) return 'campo';
             if (this.practica === 'produzco')   return 'mejoras';
             const m = this.meses;
@@ -1168,6 +1348,11 @@ function diagnostico() {
         mxn(n) {
             if (!isFinite(n)) return '—';
             return '$' + Math.round(n).toLocaleString('es-MX');
+        },
+
+        registrarLitros() {
+            medir('pedido_litros', { litros: this.litrosPedido, total: this.totalLitros });
+            this.ir(7);
         },
 
         ir(n) {
@@ -1237,6 +1422,29 @@ function diagnostico() {
         /* Resumen legible que viaja con el lead. */
         get resumen() {
             const nom = id => (CEPAS.find(c => c.id === id) || {}).nombre || id;
+            const nomProb = id => (PROBLEMAS[id] || {}).nom || id;
+
+            /* Compra de litros: superficie, gasto y practica nunca se
+               preguntaron. Va "Superficie:" vacia a proposito, para que la
+               hoja no tome el valor por omision del formulario y lo registre
+               como si el productor lo hubiera contestado. */
+            if (this.via === 'litros') {
+                return [
+                    'RUTA: litros',
+                    'Compra: litros ya producidos',
+                    'Cultivos: ' + this.nombresCultivos.join(' / '),
+                    'Estado: ' + this.estado,
+                    'Superficie: ',
+                    'Problema principal: ' + nomProb(this.problemaPrincipal),
+                    'Problemas seleccionados: ' + this.problemas.map(nomProb).join(' / '),
+                    'Litros pedidos: ' + this.litrosPedido,
+                    'Precio por litro: ' + this.mxn(VENTA_LITRO),
+                    'Total: ' + this.mxn(this.totalLitros),
+                    'Cepas sugeridas: ' + this.cepasSugeridas.map(c => c.nombre).join(' / '),
+                    'Financiamiento: ' + (this.quiereFinanciamiento ? 'INTERESADO' : 'no')
+                ].join(' | ');
+            }
+
             const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
             const nomPractica = id => (this.practicas.find(p => p.id === id) || {}).nom || id;
             const partes = [
@@ -1327,7 +1535,8 @@ function diagnostico() {
                 body: p.toString()
             })
             .then(() => {
-                medir('lead', { palanca: this.palanca, total: this.precioConfig,
+                medir('lead', { palanca: this.palanca,
+                                total: this.via === 'litros' ? this.totalLitros : this.precioConfig,
                                 financiamiento: this.quiereFinanciamiento ? 1 : 0 });
                 window.location.href = '/gracias-diagnostico';
             })

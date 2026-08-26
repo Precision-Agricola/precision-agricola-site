@@ -39,7 +39,7 @@ const COLUMNAS_LEADS = [
   'Cultivos', 'Superficie (ha)', 'Práctica actual', 'Gasto MXN/ha/mes',
   'Meses activos', 'Gasto anual MXN',
   'Problema principal', 'Todos los problemas',
-  'Ruta', 'Cepas sugeridas', 'Monitoreo', 'Total cotizado MXN', 'Recuperación (meses)',
+  'Ruta', 'Cepas sugeridas', 'Monitoreo', 'Litros pedidos', 'Total cotizado MXN', 'Recuperación (meses)',
   'Forma de pago', 'Interés financiamiento',
   'Origen', 'Notas', 'ID'
 ];
@@ -82,7 +82,7 @@ function instalar() {
   aplicarLista_(leads, 'Etapa', ['Nuevo', 'Contactado', 'Cotizado', 'Negociación', 'Ganado', 'Perdido']);
   aplicarLista_(ventas, 'Estatus', ['Instalado', 'En operación', 'Requiere servicio', 'Inactivo']);
 
-  formatoNumero_(leads, ['Superficie (ha)', 'Meses activos', 'Recuperación (meses)', 'Puntaje'], '0');
+  formatoNumero_(leads, ['Superficie (ha)', 'Meses activos', 'Recuperación (meses)', 'Puntaje', 'Litros pedidos'], '0');
   formatoNumero_(leads, ['Gasto MXN/ha/mes', 'Gasto anual MXN', 'Total cotizado MXN'], '$#,##0');
   formatoNumero_(ventas, ['Monto MXN'], '$#,##0');
   formatoNumero_(ventas, ['Días desde la venta', 'Días para mantenimiento'], '0');
@@ -344,6 +344,8 @@ function construirLead_(fila, encabezados, id) {
   registro['Ruta'] = etiquetaRuta_(r['RUTA']);
   registro['Cepas sugeridas'] = r['Cepas'] || '';
   registro['Monitoreo'] = r['Monitoreo'] ? (/^s[ií]$/i.test(r['Monitoreo']) ? 'Sí' : 'No') : '';
+  /* Solo lo trae quien entro por el camino de compra directa de litros. */
+  registro['Litros pedidos'] = numero_(r['Litros pedidos']);
   registro['Total cotizado MXN'] = total;
   registro['Recuperación (meses)'] = recup;
   registro['Forma de pago'] = r['Forma de pago'] || '';

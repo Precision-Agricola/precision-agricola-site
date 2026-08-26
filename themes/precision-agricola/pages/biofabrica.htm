@@ -387,9 +387,9 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         /* ── Los dos caminos del gancho ──────────────────────────── */
         .dos-caminos { display: flex; flex-direction: column; gap: .7rem; margin-top: 1.5rem; }
         .camino-op {
-            display: grid; grid-template-columns: 4.4rem 1fr auto;
+            display: grid; grid-template-columns: 4.4rem 1fr;
             align-items: center; gap: .9rem;
-            width: 100%; padding: .85rem 1rem .85rem .85rem;
+            width: 100%; min-height: 6.7rem; padding: .85rem 1rem .85rem .85rem;
             background: rgba(255,255,255,.05);
             border: 1px solid rgba(255,255,255,.13);
             border-radius: 14px; cursor: pointer; text-align: left;
@@ -407,7 +407,6 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             background: rgba(255,255,255,.06);
         }
         .camino-marca i { font-size: 1.7rem; color: var(--lime); }
-        .camino-marca img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; }
 
         .camino-cuerpo { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
         .camino-nom {
@@ -415,8 +414,6 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             font-size: 1.02rem; line-height: 1.2;
         }
         .camino-sub { font-size: .84rem; color: var(--txt-2); line-height: 1.35; }
-        .camino-flecha { color: var(--txt-3); font-size: 1.1rem; }
-        .camino-op:hover .camino-flecha { color: var(--lime); }
 
         /* ── Pantalla del pedido ─────────────────────────────────── */
         .pedido {
@@ -579,23 +576,17 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     <button type="button" class="camino-op" @click="via = 'equipo'; ir(1)">
                         <span class="camino-marca"><i class="fi fi-rr-flask" aria-hidden="true"></i></span>
                         <span class="camino-cuerpo">
-                            <span class="camino-nom">Producir los míos</span>
+                            <span class="camino-nom">Producir mis microorganismos</span>
                             <span class="camino-sub">Calcula en cuánto se paga tu biofábrica</span>
                         </span>
-                        <span class="camino-flecha" aria-hidden="true">→</span>
                     </button>
 
                     <button type="button" class="camino-op es-litros" @click="via = 'litros'; ir(10)">
-                        <span class="camino-marca">
-                            <img src="{{ 'assets/images/biofabrica/presentaciones-640.webp'|theme }}"
-                                 width="640" height="580" decoding="async"
-                                 alt="Bioinsumos de Precisión Agrícola en garrafa, botella y bolsa metalizada">
-                        </span>
+                        <span class="camino-marca"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
                         <span class="camino-cuerpo">
                             <span class="camino-nom">Comprar por litro</span>
                             <span class="camino-sub">Ya producidos, listos para aplicar</span>
                         </span>
-                        <span class="camino-flecha" aria-hidden="true">→</span>
                     </button>
                 </div>
             </div>
@@ -616,7 +607,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </template>
                 </div>
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="ir(2)" :disabled="problemas.length === 0">Continuar →</button>
+                    <button class="btn" @click="ir(2)" :disabled="problemas.length === 0">Continuar</button>
                 </div>
             </div>
         </template>
@@ -650,7 +641,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </select>
                 </div>
                 <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(3)" :disabled="cultivos.length === 0 || !estado">Continuar →</button>
+                    <button class="btn" @click="ir(3)" :disabled="cultivos.length === 0 || !estado">Continuar</button>
                 </div>
             </div>
         </template>
@@ -668,7 +659,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
                 <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="ir(4)">Continuar →</button>
+                    <button class="btn" @click="ir(4)">Continuar</button>
                 </div>
             </div>
         </template>
@@ -735,7 +726,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 </template>
 
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="continuarGasto()" :disabled="gasto === 0 || mesesGasto === 0">Continuar →</button>
+                    <button class="btn" @click="continuarGasto()" :disabled="gasto === 0 || mesesGasto === 0">Continuar</button>
                     <button class="btn-txt" @click="gasto = 0; noSabe = true; calcular()">No sé cuánto gasto</button>
                 </div>
             </div>
@@ -886,7 +877,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </select>
                 </div>
                 <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(11)" :disabled="cultivos.length === 0 || !estado">Continuar →</button>
+                    <button class="btn" @click="ir(11)" :disabled="cultivos.length === 0 || !estado">Continuar</button>
                 </div>
             </div>
         </template>
@@ -908,7 +899,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </template>
                 </div>
                 <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(12)" :disabled="problemas.length === 0">Continuar →</button>
+                    <button class="btn" @click="ir(12)" :disabled="problemas.length === 0">Continuar</button>
                 </div>
             </div>
         </template>
@@ -967,7 +958,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 </figure>
 
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="registrarLitros()">Recibir mi cotización →</button>
+                    <button class="btn" @click="registrarLitros()">Recibir mi cotización</button>
                     <button class="btn-txt" @click="via = 'equipo'; ir(1)">¿Y si mejor produzco los míos?</button>
                 </div>
             </div>

@@ -376,19 +376,16 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
            su altura se come la pantalla del telefono entera. */
         .gancho-equipo {
             margin: 1.4rem 0 0;
-            display: grid;
-            grid-template-columns: clamp(7.2rem, 28vw, 9.6rem) minmax(0, 1fr);
-            align-items: center;
-            column-gap: .95rem;
+            display: flex; align-items: center; gap: .9rem;
         }
         .gancho-equipo img {
             width: auto; height: 32vh; max-height: 258px;
             aspect-ratio: 283 / 700;
-            object-fit: contain; justify-self: center;
+            object-fit: contain; flex-shrink: 0;
             filter: drop-shadow(0 10px 16px rgba(0,0,0,.45));
         }
         .gancho-insumos {
-            margin-top: 1rem;
+            margin-top: 1.2rem;
             align-items: center;
         }
         .gancho-insumos img {
@@ -526,23 +523,6 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                             <li>Ultrafiltración y esterilización UV-C</li>
                             <li>Aireación, agitación y control térmico</li>
                             <li>Sanitizado con ozono</li>
-                        </ul>
-                    </figcaption>
-                </figure>
-
-                <figure class="gancho-equipo gancho-insumos surge surge-3">
-                    <img src="{{ 'assets/images/biofabrica/insumos-microbianos-canva-3x.webp'|theme }}"
-                         width="336" height="447" decoding="async"
-                         alt="Microorganismos por litro de Precisión Agrícola en presentaciones comerciales">
-                    <figcaption>
-                        <span class="marca-equipo">Microorganismos por litro</span>
-                        <ul>
-                            <li>Trichoderma asperellum</li>
-                            <li>Methylobacterium spp.</li>
-                            <li>Bacillus thuringiensis</li>
-                            <li>Pseudomonas asgharzadehiana</li>
-                            <li>Bacillus subtilis</li>
-                            <li>Pichia anomala</li>
                         </ul>
                     </figcaption>
                 </figure>
@@ -894,6 +874,23 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         <span class="unit" x-text="mxn(PRECIO_LITRO) + ' por litro · MXN'"></span>
                     </p>
                 </div>
+
+                <figure class="gancho-equipo gancho-insumos surge">
+                    <img src="{{ 'assets/images/biofabrica/insumos-microbianos-canva-3x.webp'|theme }}"
+                         width="336" height="447" decoding="async"
+                         alt="Microorganismos por litro de Precisión Agrícola en presentaciones comerciales">
+                    <figcaption>
+                        <span class="marca-equipo">Así se entrega</span>
+                        <ul>
+                            <li>Trichoderma asperellum</li>
+                            <li>Methylobacterium spp.</li>
+                            <li>Bacillus thuringiensis</li>
+                            <li>Pseudomonas asgharzadehiana</li>
+                            <li>Bacillus subtilis</li>
+                            <li>Pichia anomala</li>
+                        </ul>
+                    </figcaption>
+                </figure>
 
                 <template x-if="cepasSugeridas.length">
                     <div class="dato">

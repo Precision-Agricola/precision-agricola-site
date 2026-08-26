@@ -376,13 +376,24 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
            su altura se come la pantalla del telefono entera. */
         .gancho-equipo {
             margin: 1.4rem 0 0;
-            display: flex; align-items: center; gap: .9rem;
+            display: grid;
+            grid-template-columns: clamp(7.2rem, 28vw, 9.6rem) minmax(0, 1fr);
+            align-items: center;
+            column-gap: .95rem;
         }
         .gancho-equipo img {
             width: auto; height: 32vh; max-height: 258px;
             aspect-ratio: 283 / 700;
-            object-fit: contain; flex-shrink: 0;
+            object-fit: contain; justify-self: center;
             filter: drop-shadow(0 10px 16px rgba(0,0,0,.45));
+        }
+        .gancho-insumos {
+            margin-top: 1rem;
+            align-items: center;
+        }
+        .gancho-insumos img {
+            width: min(100%, 9.5rem); height: auto; max-height: 212px;
+            aspect-ratio: 336 / 447;
         }
         .gancho-equipo figcaption { min-width: 0; }
         .gancho-equipo .marca-equipo {
@@ -428,11 +439,12 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     Microbiología on farm,<br>producida en tu rancho.
                 </h1>
                 <p class="apoyo surge surge-2">
-                    Si ya usas microorganismos o estás por empezar, producirlos en tu propia
-                    unidad cambia la relación entre <strong style="color:var(--txt)">calidad y precio</strong>:
-                    biomasa viva, cosechada en su fase óptima para colonizar la rizósfera, sin las
-                    semanas de traslado y almacén que le restan viabilidad.
-                    Haz el cálculo con los números de tu operación.
+                    Si ya integras microorganismos o estás por hacerlo, producirlos en tu propia
+                    unidad transforma la relación costo-beneficio. Obtén biomasa viva, cosechada
+                    en su fase de crecimiento exponencial, ideal para colonizar la rizósfera
+                    inmediatamente. Olvídate de semanas de traslado, almacenamiento y anaquel que
+                    destruyen la viabilidad celular (UFC). Ingresa los datos de tu operación para
+                    proyectar tu ahorro.
                 </p>
                 <!-- Prueba de que el equipo existe. Va antes del botón porque
                      el visitante viene de un anuncio y no sabe quiénes somos. -->
@@ -455,6 +467,23 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </figcaption>
                 </figure>
 
+                <figure class="gancho-equipo gancho-insumos surge surge-3">
+                    <img src="{{ 'assets/images/biofabrica/insumos-microbianos-canva-3x.webp'|theme }}"
+                         width="336" height="447" decoding="async"
+                         alt="Microorganismos por litro de Precisión Agrícola en presentaciones comerciales">
+                    <figcaption>
+                        <span class="marca-equipo">Microorganismos por litro</span>
+                        <ul>
+                            <li>Trichoderma asperellum</li>
+                            <li>Methylobacterium spp.</li>
+                            <li>Bacillus thuringiensis</li>
+                            <li>Pseudomonas asgharzadehiana</li>
+                            <li>Bacillus subtilis</li>
+                            <li>Pichia anomala</li>
+                        </ul>
+                    </figcaption>
+                </figure>
+
                 <div class="surge surge-3 gancho-cta">
                     <button class="btn" @click="ir(1)">Calcular con mis datos</button>
                 </div>
@@ -465,7 +494,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         <template x-if="paso === 1">
             <div>
                 <p class="paso-n">Paso 1 de 5</p>
-                <h2 class="pregunta">¿Qué te está costando más trabajo?</h2>
+                <h2 class="pregunta">¿Cuál es el principal desafío limitante en tu operación hoy?</h2>
                 <p class="apoyo">Elige uno o varios problemas que tengas.</p>
                 <div class="ops">
                     <template x-for="p in problemasOrdenados" :key="p.id">
@@ -538,14 +567,14 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             <div>
                 <button class="atras" @click="ir(3)">← Atrás</button>
                 <p class="paso-n">Paso 4 de 5</p>
-                <h2 class="pregunta">¿Qué haces hoy con los microorganismos?</h2>
+                <h2 class="pregunta">¿Cómo gestionas tu carga microbiana actualmente?</h2>
                 <div class="ops">
                     <template x-for="p in practicas" :key="p.id">
                         <button class="op" :aria-pressed="practica === p.id" @click="practica = p.id; ir(5)">
                             <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
                             <span class="cuerpo">
                                 <span x-text="p.nom"></span>
-                                <span class="sub" x-text="p.sub"></span>
+                                <span class="sub" x-show="p.sub" x-text="p.sub"></span>
                             </span>
                         </button>
                     </template>
@@ -894,12 +923,12 @@ function diagnostico() {
     };
 
     const PROBLEMAS = {
-        costo:      { id:'costo',      icon:'fi-rr-sack-dollar',       nom:'Costo elevado de insumos biológicos' },
-        suelo:      { id:'suelo',      icon:'fi-rr-land-layers',       nom:'Degradación del suelo' },
-        patogenos:  { id:'patogenos',  icon:'fi-rr-shield-virus',      nom:'Patógenos radiculares' },
-        nutrientes: { id:'nutrientes', icon:'fi-rr-plant-growth',      nom:'Baja eficiencia en absorción de nutrientes' },
-        foliar:     { id:'foliar',     icon:'fi-rr-leaf',              nom:'Enfermedades foliares' },
-        plagas:     { id:'plagas',     icon:'fi-rr-bug',               nom:'Presión de plagas (larvas y barrenadores)' }
+        costo:      { id:'costo',      icon:'fi-rr-sack-dollar',       nom:'Costo insostenible de insumos biológicos comerciales.' },
+        suelo:      { id:'suelo',      icon:'fi-rr-land-layers',       nom:'Degradación física y química del suelo.' },
+        patogenos:  { id:'patogenos',  icon:'fi-rr-shield-virus',      nom:'Incidencia de patógenos radiculares (Fusarium, Phytophthora, etc.).' },
+        nutrientes: { id:'nutrientes', icon:'fi-rr-plant-growth',      nom:'Baja eficiencia en la asimilación de nutrientes.' },
+        foliar:     { id:'foliar',     icon:'fi-rr-leaf',              nom:'Presión de enfermedades foliares.' },
+        plagas:     { id:'plagas',     icon:'fi-rr-bug',               nom:'Presión entomológica aguda (lepidópteros, coleópteros y plagas del suelo).' }
     };
 
     /* Banco inicial de datos, escrito a mano y revisable.
@@ -953,12 +982,11 @@ function diagnostico() {
             'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán',
             'Zacatecas'
         ],
-        /* "No uso" y "todavía no uso nada" eran la misma respuesta partida en
-           dos, y obligaban a elegir entre matices que no cambian la oferta. */
         practicas: [
-            { id:'quimicos',icon:'fi-rr-ban',           nom:'Todavía no uso microorganismos', sub:'Manejo con químicos, o quiero empezar' },
-            { id:'compro',  icon:'fi-rr-shopping-cart', nom:'Los compro ya preparados',       sub:'Le pago a un proveedor por litro' },
-            { id:'produzco',icon:'fi-rr-flask',         nom:'Ya los produzco yo',             sub:'Tengo equipo propio' }
+            { id:'quimicos',  icon:'fi-rr-ban',              nom:'Manejo 100% convencional (No utilizo microorganismos)' },
+            { id:'compro',    icon:'fi-rr-shopping-cart',    nom:'Compro biológicos comerciales formulados (envasados).' },
+            { id:'artesanal', icon:'fi-rr-flask',            nom:'Ya propago/multiplico de forma artesanal.' },
+            { id:'produzco',  icon:'fi-rr-industry-windows', nom:'Cuento con biorreactores o equipo propio.' }
         ],
         mesesDisponibles: [
             { id:'ene', nom:'Ene' }, { id:'feb', nom:'Feb' }, { id:'mar', nom:'Mar' },
@@ -971,6 +999,7 @@ function diagnostico() {
 
         get preguntaGasto() {
             if (this.practica === 'compro')   return '¿Cuánto pagas por ha en un mes activo de microorganismos?';
+            if (this.practica === 'artesanal') return '¿Cuánto te cuesta por ha en un mes activo propagar microorganismos?';
             if (this.practica === 'produzco') return '¿Cuánto te cuesta por ha en un mes activo producirlos?';
             if (this.practica === 'quimicos') return '¿Cuánto gastas por ha en un mes activo de fungicidas y fertilizantes?';
             return '¿Cuánto gastas por ha en un mes activo de sanidad y nutrición?';
@@ -1209,16 +1238,17 @@ function diagnostico() {
         get resumen() {
             const nom = id => (CEPAS.find(c => c.id === id) || {}).nombre || id;
             const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
+            const nomPractica = id => (this.practicas.find(p => p.id === id) || {}).nom || id;
             const partes = [
                 'RUTA: ' + this.palanca,
                 'Cultivos: ' + this.nombresCultivos.join(' / '),
                 'Estado: ' + this.estado,
                 'Superficie: ' + this.ha + ' ha',
-                'Practica: ' + this.practica,
+                'Practica: ' + nomPractica(this.practica),
                 'Gasto: $' + this.gasto + '/ha/mes',
                 'Meses con gasto: ' + this.mesesActivos.join(','),
                 'Gasto anual por ha: ' + this.mxn(this.gastoHaAnual),
-                'Problema principal: ' + this.problemaPrincipal,
+                'Problema principal: ' + nomProblema(this.problemaPrincipal),
                 'Problemas seleccionados: ' + this.problemas.map(nomProblema).join(' / ')
             ];
             if (this.palanca !== 'litros' && this.palanca !== 'campo') {

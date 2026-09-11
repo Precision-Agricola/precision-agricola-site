@@ -6,3 +6,7 @@ authorCode: ''
 code: ''
 parent: ''
 database: '0'
+
+# Expone los precios del cotizador en Settings -> Customize theme, para que
+# Ventas los cambie sin tocar codigo ni limpiar cache.
+form: config/fields.yaml

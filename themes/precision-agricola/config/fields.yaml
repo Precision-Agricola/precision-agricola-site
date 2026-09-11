@@ -1,0 +1,55 @@
+# Precios del cotizador, editables desde Settings -> Customize theme -> Cotizador.
+#
+# OJO: los valores por omisión son los del prototipo y NO son los precios
+# reales. Los de la cotización 353, que ya están en /biofabrica, son: equipo
+# $149,000, litro $239, lote de 180 L. Falta que Ventas confirme de dónde
+# salen los del prototipo antes de publicar esta página.
+tabs:
+    fields:
+        cotizador_precio_litro:
+            tab: Cotizador
+            label: Precio de venta por litro
+            comment: 'En pesos, sin IVA. Es el precio que ve el público.'
+            type: number
+            default: 150
+            span: left
+
+        cotizador_dosis_ha:
+            tab: Cotizador
+            label: Dosis por hectárea
+            comment: 'Litros de bioinsumo por hectárea, por aplicación.'
+            type: number
+            default: 4
+            span: right
+
+        cotizador_litros_lote:
+            tab: Cotizador
+            label: Capacidad del lote
+            comment: 'Litros que produce la biofábrica por ciclo de fermentación.'
+            type: number
+            default: 200
+            span: left
+
+        cotizador_referencia_ha:
+            tab: Cotizador
+            label: Costo del producto comercial por hectárea
+            comment: 'Referencia de mercado para calcular el ahorro. Debe validarla el equipo agronómico: es la cifra que sostiene todo el argumento y la más fácil de rebatir si está inflada.'
+            type: number
+            default: 900
+            span: right
+
+        cotizador_whatsapp:
+            tab: Cotizador
+            label: Número de WhatsApp
+            comment: 'Solo dígitos, con código de país. Ejemplo: 524921234567. Prueba el enlace con el número real antes de publicar: si está mal, WhatsApp abre igual pero con un contacto inexistente.'
+            type: text
+            default: '524921234567'
+            span: left
+
+        cotizador_nota_precio:
+            tab: Cotizador
+            label: Nota al pie del precio
+            comment: 'Aclaración que acompaña la cifra, para dejar claro que es un estimado.'
+            type: text
+            default: 'Precio estimado sin IVA, sujeto a confirmación.'
+            span: right

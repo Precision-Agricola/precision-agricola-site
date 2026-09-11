@@ -1,0 +1,298 @@
+/* Cotizador de bioinsumos · /cotizador
+   Paleta y tipografías tomadas de /biofabrica, para que las dos páginas se
+   lean como el mismo sitio. Una sola columna: el visitante llega de un
+   enlace en WhatsApp o Facebook, casi siempre desde el teléfono. */
+
+:root {
+    --bg:        #0d1a12;
+    --bg-2:      #142317;
+    --card:      #1a2c1f;
+    --line:      rgba(255,255,255,.10);
+    --txt:       #f2f7f3;
+    --txt-2:     #a9c2b1;
+    --txt-3:     #6d8a77;
+    --lime:      #7ed957;
+    --lime-deep: #4f9c2f;
+    --amber:     #e0a33c;
+
+    --ancho: 640px;
+    --radio: 16px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+    background: var(--bg);
+    color: var(--txt);
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.envoltura {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 1.6rem 1.1rem 4rem;
+}
+
+/* ── Encabezado ───────────────────────────────────────────── */
+
+.cabecera { text-align: center; margin-bottom: 2rem; }
+.cabecera .marca {
+    display: inline-flex; align-items: center; gap: .55rem;
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: .82rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--lime); margin-bottom: 1rem;
+}
+.cabecera .marca img { width: 26px; height: 26px; }
+.cabecera h1 {
+    font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: clamp(1.7rem, 7vw, 2.3rem); line-height: 1.15;
+    margin: 0 0 .6rem; text-wrap: balance;
+}
+.cabecera p {
+    margin: 0 auto; max-width: 34ch;
+    color: var(--txt-2); font-size: 1rem;
+}
+
+/* ── La pregunta ──────────────────────────────────────────── */
+
+.pregunta {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radio);
+    padding: 1.3rem 1.2rem;
+}
+.pregunta h2 {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 1.08rem; margin: 0 0 1rem; line-height: 1.3;
+}
+
+.campos { display: grid; gap: .9rem; grid-template-columns: 1fr; }
+@media (min-width: 480px) { .campos { grid-template-columns: 1fr 1fr; } }
+
+.campo { display: flex; flex-direction: column; gap: .35rem; }
+.campo label {
+    font-size: .82rem; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--txt-3); font-weight: 500;
+}
+.campo .envase { position: relative; display: flex; align-items: center; }
+.campo input, .campo select {
+    width: 100%; min-height: 52px;
+    padding: .7rem .9rem;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--txt);
+    transition: border-color .18s ease, background .18s ease;
+}
+.campo input:hover, .campo select:hover { border-color: var(--txt-3); }
+.campo input:focus, .campo select:focus { border-color: var(--lime); background: var(--card); }
+.campo .unidad {
+    position: absolute; right: .9rem;
+    color: var(--txt-3); font-size: .9rem; pointer-events: none;
+}
+.campo input[type="number"] { padding-right: 2.6rem; -moz-appearance: textfield; }
+.campo input[type="number"]::-webkit-outer-spin-button,
+.campo input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.campo select { appearance: none; padding-right: 2.4rem; cursor: pointer; }
+.campo .envase.es-lista::after {
+    content: ''; position: absolute; right: 1rem; pointer-events: none;
+    width: 8px; height: 8px; border-right: 2px solid var(--txt-3);
+    border-bottom: 2px solid var(--txt-3); transform: rotate(45deg) translateY(-2px);
+}
+
+.barra-ha { margin-top: 1rem; }
+.barra-ha input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 44px; background: transparent; cursor: pointer;
+}
+.barra-ha input::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,.14); }
+.barra-ha input::-moz-range-track             { height: 6px; border-radius: 3px; background: rgba(255,255,255,.14); }
+.barra-ha input::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 30px; height: 30px; margin-top: -12px; border-radius: 50%;
+    background: var(--lime); border: 3px solid var(--bg);
+    box-shadow: 0 3px 12px rgba(0,0,0,.5);
+}
+.barra-ha input::-moz-range-thumb {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--lime); border: 3px solid var(--bg);
+    box-shadow: 0 3px 12px rgba(0,0,0,.5);
+}
+.barra-topes {
+    display: flex; justify-content: space-between;
+    font-size: .76rem; color: var(--txt-3); margin-top: -.4rem;
+}
+
+/* ── El resultado ─────────────────────────────────────────── */
+
+.resultado { margin-top: 1.4rem; }
+
+.destacado {
+    background: linear-gradient(160deg, var(--card), var(--bg-2));
+    border: 1px solid var(--line);
+    border-radius: var(--radio);
+    padding: 1.6rem 1.2rem 1.3rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+}
+/* Un halo que late despacio detrás de la cifra. Sutil: la cifra es el
+   protagonista y el fondo no debe competir con ella. */
+.destacado::before {
+    content: ''; position: absolute; inset: -40% 20% auto;
+    height: 160%; border-radius: 50%;
+    background: radial-gradient(circle, rgba(126,217,87,.13), transparent 62%);
+    animation: latir 7s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes latir {
+    0%, 100% { transform: scale(1);    opacity: .75; }
+    50%      { transform: scale(1.18); opacity: 1; }
+}
+
+.destacado .rotulo {
+    position: relative;
+    font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--txt-3);
+}
+.destacado .cifra {
+    position: relative;
+    font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: clamp(2.9rem, 15vw, 4rem); line-height: 1;
+    color: var(--lime); letter-spacing: -.02em;
+    margin: .35rem 0 .1rem;
+}
+.destacado .cifra .u {
+    font-size: .3em; font-weight: 600; color: var(--txt-2);
+    letter-spacing: 0; margin-left: .15em;
+}
+.destacado .nota { position: relative; font-size: .8rem; color: var(--txt-3); }
+
+/* ── Comparación contra el producto comercial ─────────────── */
+
+.comparativa {
+    margin-top: 1rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radio);
+    padding: 1.2rem;
+}
+.comparativa h3 {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: .95rem; margin: 0 0 1rem;
+}
+.par { margin-bottom: .9rem; }
+.par:last-of-type { margin-bottom: 0; }
+.par .etiqueta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: .86rem; margin-bottom: .35rem;
+}
+.par .etiqueta .quien { color: var(--txt-2); }
+.par .etiqueta .cuanto { font-weight: 700; font-family: 'Montserrat', sans-serif; }
+.par .riel { height: 12px; border-radius: 6px; background: rgba(255,255,255,.07); overflow: hidden; }
+.par .relleno {
+    height: 100%; border-radius: 6px; width: 0;
+    transition: width .7s cubic-bezier(.22,.9,.3,1);
+}
+.par.es-comercial .relleno { background: linear-gradient(90deg, #6d8a77, #8aa695); }
+.par.es-nuestro   .relleno { background: linear-gradient(90deg, var(--lime-deep), var(--lime)); }
+.par.es-nuestro .etiqueta .cuanto { color: var(--lime); }
+
+.ahorro-linea {
+    margin-top: 1.1rem; padding-top: .9rem;
+    border-top: 1px solid var(--line);
+    font-size: .95rem; color: var(--txt-2);
+}
+.ahorro-linea strong { color: var(--lime); font-family: 'Montserrat', sans-serif; }
+.ahorro-linea.es-caro strong { color: var(--amber); }
+
+/* ── Desglose ─────────────────────────────────────────────── */
+
+.desglose {
+    margin-top: 1rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radio);
+    overflow: hidden;
+}
+.desglose .renglon {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 1rem; padding: .85rem 1.2rem;
+    border-bottom: 1px solid var(--line);
+    font-size: .93rem;
+}
+.desglose .renglon:last-child { border-bottom: 0; }
+.desglose .renglon .que { color: var(--txt-2); }
+.desglose .renglon .cuanto {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ── Contacto ─────────────────────────────────────────────── */
+
+.contacto {
+    margin-top: 1.6rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radio);
+    padding: 1.3rem 1.2rem;
+}
+.contacto h2 {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 1.08rem; margin: 0 0 .35rem;
+}
+.contacto .apoyo { margin: 0 0 1.1rem; color: var(--txt-2); font-size: .92rem; }
+
+.boton-wa {
+    display: flex; align-items: center; justify-content: center; gap: .6rem;
+    width: 100%; min-height: 54px; margin-top: 1.1rem;
+    padding: .9rem 1.2rem;
+    background: var(--lime); color: #0d1a12;
+    font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem;
+    border: 0; border-radius: 12px; cursor: pointer;
+    text-decoration: none;
+    transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+    box-shadow: 0 6px 20px rgba(126,217,87,.22);
+}
+.boton-wa:hover { transform: translateY(-1px); box-shadow: 0 9px 26px rgba(126,217,87,.3); }
+.boton-wa:active { transform: translateY(0); }
+.boton-wa[aria-disabled="true"] {
+    background: rgba(255,255,255,.08); color: var(--txt-3);
+    box-shadow: none; cursor: not-allowed; transform: none;
+}
+.boton-wa svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+.legal { margin: .9rem 0 0; font-size: .78rem; color: var(--txt-3); line-height: 1.5; }
+.legal a { color: var(--txt-2); }
+
+/* El campo trampa para robots: fuera de pantalla, no oculto, para que los
+   lectores de pantalla tampoco lo anuncien. */
+.trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ── Entradas escalonadas ─────────────────────────────────── */
+
+.surge { animation: surgir .5s cubic-bezier(.2,.8,.3,1) both; }
+.surge-1 { animation-delay: .07s; }
+.surge-2 { animation-delay: .14s; }
+.surge-3 { animation-delay: .21s; }
+@keyframes surgir {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+    .par .relleno { transition: none !important; }
+}

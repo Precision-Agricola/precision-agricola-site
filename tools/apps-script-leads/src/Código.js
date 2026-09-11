@@ -60,6 +60,7 @@ function onOpen() {
     .addItem('Marcar fila como venta', 'marcarVenta')
     .addSeparator()
     .addItem('Reprocesar todo', 'reprocesar')
+    .addItem('Borrar ventas duplicadas', 'limpiarVentasDuplicadas')
     .addSeparator()
     .addItem('Reinstalar estructura', 'instalar')
     .addToUi();
@@ -435,6 +436,18 @@ function marcarVenta() {
   if (fila < 2) { ui.alert('Selecciona la fila de un lead.'); return; }
 
   const v = (nombre) => leads.getRange(fila, COLUMNAS_LEADS.indexOf(nombre) + 1).getValue();
+
+  /* sincronizar ya evitaba duplicados; esto no. Dos clics sobre el mismo
+     lead registraban la venta dos veces y el Tablero contaba el doble. */
+  const yaEsta = filaDeVenta_(ventas, v('ID'));
+  if (yaEsta) {
+    ui.alert('Este lead ya está registrado como venta, en la fila ' + yaEsta +
+             ' de Ventas.' + '\n\n' + 'No se agregó de nuevo.');
+    ss.setActiveSheet(ventas);
+    ventas.setActiveRange(ventas.getRange(yaEsta, 1, 1, COLUMNAS_VENTAS.length));
+    return;
+  }
+
   const hoy = new Date();
 
   const registro = {};
@@ -484,6 +497,50 @@ function marcarVenta() {
   leads.getRange(fila, COLUMNAS_LEADS.indexOf('Etapa') + 1).setValue('Ganado');
   ss.setActiveSheet(ventas);
   ui.alert('Listo. El lead pasó a Ventas y quedó marcado como Ganado.');
+}
+
+/** En qué fila de Ventas está ese lead, o 0 si no está. */
+function filaDeVenta_(ventas, idLead) {
+  const col = COLUMNAS_VENTAS.indexOf('ID lead') + 1;
+  const n = ventas.getLastRow() - 1;
+  if (n < 1 || !idLead) return 0;
+  const vals = ventas.getRange(2, col, n, 1).getValues();
+  for (let i = 0; i < vals.length; i++) {
+    if (String(vals[i][0]) === String(idLead)) return i + 2;
+  }
+  return 0;
+}
+
+/**
+ * Borra las ventas repetidas que quedaron antes de que marcarVenta revisara.
+ * Conserva la primera de cada lead. Pregunta antes, y borra de abajo hacia
+ * arriba: al reves, cada borrado correria las filas siguientes.
+ */
+function limpiarVentasDuplicadas() {
+  const ui = SpreadsheetApp.getUi();
+  const ventas = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(HOJA_VENTAS);
+  const n = ventas ? ventas.getLastRow() - 1 : 0;
+  if (n < 2) { ui.alert('No hay filas suficientes para tener duplicados.'); return; }
+
+  const col = COLUMNAS_VENTAS.indexOf('ID lead') + 1;
+  const vals = ventas.getRange(2, col, n, 1).getValues();
+  const vistos = {}, sobran = [];
+  vals.forEach((r, i) => {
+    const id = String(r[0] || '');
+    if (!id) return;
+    if (vistos[id]) sobran.push(i + 2); else vistos[id] = true;
+  });
+
+  if (!sobran.length) { ui.alert('No hay ventas duplicadas.'); return; }
+
+  const r = ui.alert('Ventas duplicadas',
+    'Hay ' + sobran.length + ' fila(s) repetida(s): ' + sobran.join(', ') + '.' + '\n\n' +
+    'Se conserva la primera de cada venta. ¿Borrar las repetidas?',
+    ui.ButtonSet.YES_NO);
+  if (r !== ui.Button.YES) return;
+
+  sobran.slice().reverse().forEach(f => ventas.deleteRow(f));
+  ui.alert('Listo. Se borraron ' + sobran.length + ' fila(s).');
 }
 
 /* ───────────────────────── Auxiliares ───────────────────────── */

@@ -376,25 +376,128 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
            su altura se come la pantalla del telefono entera. */
         .gancho-equipo {
             margin: 1.4rem 0 0;
-            display: grid;
-            grid-template-columns: clamp(7.2rem, 28vw, 9.6rem) minmax(0, 1fr);
-            align-items: center;
-            column-gap: .95rem;
+            display: flex; align-items: center; gap: .9rem;
         }
         .gancho-equipo img {
             width: auto; height: 32vh; max-height: 258px;
             aspect-ratio: 283 / 700;
-            object-fit: contain; justify-self: center;
+            object-fit: contain; flex-shrink: 0;
             filter: drop-shadow(0 10px 16px rgba(0,0,0,.45));
         }
-        .gancho-insumos {
-            margin-top: 1rem;
-            align-items: center;
+        /* ── Los dos caminos del gancho ──────────────────────────── */
+        .dos-caminos { display: flex; flex-direction: column; gap: .7rem; margin-top: 1.5rem; }
+        .camino-op {
+            display: grid; grid-template-columns: 4.4rem 1fr;
+            align-items: center; gap: .9rem;
+            width: 100%; min-height: 6.7rem; padding: .85rem 1rem .85rem .85rem;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 14px; cursor: pointer; text-align: left;
+            color: var(--txt); font: inherit;
+            transition: border-color .18s ease, background .18s ease, transform .18s ease;
         }
-        .gancho-insumos img {
-            width: min(100%, 9.5rem); height: auto; max-height: 212px;
-            aspect-ratio: 336 / 447;
+        .camino-op:hover, .camino-op:focus-visible {
+            border-color: var(--lime); background: rgba(255,255,255,.08); transform: translateY(-1px);
         }
+        .camino-op:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+
+        .camino-marca {
+            width: 4.4rem; height: 4.4rem; border-radius: 11px;
+            display: grid; place-items: center; overflow: hidden;
+            background: rgba(255,255,255,.06);
+        }
+        .camino-marca i { font-size: 1.7rem; color: var(--lime); }
+
+        .camino-cuerpo { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+        .camino-nom {
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 1.02rem; line-height: 1.2;
+        }
+        .camino-sub { font-size: .84rem; color: var(--txt-2); line-height: 1.35; }
+
+        /* ── Pantalla del pedido ─────────────────────────────────── */
+        .pedido {
+            margin-top: 1.5rem; padding: 1.4rem 1.2rem 1.2rem;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 16px;
+        }
+        .pedido-cifra {
+            margin: 0; text-align: center;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: clamp(3rem, 16vw, 4.2rem); line-height: 1;
+            color: var(--lime); font-variant-numeric: tabular-nums;
+            letter-spacing: -.02em;
+        }
+        .pedido-cifra .u { font-size: .34em; color: var(--txt-2); margin-left: .12em; letter-spacing: 0; }
+
+        .pedido-barra {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 40px; margin: .7rem 0 0;
+            background: transparent; cursor: pointer;
+        }
+        .pedido-barra::-webkit-slider-runnable-track { height: 7px; border-radius: 4px; background: rgba(255,255,255,.16); }
+        .pedido-barra::-moz-range-track             { height: 7px; border-radius: 4px; background: rgba(255,255,255,.16); }
+        .pedido-barra::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 34px; height: 34px; margin-top: -13.5px; border-radius: 50%;
+            background: var(--lime); border: 3px solid var(--bg);
+            box-shadow: 0 3px 12px rgba(0,0,0,.5);
+        }
+        .pedido-barra::-moz-range-thumb {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--lime); border: 3px solid var(--bg);
+            box-shadow: 0 3px 12px rgba(0,0,0,.5);
+        }
+        .pedido-barra:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--txt); outline-offset: 2px; }
+        .pedido-barra:focus-visible::-moz-range-thumb     { outline: 2px solid var(--txt); outline-offset: 2px; }
+
+        .pedido-topes {
+            display: flex; justify-content: space-between;
+            font-size: .78rem; color: var(--txt-3); margin-top: -.35rem;
+        }
+        .pedido-total {
+            margin: 1.2rem 0 0; padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,.10);
+            display: flex; flex-direction: column; gap: .12rem; text-align: center;
+        }
+        .pedido-total .et { font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; color: var(--txt-3); }
+        .pedido-total strong {
+            font-family: 'Montserrat', sans-serif; font-size: 2.1rem;
+            color: var(--txt); font-variant-numeric: tabular-nums;
+        }
+        .pedido-total .unit { font-size: .82rem; color: var(--txt-2); }
+
+        /* ── Sugerencia de cepas ─────────────────────────────────── */
+        .sugerencia {
+            margin-top: 1.2rem; border: 1px solid rgba(255,255,255,.10);
+            border-radius: 16px; overflow: hidden; background: rgba(255,255,255,.03);
+        }
+        .petris { display: flex; gap: 0; }
+        .petris img {
+            width: 16.6667%; height: auto; aspect-ratio: 1;
+            object-fit: cover; display: block;
+        }
+        .sugerencia-txt {
+            margin: 0; padding: .95rem 1.1rem .3rem;
+            font-size: .95rem; line-height: 1.5;
+        }
+        .sugerencia-txt strong { color: var(--lime); }
+        .sugerencia-pie {
+            margin: 0; padding: 0 1.1rem 1rem;
+            font-size: .78rem; color: var(--txt-3); line-height: 1.4;
+        }
+
+        /* ── Como se entrega ─────────────────────────────────────── */
+        .entrega { margin: 1.3rem 0 0; text-align: center; }
+        .entrega img {
+            width: min(88%, 420px); height: auto; display: block; margin: 0 auto;
+            filter: drop-shadow(0 12px 20px rgba(0,0,0,.45));
+        }
+        .entrega figcaption {
+            margin-top: .6rem; font-size: .8rem; color: var(--txt-3);
+        }
+
         .gancho-equipo figcaption { min-width: 0; }
         .gancho-equipo .marca-equipo {
             display: block; font-family: 'Montserrat', sans-serif;
@@ -467,25 +570,24 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </figcaption>
                 </figure>
 
-                <figure class="gancho-equipo gancho-insumos surge surge-3">
-                    <img src="{{ 'assets/images/biofabrica/insumos-microbianos-canva-3x.webp'|theme }}"
-                         width="336" height="447" decoding="async"
-                         alt="Microorganismos por litro de Precisión Agrícola en presentaciones comerciales">
-                    <figcaption>
-                        <span class="marca-equipo">Microorganismos por litro</span>
-                        <ul>
-                            <li>Trichoderma asperellum</li>
-                            <li>Methylobacterium spp.</li>
-                            <li>Bacillus thuringiensis</li>
-                            <li>Pseudomonas asgharzadehiana</li>
-                            <li>Bacillus subtilis</li>
-                            <li>Pichia anomala</li>
-                        </ul>
-                    </figcaption>
-                </figure>
+                <!-- Los dos caminos pesan lo mismo: comprar litros no es el
+                     premio de consolacion de quien no puede pagar el equipo. -->
+                <div class="surge surge-3 dos-caminos">
+                    <button type="button" class="camino-op" @click="via = 'equipo'; ir(1)">
+                        <span class="camino-marca"><i class="fi fi-rr-flask" aria-hidden="true"></i></span>
+                        <span class="camino-cuerpo">
+                            <span class="camino-nom">Producir mis microorganismos</span>
+                            <span class="camino-sub">Calcula en cuánto se paga tu biofábrica</span>
+                        </span>
+                    </button>
 
-                <div class="surge surge-3 gancho-cta">
-                    <button class="btn" @click="ir(1)">Calcular con mis datos</button>
+                    <button type="button" class="camino-op es-litros" @click="via = 'litros'; ir(10)">
+                        <span class="camino-marca"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
+                        <span class="camino-cuerpo">
+                            <span class="camino-nom">Comprar por litro</span>
+                            <span class="camino-sub">Ya producidos, listos para aplicar</span>
+                        </span>
+                    </button>
                 </div>
             </div>
         </template>
@@ -505,7 +607,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </template>
                 </div>
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="ir(2)" :disabled="problemas.length === 0">Continuar →</button>
+                    <button class="btn" @click="ir(2)" :disabled="problemas.length === 0">Continuar</button>
                 </div>
             </div>
         </template>
@@ -539,7 +641,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </select>
                 </div>
                 <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(3)" :disabled="cultivos.length === 0 || !estado">Continuar →</button>
+                    <button class="btn" @click="ir(3)" :disabled="cultivos.length === 0 || !estado">Continuar</button>
                 </div>
             </div>
         </template>
@@ -557,7 +659,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
                 <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="ir(4)">Continuar →</button>
+                    <button class="btn" @click="ir(4)">Continuar</button>
                 </div>
             </div>
         </template>
@@ -624,7 +726,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 </template>
 
                 <div style="margin-top:1.6rem">
-                    <button class="btn" @click="continuarGasto()" :disabled="gasto === 0 || mesesGasto === 0">Continuar →</button>
+                    <button class="btn" @click="continuarGasto()" :disabled="gasto === 0 || mesesGasto === 0">Continuar</button>
                     <button class="btn-txt" @click="gasto = 0; noSabe = true; calcular()">No sé cuánto gasto</button>
                 </div>
             </div>
@@ -746,10 +848,127 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             </div>
         </template>
 
+        <!-- ══ 10 · Litros · cultivo ═══════════════════ -->
+        <template x-if="paso === 10">
+            <div>
+                <button class="atras" @click="ir(0)">← Atrás</button>
+                <p class="paso-n">Paso 1 de 3</p>
+                <h2 class="pregunta">¿Qué cultivas?</h2>
+                <p class="apoyo">Elige uno o varios.</p>
+                <div class="ops">
+                    <template x-for="c in CULTIVOS" :key="c.id">
+                        <button type="button" class="op" :aria-pressed="cultivos.includes(c.id)"
+                                @click="toggleCultivo(c.id)">
+                            <span class="ico"><i class="fi" :class="c.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo">
+                                <span x-text="c.nom"></span>
+                                <span class="sub" x-show="c.det" x-text="c.det"></span>
+                            </span>
+                        </button>
+                    </template>
+                </div>
+                <div class="campo" style="margin-top:1.2rem">
+                    <label for="estado-litros">Estado de la República donde está tu operación</label>
+                    <select id="estado-litros" x-model="estado">
+                        <option value="">Selecciona un estado</option>
+                        <template x-for="e in estadosMexico" :key="e">
+                            <option :value="e" x-text="e"></option>
+                        </template>
+                    </select>
+                </div>
+                <div style="margin-top:1.2rem">
+                    <button class="btn" @click="ir(11)" :disabled="cultivos.length === 0 || !estado">Continuar</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 11 · Litros · problema ══════════════════ -->
+        <template x-if="paso === 11">
+            <div>
+                <button class="atras" @click="ir(10)">← Atrás</button>
+                <p class="paso-n">Paso 2 de 3</p>
+                <h2 class="pregunta">¿Cuál es el principal desafío limitante en tu operación hoy?</h2>
+                <p class="apoyo">Elige uno o varios. Con eso te sugerimos qué cepas pedir.</p>
+                <div class="ops">
+                    <template x-for="p in problemasOrdenados" :key="p.id">
+                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)"
+                                @click="toggleProblema(p.id)">
+                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo"><span x-text="p.nom"></span></span>
+                        </button>
+                    </template>
+                </div>
+                <div style="margin-top:1.2rem">
+                    <button class="btn" @click="ir(12)" :disabled="problemas.length === 0">Continuar</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 12 · Litros · cantidad y precio ═════════ -->
+        <template x-if="paso === 12">
+            <div>
+                <button class="atras" @click="ir(11)">← Atrás</button>
+                <p class="paso-n">Paso 3 de 3</p>
+                <h2 class="pregunta">¿Cuántos litros te interesan?</h2>
+                <p class="apoyo">Mueve la barra. Se vende la cantidad que necesites.</p>
+
+                <div class="pedido">
+                    <p class="pedido-cifra">
+                        <span x-text="litrosPedido"></span><span class="u">L</span>
+                    </p>
+                    <input type="range" class="pedido-barra" min="20" max="1000" step="20"
+                           x-model.number="litrosPedido"
+                           aria-label="Litros que quieres comprar">
+                    <div class="pedido-topes"><span>20 L</span><span>1,000 L</span></div>
+
+                    <p class="pedido-total">
+                        <span class="et">Tu pedido</span>
+                        <strong x-text="mxn(totalLitros)"></strong>
+                        <span class="unit" x-text="mxn(PRECIO_LITRO) + ' por litro · MXN'"></span>
+                    </p>
+                </div>
+
+                <template x-if="cepasSugeridas.length">
+                    <div class="sugerencia">
+                        <div class="petris" aria-hidden="true">
+                            <img src="{{ 'assets/images/biofabrica/petri-0.webp'|theme }}" width="220" height="220" decoding="async" alt="">
+                            <img src="{{ 'assets/images/biofabrica/petri-1.webp'|theme }}" width="220" height="220" decoding="async" alt="">
+                            <img src="{{ 'assets/images/biofabrica/petri-2.webp'|theme }}" width="220" height="220" decoding="async" alt="">
+                            <img src="{{ 'assets/images/biofabrica/petri-3.webp'|theme }}" width="220" height="220" decoding="async" alt="">
+                            <img src="{{ 'assets/images/biofabrica/petri-4.webp'|theme }}" width="220" height="220" decoding="async" alt="">
+                            <img src="{{ 'assets/images/biofabrica/petri-5.webp'|theme }}" width="220" height="220" decoding="async" alt="">
+                        </div>
+                        <p class="sugerencia-txt">
+                            <span x-text="fraseProblema"></span>
+                            te sugerimos
+                            <strong x-text="cepasSugeridas.map(c => c.nombre).join(' y ')"></strong>.
+                        </p>
+                        <p class="sugerencia-pie">Cepas propagadas y verificadas en nuestro laboratorio. En la cotización lo afinamos contigo.</p>
+                    </div>
+                </template>
+
+                <figure class="entrega">
+                    <img src="{{ 'assets/images/biofabrica/presentaciones-640.webp'|theme }}"
+                         srcset="{{ 'assets/images/biofabrica/presentaciones-640.webp'|theme }} 640w,
+                                 {{ 'assets/images/biofabrica/presentaciones-1100.webp'|theme }} 1100w"
+                         sizes="(max-width: 480px) 88vw, 420px"
+                         width="640" height="580" decoding="async"
+                         alt="Bioinsumos de Precisión Agrícola en garrafa, botella y bolsa metalizada">
+                    <figcaption>Se entrega en garrafa, botella o bolsa metalizada, según el volumen.</figcaption>
+                </figure>
+
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="registrarLitros()">Recibir mi cotización</button>
+                    <button class="btn-txt" @click="via = 'equipo'; ir(1)">¿Y si mejor produzco los míos?</button>
+                </div>
+            </div>
+        </template>
+
         <!-- ══ 7 · Captura ═════════════════════════════ -->
         <template x-if="paso === 7">
             <div>
-                <button class="atras" @click="ir(6)">← Volver a mi configuración</button>
+                <button class="atras" @click="ir(via === 'litros' ? 12 : 6)"
+                        x-text="via === 'litros' ? '← Volver a mi pedido' : '← Volver a mi configuración'"></button>
                 <p class="paso-n">Último paso</p>
                 <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
@@ -842,10 +1061,11 @@ function diagnostico() {
     const DOSIS_L_HA = 4;
     const LOTE_HA = LOTE_L / DOSIS_L_HA;
 
-    /* Precio de mercado del litro terminado. NO sale de ninguna cotización
-       nuestra: es el único número sin respaldo documental, y de él cuelga
-       todo el ahorro que se le muestra al productor. Pendiente de fuente. */
-    const VENTA_LITRO = 250;
+    /* Precio del litro terminado que vendemos ya producido. Sale de la
+       cotización 348, que es la unica que lo trae por escrito. Ojo: los
+       precios de equipo de arriba son de la 353, mas reciente. Si Ventas
+       actualiza el litro, se cambia aqui y nada mas. */
+    const VENTA_LITRO = 239;
 
     /* Formas de pago, tal como las cotiza Ventas en la 353.
        El plazo de las mensualidades no está definido todavía, así que aquí
@@ -949,6 +1169,11 @@ function diagnostico() {
 
     return {
         paso: 0,
+        /* Que vino a comprar. 'equipo' recorre el diagnostico completo y le
+           calcula recuperacion; 'litros' es una compra, y a una compra no se
+           le proyecta retorno: son tres preguntas y un precio. */
+        via: 'equipo',
+        litrosPedido: 100,
         estado: '',
         ha: 20,
         practica: null,
@@ -1058,6 +1283,26 @@ function diagnostico() {
                 .sort((a, b) => b._p - a._p);
         },
 
+        /* Camino de litros: precio fijo por litro, sin derivar nada. */
+        get PRECIO_LITRO() { return VENTA_LITRO; },
+        get totalLitros()  { return this.litrosPedido * VENTA_LITRO; },
+        /* Las dos que mejor responden a lo que dijo. Solo para orientar la
+           conversacion con Ventas, no para cerrar el pedido aqui. */
+        get cepasSugeridas() { return this.cepasOrdenadas.slice(0, 2); },
+        /* Nombrar el problema que eligio se lee como respuesta; "para lo que
+           nos dijiste" se lee como plantilla. */
+        get fraseProblema() {
+            const f = {
+                costo:      'Para bajar el costo de tus insumos,',
+                suelo:      'Para la degradación de tu suelo,',
+                patogenos:  'Para tus patógenos radiculares,',
+                nutrientes: 'Para la baja absorción de nutrientes,',
+                foliar:     'Para tus enfermedades foliares,',
+                plagas:     'Para la presión de plagas,'
+            };
+            return f[this.problemaPrincipal] || 'Para lo que nos comentas,';
+        },
+
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
         /* Expuestos para la plantilla: así el texto que ve el visitante sale
            del catálogo y no de un número escrito a mano que se desincroniza. */
@@ -1111,6 +1356,7 @@ function diagnostico() {
 
         /* La palanca: qué se le ofrece. Nadie sale sin oferta. */
         get palanca() {
+            if (this.via === 'litros') return 'litros';
             if (this.noSabe || this.gasto <= 0) return 'campo';
             if (this.practica === 'produzco')   return 'mejoras';
             const m = this.meses;
@@ -1168,6 +1414,11 @@ function diagnostico() {
         mxn(n) {
             if (!isFinite(n)) return '—';
             return '$' + Math.round(n).toLocaleString('es-MX');
+        },
+
+        registrarLitros() {
+            medir('pedido_litros', { litros: this.litrosPedido, total: this.totalLitros });
+            this.ir(7);
         },
 
         ir(n) {
@@ -1237,6 +1488,29 @@ function diagnostico() {
         /* Resumen legible que viaja con el lead. */
         get resumen() {
             const nom = id => (CEPAS.find(c => c.id === id) || {}).nombre || id;
+            const nomProb = id => (PROBLEMAS[id] || {}).nom || id;
+
+            /* Compra de litros: superficie, gasto y practica nunca se
+               preguntaron. Va "Superficie:" vacia a proposito, para que la
+               hoja no tome el valor por omision del formulario y lo registre
+               como si el productor lo hubiera contestado. */
+            if (this.via === 'litros') {
+                return [
+                    'RUTA: litros',
+                    'Compra: litros ya producidos',
+                    'Cultivos: ' + this.nombresCultivos.join(' / '),
+                    'Estado: ' + this.estado,
+                    'Superficie: ',
+                    'Problema principal: ' + nomProb(this.problemaPrincipal),
+                    'Problemas seleccionados: ' + this.problemas.map(nomProb).join(' / '),
+                    'Litros pedidos: ' + this.litrosPedido,
+                    'Precio por litro: ' + this.mxn(VENTA_LITRO),
+                    'Total: ' + this.mxn(this.totalLitros),
+                    'Cepas sugeridas: ' + this.cepasSugeridas.map(c => c.nombre).join(' / '),
+                    'Financiamiento: ' + (this.quiereFinanciamiento ? 'INTERESADO' : 'no')
+                ].join(' | ');
+            }
+
             const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
             const nomPractica = id => (this.practicas.find(p => p.id === id) || {}).nom || id;
             const partes = [
@@ -1327,7 +1601,8 @@ function diagnostico() {
                 body: p.toString()
             })
             .then(() => {
-                medir('lead', { palanca: this.palanca, total: this.precioConfig,
+                medir('lead', { palanca: this.palanca,
+                                total: this.via === 'litros' ? this.totalLitros : this.precioConfig,
                                 financiamiento: this.quiereFinanciamiento ? 1 : 0 });
                 window.location.href = '/gracias-diagnostico';
             })

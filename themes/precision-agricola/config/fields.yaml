@@ -1,9 +1,10 @@
 # Precios del cotizador, editables desde Settings -> Customize theme -> Cotizador.
 #
-# OJO: los valores por omisión son los del prototipo y NO son los precios
-# reales. Los de la cotización 353, que ya están en /biofabrica, son: equipo
-# $149,000, litro $239, lote de 180 L. Falta que Ventas confirme de dónde
-# salen los del prototipo antes de publicar esta página.
+# Los valores por omisión salen del modelo de negocio en Python, que Eduardo
+# confirmó el 11/09/2026 como los vigentes: $150 por litro, lote de 200 L y
+# dosis de 4 L/ha. Ojo: /biofabrica todavía trae los de la cotización 353
+# ($239/L y lote de 180 L), así que el sitio tiene dos precios por litro
+# hasta que se decida alinear esa página.
 tabs:
     fields:
         cotizador_precio_litro:
@@ -33,7 +34,7 @@ tabs:
         cotizador_referencia_ha:
             tab: Cotizador
             label: Costo del producto comercial por hectárea
-            comment: 'Referencia de mercado para calcular el ahorro. Debe validarla el equipo agronómico: es la cifra que sostiene todo el argumento y la más fácil de rebatir si está inflada.'
+            comment: 'Referencia de mercado para calcular el ahorro. PENDIENTE: es el único valor que no sale del modelo de negocio, y sostiene todo el argumento de ahorro. Debe validarlo el equipo agronómico; es la cifra más fácil de rebatir si está inflada.'
             type: number
             default: 900
             span: right

@@ -44,7 +44,7 @@
     </div>
 </section>
 
-<div class="resultado" id="resultado" hidden>
+<div class="resultado" id="resultado" aria-live="polite" hidden>
 
     <div class="destacado">
         <span class="rotulo">Costo por hectárea</span>
@@ -83,5 +83,9 @@
         <div class="renglon"><span class="que">Lotes de fermentación</span><span class="cuanto" id="d-lotes"></span></div>
         <div class="renglon"><span class="que">Rendimiento del equipo</span><span class="cuanto" id="d-cobertura"></span></div>
     </div>
+
+    {# El lote se fermenta entero aunque se ocupe a medias. Esto es lo que
+       la versión interna dibujaba como escalones en la gráfica. #}
+    <p class="sobrante" id="sobrante" hidden></p>
 
 </div>

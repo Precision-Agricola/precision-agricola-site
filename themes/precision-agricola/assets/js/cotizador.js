@@ -29,6 +29,10 @@
 
     var $ = function (id) { return document.getElementById(id); };
 
+    /* Tope de cordura. Sin el, un cero de mas convierte la cotizacion en
+       cientos de millones y el visitante deja de creerle a la pagina. */
+    var MAX_HA = 10000;
+
     var mxn = new Intl.NumberFormat('es-MX', {
         style: 'currency', currency: 'MXN', maximumFractionDigits: 0
     });
@@ -47,6 +51,14 @@
         var lotesNecesarios  = Math.ceil(litrosNecesarios / CFG.litrosLote);
         var hectareasPorLote = CFG.litrosLote / CFG.dosis;
 
+        /* Un lote se fermenta entero aunque se ocupe a medias. Decirle al
+           productor cuanta capacidad le sobra, y con cuanta superficie la
+           aprovecharia completa, es el escalon que la version interna
+           dibujaba como grafica. */
+        var litrosCapacidad  = lotesNecesarios * CFG.litrosLote;
+        var litrosSobrantes  = litrosCapacidad - litrosNecesarios;
+        var haQueAprovecha   = litrosCapacidad / CFG.dosis;
+
         var ahorroPorHectarea = CFG.referencia - costoPorHectarea;
         var ahorroTotal       = superficie * ahorroPorHectarea;
         var porcentajeAhorro  = CFG.referencia > 0 ? ahorroPorHectarea / CFG.referencia : 0;
@@ -58,6 +70,9 @@
             costoAplicacion: costoAplicacion,
             lotesNecesarios: lotesNecesarios,
             hectareasPorLote: hectareasPorLote,
+            litrosCapacidad: litrosCapacidad,
+            litrosSobrantes: litrosSobrantes,
+            haQueAprovecha: haQueAprovecha,
             ahorroPorHectarea: ahorroPorHectarea,
             ahorroTotal: ahorroTotal,
             porcentajeAhorro: porcentajeAhorro
@@ -89,7 +104,7 @@
     var anterior = 0;
 
     function pintar() {
-        var superficie = parseFloat($('superficie').value) || 0;
+        var superficie = Math.min(parseFloat($('superficie').value) || 0, MAX_HA);
         var bloque = $('resultado');
 
         /* Con el campo vacío, un bloque de resultados en ceros hace que la
@@ -116,6 +131,7 @@
         $('d-lotes').textContent      = num.format(r.lotesNecesarios) +
             (r.lotesNecesarios === 1 ? ' lote' : ' lotes');
         $('d-cobertura').textContent  = num1.format(r.hectareasPorLote) + ' ha por lote';
+        pintarSobrante(r);
 
         if (estrenando && !quieto) {
             bloque.classList.remove('surge');
@@ -124,6 +140,22 @@
         }
 
         actualizarEnlace(r);
+    }
+
+    /* Solo aparece cuando sobra capacidad de verdad: por debajo de un 5% el
+       aviso seria ruido y restaria credibilidad al resto. */
+    function pintarSobrante(r) {
+        var caja = $('sobrante');
+        var vale = r.litrosSobrantes > 0 &&
+                   r.litrosSobrantes / r.litrosCapacidad > 0.05;
+        caja.hidden = !vale;
+        if (!vale) return;
+
+        caja.innerHTML = num.format(r.lotesNecesarios) + ' lotes rinden ' +
+            '<strong>' + num.format(r.litrosCapacidad) + ' L</strong> y usted necesita ' +
+            num.format(r.litrosNecesarios) + '. Sobran <strong>' +
+            num.format(r.litrosSobrantes) + ' L</strong> de capacidad: con ' +
+            '<strong>' + num1.format(r.haQueAprovecha) + ' ha</strong> la aprovecharía completa.';
     }
 
     function pintarComparativa(r) {
@@ -162,7 +194,10 @@
         return {
             nombre:    ($('nombre').value || '').trim(),
             municipio: ($('municipio').value || '').trim(),
-            cultivo:   ($('cultivo').value || '').trim()
+            cultivo:   ($('cultivo').value || '').trim(),
+            /* Va al servidor, que descarta el envio si trae algo: solo los
+               robots llenan un campo que nadie ve. */
+            sitio_web: ($('sitio-web').value || '').trim()
         };
     }
 
@@ -225,7 +260,11 @@
     /* La barra y el campo numérico son la misma cifra vista de dos formas. */
     $('superficie').addEventListener('input', function () {
         var v = parseFloat(this.value) || 0;
-        if (v >= 1 && v <= 500) $('barra').value = v;
+        if (v > MAX_HA) { v = MAX_HA; this.value = MAX_HA; }
+        /* La barra se pega a su extremo en vez de quedarse donde estaba:
+           dejarla atras hace que el campo y la barra digan cosas distintas. */
+        var b = $('barra');
+        b.value = Math.min(Math.max(v, +b.min), +b.max);
         pintar();
     });
     $('barra').addEventListener('input', function () {

@@ -77,6 +77,19 @@
         </div>
     </div>
 
+    {# La curva explica de un vistazo por qué el precio sube y baja al mover
+       la perilla. Es el diente de sierra que dibujaba la versión interna. #}
+    <figure class="curva">
+        <svg id="grafica" viewBox="0 0 320 156" role="img"
+             aria-labelledby="curva-pie" preserveAspectRatio="xMidYMid meet"></svg>
+        <figcaption id="curva-pie">
+            <span class="clave"><i class="raya es-producir"></i>Producirlo</span>
+            <span class="clave"><i class="raya es-comprar"></i>Comprarlo terminado</span>
+            <span class="clave"><i class="punto"></i>Usted</span>
+            <span class="pie">Pesos por hectárea, según su superficie. Cada diente es una tanda nueva que se paga entera.</span>
+        </figcaption>
+    </figure>
+
     <p class="escala" id="escala"></p>
 
     <div class="comparativa" id="comparativa" hidden>

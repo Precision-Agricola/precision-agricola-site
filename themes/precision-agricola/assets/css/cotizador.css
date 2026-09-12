@@ -297,6 +297,32 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .opcion.gana .total  { color: var(--txt); }
 .opcion.gana .sello  { opacity: 1; transform: translateX(-50%) scale(1); }
 
+/* ── La curva ────────────────────────────────────────────── */
+
+.curva {
+    margin: 1rem 0 0; padding: .9rem .8rem .7rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radio);
+}
+.curva svg { display: block; width: 100%; height: auto; }
+.curva figcaption {
+    display: flex; flex-wrap: wrap; gap: .35rem .9rem;
+    margin-top: .5rem; font-size: .74rem; color: var(--txt-3);
+}
+.curva .clave { display: inline-flex; align-items: center; gap: .35rem; }
+.curva .raya { display: inline-block; width: 15px; height: 2px; border-radius: 1px; }
+.curva .raya.es-producir { background: var(--lime); }
+.curva .raya.es-comprar {
+    background: linear-gradient(90deg, var(--txt-2) 55%, transparent 55%);
+    background-size: 7px 2px;
+}
+.curva .punto {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--amber); border: 1.5px solid var(--bg);
+}
+.curva .pie { flex-basis: 100%; line-height: 1.4; }
+
 /* ── El aviso de escala ──────────────────────────────────── */
 
 .escala {

@@ -158,6 +158,7 @@
             ' L</strong> por aplicación.';
 
         pintarOpciones(r);
+        dibujarGrafica(r);
         pintarEscala(r);
         pintarComparativa(r);
 
@@ -183,6 +184,78 @@
 
         $('op-comprar').classList.toggle('gana',  r.gana === 'comprar');
         $('op-producir').classList.toggle('gana', r.gana === 'producir');
+    }
+
+    /* ── La curva ──────────────────────────────────────────────────────
+     *
+     * Explica de un vistazo por que el precio sube y baja al mover la
+     * perilla: comprar es una linea plana y producir es un diente de
+     * sierra, porque cada tanda se paga entera y luego se reparte entre
+     * mas hectareas. Solo dibuja pesos por hectarea, que es lo mismo que
+     * ya esta escrito arriba: no agrega informacion que no fuera publica.
+     */
+    function dibujarGrafica(r) {
+        var svg = $('grafica');
+        if (!svg) return;
+
+        var W = 320, H = 156, mI = 40, mD = 8, mS = 12, mB = 22;
+        var ancho = W - mI - mD, alto = H - mS - mB;
+        var haPorLote = CFG.litrosLote / CFG.dosis;
+
+        /* Se muestran al menos cinco tandas, o hora y media de la superficie
+           del visitante, para que su punto no quede pegado al borde. */
+        var maxHa = Math.max(haPorLote * 5, Math.ceil(r.superficie * 1.5 / haPorLote) * haPorLote);
+        var maxY  = r.comprar.porHa * 2;
+
+        var X = function (ha) { return mI + (ha / maxHa) * ancho; };
+        var Y = function (v)  { return mS + alto - (Math.min(v, maxY) / maxY) * alto; };
+        var e = [];
+
+        // Rejilla y eje de pesos
+        for (var i = 0; i <= 2; i++) {
+            var val = maxY * i / 2, y = Y(val);
+            e.push('<line x1="' + mI + '" y1="' + y + '" x2="' + (W - mD) + '" y2="' + y +
+                   '" stroke="rgba(255,255,255,.08)" stroke-width="1"/>');
+            e.push('<text x="' + (mI - 6) + '" y="' + (y + 3.5) + '" text-anchor="end" ' +
+                   'font-size="8.5" fill="#6d8a77">' + mxn.format(val) + '</text>');
+        }
+
+        // Eje de hectareas, una marca por tanda
+        for (var k = 1; k * haPorLote <= maxHa; k++) {
+            var ha = k * haPorLote;
+            e.push('<text x="' + X(ha) + '" y="' + (H - 7) + '" text-anchor="middle" ' +
+                   'font-size="8.5" fill="#6d8a77">' + num.format(ha) + '</text>');
+        }
+
+        // Producir: un tramo por tanda, con el salto al cambiar de tanda
+        var tandas = Math.ceil(maxHa / haPorLote);
+        for (var t = 1; t <= tandas; t++) {
+            var desde = (t - 1) * haPorLote, hasta = Math.min(t * haPorLote, maxHa);
+            var pts = [], paso = haPorLote / 24;
+            for (var x = desde + paso; x <= hasta + 0.001; x += paso) {
+                pts.push(X(x).toFixed(1) + ',' + Y(t * CFG.precioLote / x).toFixed(1));
+            }
+            if (pts.length > 1) {
+                e.push('<polyline points="' + pts.join(' ') + '" fill="none" ' +
+                       'stroke="#7ed957" stroke-width="2" stroke-linejoin="round"/>');
+            }
+        }
+
+        // Comprar: la linea plana
+        e.push('<line x1="' + X(0) + '" y1="' + Y(r.comprar.porHa) + '" x2="' + X(maxHa) +
+               '" y2="' + Y(r.comprar.porHa) + '" stroke="#a9c2b1" stroke-width="2" ' +
+               'stroke-dasharray="5 4"/>');
+
+        // Donde esta parado el visitante
+        if (r.superficie > 0 && r.superficie <= maxHa) {
+            var px = X(r.superficie), py = Y(r.mejorPorHa);
+            e.push('<line x1="' + px + '" y1="' + mS + '" x2="' + px + '" y2="' + (mS + alto) +
+                   '" stroke="rgba(255,255,255,.25)" stroke-width="1" stroke-dasharray="2 3"/>');
+            e.push('<circle cx="' + px + '" cy="' + py + '" r="4.5" fill="#e0a33c" ' +
+                   'stroke="#0d1a12" stroke-width="2"/>');
+        }
+
+        svg.innerHTML = e.join('');
     }
 
     /* Por que le conviene o no, y que superficie lo cambiaria. Es lo unico

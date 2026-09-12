@@ -41,6 +41,17 @@
         </div>
     </div>
 
+    <div class="campo">
+        <label for="telefono">WhatsApp <span class="opcional">opcional</span></label>
+        <div class="envase">
+            {# Opcional a proposito: pedirlo obligatorio agrega friccion y el
+               productor ya se identifica al escribir. Pero sin el, el lead que
+               llega a la hoja no se puede contactar si nunca manda mensaje. #}
+            <input type="tel" id="telefono" name="telefono" inputmode="tel"
+                   autocomplete="tel" placeholder="492 123 4567" maxlength="20">
+        </div>
+    </div>
+
     {# Campo trampa: los robots lo llenan, las personas no lo ven. #}
     <div class="trampa" aria-hidden="true">
         <label for="sitio-web">Sitio web</label>

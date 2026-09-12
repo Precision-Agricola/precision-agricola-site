@@ -47,12 +47,37 @@
 <div class="resultado" id="resultado" aria-live="polite" hidden>
 
     <div class="destacado">
-        <span class="rotulo">Costo por hectárea</span>
+        <span class="rotulo" id="rotulo-cifra">Costo por hectárea</span>
         {# El primer nodo de texto se reemplaza al animar; el <span> de unidad
            tiene que quedar aparte para que no se borre. #}
         <p class="cifra" id="costo-ha">$0<span class="u">/ha</span></p>
         <span class="nota">{{ this.theme.cotizador_nota_precio }}</span>
     </div>
+
+    <p class="necesita" id="necesita"></p>
+
+    {# Los dos caminos cuestan distinto y de forma distinta. Se muestran los
+       dos siempre, y se marca cuál gana a esta escala. #}
+    <div class="opciones">
+        <div class="opcion" id="op-comprar">
+            <span class="titulo">Comprarlo terminado</span>
+            <span class="por-ha" id="c-comprar-ha"></span>
+            <span class="por-ha-u">por hectárea</span>
+            <span class="total" id="c-comprar-total"></span>
+            <span class="detalle" id="c-comprar-det"></span>
+            <span class="sello">Le conviene</span>
+        </div>
+        <div class="opcion" id="op-producir">
+            <span class="titulo">Producirlo usted</span>
+            <span class="por-ha" id="c-producir-ha"></span>
+            <span class="por-ha-u">por hectárea</span>
+            <span class="total" id="c-producir-total"></span>
+            <span class="detalle" id="c-producir-det"></span>
+            <span class="sello">Le conviene</span>
+        </div>
+    </div>
+
+    <p class="escala" id="escala"></p>
 
     <div class="comparativa" id="comparativa" hidden>
         <h3>Comparado con el producto comercial</h3>
@@ -67,7 +92,7 @@
 
         <div class="par es-nuestro">
             <div class="etiqueta">
-                <span class="quien">Producido en su predio</span>
+                <span class="quien">Con nosotros</span>
                 <span class="cuanto" id="monto-nuestro"></span>
             </div>
             <div class="riel"><div class="relleno" id="barra-nuestro"></div></div>
@@ -75,17 +100,5 @@
 
         <p class="ahorro-linea" id="ahorro-linea"></p>
     </div>
-
-    <div class="desglose">
-        <div class="renglon"><span class="que">Su superficie</span><span class="cuanto" id="d-superficie"></span></div>
-        <div class="renglon"><span class="que">Bioinsumo por aplicación</span><span class="cuanto" id="d-litros"></span></div>
-        <div class="renglon"><span class="que">Costo por aplicación</span><span class="cuanto" id="d-aplicacion"></span></div>
-        <div class="renglon"><span class="que">Lotes de fermentación</span><span class="cuanto" id="d-lotes"></span></div>
-        <div class="renglon"><span class="que">Rendimiento del equipo</span><span class="cuanto" id="d-cobertura"></span></div>
-    </div>
-
-    {# El lote se fermenta entero aunque se ocupe a medias. Esto es lo que
-       la versión interna dibujaba como escalones en la gráfica. #}
-    <p class="sobrante" id="sobrante" hidden></p>
 
 </div>

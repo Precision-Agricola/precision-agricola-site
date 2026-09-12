@@ -31,6 +31,14 @@ tabs:
             default: 200
             span: left
 
+        cotizador_precio_lote:
+            tab: Cotizador
+            label: Precio del paquete de insumos por lote
+            comment: 'Lo que paga quien produce en su propia biofábrica, por cada tanda. PENDIENTE de confirmar con Ventas: no sale del modelo de Python ni de la COT 353. Umbral duro: si pasa de $30,000 (lo que cuestan 200 L terminados), producir deja de convenir a cualquier escala y la página lo dirá.'
+            type: number
+            default: 24000
+            span: left
+
         cotizador_referencia_ha:
             tab: Cotizador
             label: Costo del producto comercial por hectárea

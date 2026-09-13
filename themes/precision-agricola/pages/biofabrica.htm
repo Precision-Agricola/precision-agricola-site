@@ -502,114 +502,95 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             margin-top: .6rem; font-size: .8rem; color: var(--txt-3);
         }
 
-        /* ── Calendario fenológico ──────────────────────────────── */
+        /* ── Etapas del cultivo ─────────────────────────────────── */
 
-        .fenologia {
-            margin-top: 1rem; padding: 1.1rem 1rem 1rem;
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-        }
-        .fen-cab {
-            display: flex; flex-wrap: wrap; align-items: baseline;
-            justify-content: space-between; gap: .3rem .8rem; margin-bottom: .9rem;
-        }
-        .fen-tit {
-            margin: 0; font-family: 'Montserrat', sans-serif; font-weight: 700;
-            font-size: 1rem;
-        }
-        .fen-ciclo { font-size: .76rem; color: var(--txt-3); }
+        .fenologia { margin-top: .9rem; }
 
-        /* La tira reparte el ancho según cuántos meses dura cada etapa, así
-           que se lee como una línea de tiempo y no como pestañas iguales. */
-        .fen-tira {
-            display: flex; gap: 2px; margin-bottom: .9rem;
-            border-radius: 10px; overflow: hidden;
-        }
+        /* Fichas que envuelven, no una tira proporcional: a 375 px los
+           nombres largos se truncaban en "Preparació…" y el ancho por
+           duración no valía ese precio. */
+        .fen-etapas { display: flex; flex-wrap: wrap; gap: .45rem; }
+
         .fen-etapa {
-            flex: 1 1 0; min-width: 0; flex-basis: 0;
-            display: flex; flex-direction: column; gap: .1rem;
-            padding: .55rem .35rem .6rem;
+            display: flex; flex-direction: column; gap: .05rem;
+            padding: .5rem .75rem;
             background: rgba(255,255,255,.05);
-            border: 0; border-top: 2px solid transparent;
+            border: 1px solid var(--line);
+            border-radius: 12px;
             cursor: pointer; text-align: left; color: var(--txt-2);
-            transition: background .18s ease, color .18s ease, border-color .18s ease;
+            transition: background .18s ease, border-color .18s ease, color .18s ease;
         }
         .fen-etapa:hover { background: rgba(255,255,255,.09); }
+        .fen-etapa .fen-nom { font-size: .86rem; line-height: 1.25; }
         .fen-etapa .fen-cuando {
-            font-size: .64rem; letter-spacing: .04em; text-transform: uppercase;
-            color: var(--txt-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: .7rem; letter-spacing: .03em; color: var(--txt-3);
         }
-        .fen-etapa .fen-nom {
-            font-size: .72rem; line-height: 1.25;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        .fen-etapa.hoy { border-top-color: var(--amber); }
-        /* Dos estados distintos: "marcada" es que el productor aplica en
-           esa etapa, "abierta" es que esta viendo su detalle. */
+
         .fen-etapa.marcada {
-            background: rgba(126,217,87,.18);
+            background: rgba(126,217,87,.16);
+            border-color: rgba(126,217,87,.5);
             color: var(--txt);
         }
         .fen-etapa.marcada .fen-cuando { color: var(--lime); }
-        .fen-etapa.abierta { border-top-color: var(--lime); }
-        .fen-etapa.abierta:not(.marcada) { background: rgba(255,255,255,.10); }
-        .fen-etapa.marcada .fen-nom::after {
-            content: " ✓"; color: var(--lime); font-weight: 700;
+        .fen-etapa.abierta { border-color: var(--txt-3); }
+        .fen-etapa.marcada.abierta { border-color: var(--lime); }
+
+        /* La etapa en que cae hoy: un punto, no una etiqueta. Con cinco
+           fichas, una etiqueta "estás aquí" pesaba más que el dato. */
+        .fen-etapa.hoy .fen-cuando::after {
+            content: ''; display: inline-block;
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--amber); margin-left: .3rem; vertical-align: middle;
         }
 
-        .fen-detalle {
-            padding: .9rem 1rem;
-            background: rgba(255,255,255,.03);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-        }
-        .fen-etiqueta {
-            margin: 0 0 .4rem; display: flex; flex-wrap: wrap;
-            align-items: baseline; gap: .5rem;
-            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .95rem;
-        }
-        .fen-etiqueta .fen-meses {
-            font-family: 'DM Sans', sans-serif; font-weight: 400;
-            font-size: .78rem; color: var(--txt-3);
-        }
-        .fen-etiqueta .fen-hoy {
-            font-family: 'DM Sans', sans-serif; font-weight: 500;
-            font-size: .68rem; letter-spacing: .05em; text-transform: uppercase;
-            color: #0d1a12; background: var(--amber);
-            padding: .1rem .45rem; border-radius: 20px;
-        }
+        .fen-detalle { margin-top: .7rem; }
         .fen-porque {
-            margin: 0 0 .75rem; font-size: .88rem; line-height: 1.5; color: var(--txt-2);
+            margin: 0 0 .5rem; font-size: .87rem; line-height: 1.5; color: var(--txt-2);
         }
-        .fen-cepas { display: flex; flex-wrap: wrap; gap: .4rem; }
+        .fen-porque .fen-que {
+            color: var(--txt); font-weight: 500;
+        }
+        .fen-porque .fen-que::after { content: ' · '; color: var(--txt-3); }
+
+        .fen-cepas { display: flex; flex-wrap: wrap; gap: .35rem; }
         .fen-cepa {
-            display: inline-flex; align-items: center; gap: .35rem;
-            padding: .3rem .6rem; border-radius: 20px;
+            padding: .22rem .55rem; border-radius: 20px;
             background: rgba(126,217,87,.12);
-            border: 1px solid rgba(126,217,87,.28);
-            font-size: .8rem; color: var(--txt);
+            border: 1px solid rgba(126,217,87,.26);
+            font-size: .76rem; color: var(--txt);
         }
-        .fen-cepa i { font-size: .85rem; color: var(--lime); }
 
         .fen-aviso {
-            margin: .8rem 0 0; font-size: .74rem; line-height: 1.45; color: var(--txt-3);
+            margin: .7rem 0 0; font-size: .73rem; line-height: 1.45; color: var(--txt-3);
         }
 
-        /* Los meses que el cultivo pide, marcados en el paso del gasto para
-           que la selección deje de ser a ciegas. */
-        .mes-chip.del-cultivo::after {
-            content: ''; display: block;
-            width: 4px; height: 4px; border-radius: 50%;
-            background: var(--lime); margin: .18rem auto 0;
+        /* ── Ajuste fino de meses ───────────────────────────────── */
+
+        /* La rejilla de doce cuadros pasa a segundo plano: con las etapas
+           casi nadie necesita abrirla, y ocupaba media pantalla. */
+        .meses-fino { margin-top: .9rem; }
+        .meses-fino > summary {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: .8rem; padding: .6rem .8rem; cursor: pointer; list-style: none;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--line); border-radius: 10px;
+            font-size: .84rem; color: var(--txt-2);
         }
-        .mes-pista {
-            margin: .5rem 0 0; font-size: .76rem; color: var(--txt-3); line-height: 1.45;
+        .meses-fino > summary::-webkit-details-marker { display: none; }
+        .meses-fino > summary .ajustar {
+            font-size: .76rem; color: var(--txt-3); white-space: nowrap;
         }
-        .mes-pista i {
-            display: inline-block; width: 4px; height: 4px; border-radius: 50%;
-            background: var(--lime); vertical-align: middle; margin: 0 .25rem 2px;
+        .meses-fino[open] > summary {
+            border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+            color: var(--txt);
         }
+        .meses-fino[open] > summary .ajustar { color: var(--lime); }
+        .meses-fino > .meses-grid {
+            margin: 0; padding: .8rem;
+            border: 1px solid var(--line); border-top: 0;
+            border-radius: 0 0 10px 10px;
+        }
+        .meses-fino > .fen-aviso { padding: 0 .2rem; }
 
         /* ── Jerarquia del paso 6 ──────────────────────────────── */
 
@@ -958,7 +939,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 <button class="atras" @click="ir(4)">← Atrás</button>
                 <p class="paso-n">Paso 5 de 5</p>
                 <h2 class="pregunta" x-text="preguntaGasto"></h2>
-                <p class="apoyo">Primero pon el gasto mensual por hectárea. Luego marca en qué meses se repite.</p>
+                <p class="apoyo">Ponlo por mes activo. Luego marca cuándo aplicas.</p>
 
                 <div style="margin:1.4rem 0 .5rem">
                     <span class="cifra-viva">$<span x-text="gasto"></span></span>
@@ -972,84 +953,66 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         <h3>¿En qué meses tienes ese gasto?</h3>
                         <span x-text="mesesSeleccionadosTxt"></span>
                     </div>
-                {# El año del productor en su cultivo. Toca una etapa y se
-                   abre el porqué de lo que se le recomienda: es lo que
-                   convierte la sugerencia de cepas en un argumento en vez
-                   de un puntaje sin explicar. #}
+                {# Las etapas del cultivo son los preajustes de meses. Van como
+                   fichas que envuelven, no como tira proporcional: a 375 px
+                   los nombres largos se truncaban en "Preparació…". #}
                 <template x-if="fenologia">
                     <div class="fenologia surge">
-                        <div class="fen-cab">
-                            <p class="fen-tit">Tu año en <span x-text="nombresCultivos[0].toLowerCase()"></span></p>
-                            <span class="fen-ciclo">Toca las etapas en que aplicas</span>
-                        </div>
-
-                        <div class="fen-tira" role="tablist" :aria-label="'Etapas del cultivo'">
+                        <div class="fen-etapas">
                             <template x-for="(e, i) in fenologia.etapas" :key="i">
                                 <button type="button" class="fen-etapa"
-                                        role="tab"
                                         :class="{ marcada: etapaMarcada(i), abierta: i === etapaVista, hoy: i === etapaDeHoy }"
-                                        :aria-selected="i === etapaVista"
                                         :aria-pressed="etapaMarcada(i)"
-                                        :style="'flex-grow:' + e.cuando.length"
                                         @click="toggleEtapa(i)">
-                                    <span class="fen-cuando" x-text="etiquetaCuando(e)"></span>
                                     <span class="fen-nom" x-text="e.nom"></span>
+                                    <span class="fen-cuando" x-text="etiquetaCuando(e)"></span>
                                 </button>
                             </template>
                         </div>
 
                         <template x-if="etapa">
                             <div class="fen-detalle">
-                                <p class="fen-etiqueta">
-                                    <span x-text="etapa.nom"></span>
-                                    <span class="fen-meses" x-text="etiquetaCuando(etapa)"></span>
-                                    <span class="fen-hoy" x-show="etapaVista === etapaDeHoy && fenologia.unidad === 'mes'">estás aquí</span>
+                                <p class="fen-porque">
+                                    <span class="fen-que" x-text="etapa.nom"></span>
+                                    <span x-text="etapa.porque"></span>
                                 </p>
-                                <p class="fen-porque" x-text="etapa.porque"></p>
                                 <div class="fen-cepas">
                                     <template x-for="c in etapa.cepas" :key="c">
-                                        <span class="fen-cepa">
-                                            <i class="fi fi-rr-microscope-bacteria" aria-hidden="true"></i>
-                                            <span x-text="nombreCepa(c)"></span>
-                                        </span>
+                                        <span class="fen-cepa" x-text="nombreCepa(c)"></span>
                                     </template>
                                 </div>
                             </div>
                         </template>
-
-                        <p class="fen-aviso" x-text="avisoFenologia"></p>
-
-                        <template x-if="cultivos.length > 1">
-                            <p class="fen-aviso">
-                                Elegiste <span x-text="cultivos.length"></span> cultivos y sus ciclos no coinciden.
-                                Se muestra el de <span x-text="nombresCultivos[0].toLowerCase()"></span>;
-                                en la cotización los revisamos todos.
-                            </p>
-                        </template>
                     </div>
                 </template>
 
-                    <template x-if="!fenologia">
-                        <div class="presets">
-                            <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
-                            <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
-                            <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
-                        </div>
-                    </template>
+                {# Los preajustes genéricos sólo para cultivos sin calendario. #}
+                <template x-if="!fenologia">
+                    <div class="presets">
+                        <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
+                        <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
+                        <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
+                    </div>
+                </template>
+
+                {# La rejilla de meses pasa a segundo plano: con las etapas ya
+                   no hace falta abrirla, y ocupaba doce cuadros de la pantalla. #}
+                <details class="meses-fino">
+                    {# El conteo ya sale en el encabezado del bloque; aquí
+                       repetirlo era decir dos veces lo mismo. #}
+                    <summary>
+                        <span>Ajustar mes por mes</span>
+                        <span class="ajustar">abrir</span>
+                    </summary>
                     <div class="meses-grid">
                         <template x-for="m in mesesDisponibles" :key="m.id">
                             <button type="button" class="mes-chip"
-                                    :class="{ 'del-cultivo': mesesDelCultivo.includes(mesesDisponibles.indexOf(m)) }"
                                     :aria-pressed="mesesActivos.includes(m.id)"
                                     @click="toggleMes(m.id)" x-text="m.nom"></button>
                         </template>
                     </div>
-                    <template x-if="mesesDelCultivo.length">
-                        <p class="mes-pista">
-                            Los meses con <i></i> son los que tu cultivo suele pedir.
-                            Márcalos como te toque a ti: es tu calendario, no el del libro.
-                        </p>
-                    </template>
+                    <p class="fen-aviso" x-show="fenologia" x-text="avisoFenologia"></p>
+                </details>
                 </div>
 
                 <template x-if="gasto > 0 && mesesGasto > 0">

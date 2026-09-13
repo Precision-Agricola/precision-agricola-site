@@ -287,7 +287,11 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
         .total {
             position: sticky; bottom: 0; z-index: 15;
-            background: linear-gradient(to top, var(--bg) 72%, transparent);
+            /* Fondo opaco con el borde superior difuminado por sombra. El
+               degradado anterior dejaba 28% transparente, y con el paso 6
+               ya poblado se veian las tarjetas a traves de la barra. */
+            background: var(--bg);
+            box-shadow: 0 -16px 18px -4px var(--bg);
             padding: 1rem 0 1.1rem; margin-top: 1rem;
         }
         .total-fila {
@@ -498,6 +502,34 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             margin-top: .6rem; font-size: .8rem; color: var(--txt-3);
         }
 
+        /* ── Jerarquia del paso 6 ──────────────────────────────── */
+
+        /* La comparacion es la evidencia del veredicto, asi que va pegada a
+           el. La curva explica la comparacion, asi que va plegada: quien
+           quiera el porque la abre, y quien no, no la tiene que rodear. */
+        .porque {
+            margin-top: .9rem;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255,255,255,.02);
+        }
+        .porque > summary {
+            padding: .75rem 1rem; cursor: pointer; list-style: none;
+            font-size: .88rem; color: var(--txt-2);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .porque > summary::-webkit-details-marker { display: none; }
+        .porque > summary::after {
+            content: ''; width: 7px; height: 7px; flex-shrink: 0;
+            border-right: 2px solid var(--txt-3); border-bottom: 2px solid var(--txt-3);
+            transform: rotate(45deg) translate(-2px,-2px);
+            transition: transform .2s ease;
+        }
+        .porque[open] > summary::after { transform: rotate(225deg) translate(-1px,-1px); }
+        .porque[open] > summary { color: var(--txt); }
+        .porque > .curva, .porque > .escala { margin: 0 .8rem .8rem; }
+        .porque > .curva { border: 0; background: transparent; padding: 0 0 .5rem; }
+
         /* ── Comparacion de caminos, traida de /cotizador ─────── */
         /* ── Lo que necesita ─────────────────────────────────────── */
 
@@ -532,7 +564,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             transition: color .3s ease;
         }
         .opcion .por-ha-u { font-size: .72rem; color: var(--txt-3); margin-bottom: .5rem; }
-        .opcion .total {
+        .opcion .monto {
             font-family: 'Montserrat', sans-serif; font-weight: 600;
             font-size: .95rem; color: var(--txt-2);
         }
@@ -556,7 +588,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             transform: translateY(-2px);
         }
         .opcion.gana .por-ha { color: var(--lime); }
-        .opcion.gana .total  { color: var(--txt); }
+        .opcion.gana .monto  { color: var(--txt); }
         .opcion.gana .sello  { opacity: 1; transform: translateX(-50%) scale(1); }
 
         /* ── La curva ────────────────────────────────────────────── */
@@ -869,6 +901,50 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     <p x-text="veredicto.texto"></p>
                 </div>
 
+                {# Los dos caminos con los numeros del productor. Reemplaza al
+                   embudo de litros que vivia en una pagina aparte. #}
+                <template x-if="palanca !== 'campo' && ha > 0">
+                    <div class="surge surge-2">
+                        <p class="necesita">Para <strong x-text="ha + ' ha'"></strong> necesitas
+                           <strong x-text="num(litrosAplicacion) + ' L'"></strong> por aplicación.</p>
+
+                        <div class="opciones">
+                            <div class="opcion" :class="{ gana: !convieneProducir }">
+                                <span class="titulo">Comprarlos terminados</span>
+                                <span class="por-ha" x-text="mxn(comprarPorHa)"></span>
+                                <span class="por-ha-u">por hectárea</span>
+                                <span class="monto" x-text="mxn(comprarTotal)"></span>
+                                <span class="detalle" x-text="num(litrosAplicacion) + ' L, justo lo que ocupas'"></span>
+                                <span class="sello">Te conviene</span>
+                            </div>
+                            <div class="opcion" :class="{ gana: convieneProducir }">
+                                <span class="titulo">Producirlos tú</span>
+                                <span class="por-ha" x-text="mxn(producirPorHa)"></span>
+                                <span class="por-ha-u">por hectárea</span>
+                                <span class="monto" x-text="mxn(producirTotal)"></span>
+                                <span class="detalle" x-text="num(tandas) + (tandas === 1 ? ' tanda de ' : ' tandas de ') + num(loteLitros) + ' L'"></span>
+                                <span class="sello">Te conviene</span>
+                            </div>
+                        </div>
+
+                        <details class="porque" open>
+                        <summary>¿Por qué cambia según la superficie?</summary>
+                        <figure class="curva">
+                            <svg id="grafica" viewBox="0 0 320 156" role="img"
+                                 aria-labelledby="curva-pie" preserveAspectRatio="xMidYMid meet"></svg>
+                            <figcaption id="curva-pie">
+                                <span class="clave"><i class="raya es-producir"></i>Producirlos</span>
+                                <span class="clave"><i class="raya es-comprar"></i>Comprarlos terminados</span>
+                                <span class="clave"><i class="punto"></i>Tú</span>
+                                <span class="pie">Pesos por hectárea, según tu superficie. Cada diente es una tanda nueva que se paga entera.</span>
+                            </figcaption>
+                        </figure>
+
+                        <p class="escala" :class="claseEscala" x-html="textoEscala"></p>
+                        </details>
+                    </div>
+                </template>
+
                 <template x-if="palanca !== 'campo'">
                     <div class="metricas surge surge-1">
                         <div class="metrica">
@@ -883,47 +959,6 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                             <span class="v" x-text="palanca === 'litros' ? litrosMes + ' L' : mesesTxt"></span>
                             <span class="l" x-text="palanca === 'litros' ? 'cubres al mes activo con tu gasto actual' : 'para recuperar la inversión'"></span>
                         </div>
-                    </div>
-                </template>
-
-                {# Los dos caminos con los numeros del productor. Reemplaza al
-                   embudo de litros que vivia en una pagina aparte. #}
-                <template x-if="palanca !== 'campo' && ha > 0">
-                    <div class="surge surge-2">
-                        <p class="necesita">Para <strong x-text="ha + ' ha'"></strong> necesitas
-                           <strong x-text="num(litrosAplicacion) + ' L'"></strong> por aplicación.</p>
-
-                        <div class="opciones">
-                            <div class="opcion" :class="{ gana: !convieneProducir }">
-                                <span class="titulo">Comprarlos terminados</span>
-                                <span class="por-ha" x-text="mxn(comprarPorHa)"></span>
-                                <span class="por-ha-u">por hectárea</span>
-                                <span class="total" x-text="mxn(comprarTotal)"></span>
-                                <span class="detalle" x-text="num(litrosAplicacion) + ' L, justo lo que ocupas'"></span>
-                                <span class="sello">Te conviene</span>
-                            </div>
-                            <div class="opcion" :class="{ gana: convieneProducir }">
-                                <span class="titulo">Producirlos tú</span>
-                                <span class="por-ha" x-text="mxn(producirPorHa)"></span>
-                                <span class="por-ha-u">por hectárea</span>
-                                <span class="total" x-text="mxn(producirTotal)"></span>
-                                <span class="detalle" x-text="num(tandas) + (tandas === 1 ? ' tanda de ' : ' tandas de ') + num(loteLitros) + ' L'"></span>
-                                <span class="sello">Te conviene</span>
-                            </div>
-                        </div>
-
-                        <figure class="curva">
-                            <svg id="grafica" viewBox="0 0 320 156" role="img"
-                                 aria-labelledby="curva-pie" preserveAspectRatio="xMidYMid meet"></svg>
-                            <figcaption id="curva-pie">
-                                <span class="clave"><i class="raya es-producir"></i>Producirlos</span>
-                                <span class="clave"><i class="raya es-comprar"></i>Comprarlos terminados</span>
-                                <span class="clave"><i class="punto"></i>Tú</span>
-                                <span class="pie">Pesos por hectárea, según tu superficie. Cada diente es una tanda nueva que se paga entera.</span>
-                            </figcaption>
-                        </figure>
-
-                        <p class="escala" :class="claseEscala" x-html="textoEscala"></p>
                     </div>
                 </template>
 
@@ -1479,8 +1514,16 @@ function diagnostico() {
                 },
                 litros: {
                     etiqueta: 'Servicio sin inversión en equipo',
-                    titulo: 'Podemos suministrarte litros ya producidos',
-                    texto: 'Por tu escala actual, puede convenir iniciar con litros producidos por nosotros. Al alcanzar una superficie aproximada de ' + (this.haUmbral || '—') + ' ha con este gasto y estos meses de aplicación, el equipo propio puede ser más conveniente.',
+                    titulo: this.convieneProducir
+                        ? 'Producir te sale más barato por hectárea, pero el equipo tardaría en pagarse'
+                        : 'Podemos suministrarte litros ya producidos',
+                    texto: this.convieneProducir
+                        ? 'A ' + this.mxn(this.producirPorHa) + ' por hectárea produciendo contra ' +
+                          this.mxn(this.comprarPorHa) + ' comprando, la diferencia es real, pero con ' +
+                          this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación al año el equipo tarda en recuperarse. ' +
+                          'Empieza con litros producidos por nosotros y da el paso cuando apliques más seguido o crezca la superficie.'
+                        : 'Por tu escala actual, conviene iniciar con litros producidos por nosotros. Al acercarte a ' +
+                          (this.haUmbral || '—') + ' ha, el equipo propio empieza a tener sentido.',
                     cta: 'Solicitar cotización de litros',
                     cierreTitulo: '¿A dónde te enviamos la cotización de litros?'
                 },

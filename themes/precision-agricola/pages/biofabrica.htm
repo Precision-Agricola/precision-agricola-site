@@ -1249,6 +1249,141 @@ function diagnostico() {
         otro:     ['costo','suelo','patogenos','nutrientes','foliar','plagas']
     };
 
+    /* ── Ciclos fenológicos ────────────────────────────────────────────
+     *
+     * Para que la recomendación de cepas tenga un porqué agronómico en vez
+     * de sólo un puntaje, y para que los meses de aplicación salgan del
+     * cultivo en lugar de casillas sueltas.
+     *
+     * Dos cosas distintas conviven aquí, y conviene no confundirlas:
+     *
+     *   Las ETAPAS son conocimiento agronómico estándar. Los meses son los
+     *   típicos del altiplano y el bajío mexicano, y se recorren con la
+     *   región, la altitud y la variedad.
+     *
+     *   Las CEPAS por etapa son criterio comercial nuestro, derivado del rol
+     *   de cada una. NO están validadas por un agrónomo todavía. La página
+     *   lo dice con todas sus letras; no quites ese aviso sin que alguien
+     *   del área las firme.
+     *
+     * "unidad" separa los cultivos que se miden por mes de los que se miden
+     * por año: el agave tarda seis o siete años en madurar y un calendario
+     * mensual no le dice nada al productor.
+     */
+    const FENOLOGIA = {
+        aguacate: {
+            unidad: 'mes', ciclo: 'Perenne · se repite cada año',
+            etapas: [
+                { nom: 'Reposo invernal', cuando: [11, 0], cepas: ['trichoderma', 'subtilis'],
+                  porque: 'La raíz descansa: es cuando mejor se sanea el suelo y se repone materia orgánica antes del arranque.' },
+                { nom: 'Floración', cuando: [1, 2], cepas: ['pseudomonas', 'pichia'],
+                  porque: 'La flor demanda fósforo y es el momento más expuesto a hongos aéreos.' },
+                { nom: 'Amarre de fruto', cuando: [3, 4], cepas: ['subtilis', 'pseudomonas'],
+                  porque: 'El árbol decide cuánta fruta retiene. Nitrógeno y potasio disponibles reducen la caída.' },
+                { nom: 'Llenado de fruto', cuando: [5, 6, 7, 8], cepas: ['pseudomonas', 'methylo'],
+                  porque: 'Etapa de mayor demanda: potasio para el fruto y actividad foliar sostenida.' },
+                { nom: 'Cosecha y postcosecha', cuando: [9, 10], cepas: ['trichoderma', 'pichia'],
+                  porque: 'Tras la cosecha el árbol queda débil y el suelo cansado; es la ventana para recuperarlo.' }
+            ]
+        },
+        berries: {
+            unidad: 'mes', ciclo: 'Perenne de ciclo corto',
+            etapas: [
+                { nom: 'Establecimiento', cuando: [8, 9], cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'Raíz nueva en suelo recién movido: el momento de mayor riesgo de patógenos radiculares.' },
+                { nom: 'Crecimiento vegetativo', cuando: [10, 11, 0], cepas: ['subtilis', 'methylo'],
+                  porque: 'Se construye la planta que va a producir. Nitrógeno y área foliar.' },
+                { nom: 'Floración y amarre', cuando: [1, 2], cepas: ['pseudomonas', 'pichia'],
+                  porque: 'Fósforo para la flor, y protección contra botrytis, que es el problema clásico en berries.' },
+                { nom: 'Producción', cuando: [3, 4, 5, 6], cepas: ['pseudomonas', 'pichia'],
+                  porque: 'Cosecha continua por meses: la planta no para y la fruta se expone a hongos.' },
+                { nom: 'Poda y recuperación', cuando: [7], cepas: ['trichoderma', 'subtilis'],
+                  porque: 'Se sanea suelo y raíz antes del siguiente establecimiento.' }
+            ]
+        },
+        frutales: {
+            unidad: 'mes', ciclo: 'Perenne caducifolio',
+            etapas: [
+                { nom: 'Reposo y poda', cuando: [11, 0], cepas: ['trichoderma', 'subtilis'],
+                  porque: 'Sin hoja, el trabajo es al suelo: sanidad radicular y materia orgánica.' },
+                { nom: 'Brotación y floración', cuando: [1, 2], cepas: ['pseudomonas', 'pichia'],
+                  porque: 'Arranque explosivo que consume reservas, con la flor expuesta.' },
+                { nom: 'Cuajado', cuando: [3, 4], cepas: ['subtilis', 'pseudomonas'],
+                  porque: 'Define la carga del año. Nutrición disponible reduce la caída de fruto chico.' },
+                { nom: 'Desarrollo de fruto', cuando: [5, 6, 7], cepas: ['pseudomonas', 'methylo'],
+                  porque: 'Potasio para calibre y fotosíntesis sostenida.' },
+                { nom: 'Cosecha y postcosecha', cuando: [8, 9, 10], cepas: ['trichoderma', 'pichia'],
+                  porque: 'Recuperar reservas para el siguiente ciclo y proteger la fruta almacenada.' }
+            ]
+        },
+        cana: {
+            unidad: 'mes', ciclo: 'Perenne de socas',
+            etapas: [
+                { nom: 'Brotación', cuando: [10, 11], cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'La soca rebrota de una raíz vieja y cargada de inóculo: es la etapa más vulnerable.' },
+                { nom: 'Macollamiento', cuando: [0, 1, 2], cepas: ['subtilis', 'pseudomonas'],
+                  porque: 'Se define el número de tallos por cepa, y eso decide el rendimiento.' },
+                { nom: 'Crecimiento rápido', cuando: [3, 4, 5, 6], cepas: ['subtilis', 'methylo'],
+                  porque: 'Máxima demanda de nitrógeno y de área foliar activa.' },
+                { nom: 'Maduración', cuando: [7, 8], cepas: ['pseudomonas'],
+                  porque: 'El potasio manda en la acumulación de sacarosa.' },
+                { nom: 'Zafra', cuando: [9], cepas: ['trichoderma'],
+                  porque: 'Tras el corte el suelo queda expuesto, y conviene inocularlo antes del rebrote.' }
+            ]
+        },
+        /* Los meses de diciembre a abril quedan vacios a proposito: el
+           terreno descansa entre ciclos. No es un hueco que llenar. */
+        granos: {
+            unidad: 'mes', ciclo: 'Anual · un ciclo por temporada',
+            etapas: [
+                { nom: 'Preparación y siembra', cuando: [4, 5], cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'Tratar la semilla y el suelo es la aplicación con mejor retorno de todo el ciclo.' },
+                { nom: 'Desarrollo vegetativo', cuando: [6, 7], cepas: ['subtilis', 'methylo'],
+                  porque: 'La planta construye su estructura: nitrógeno y hoja sana.' },
+                { nom: 'Floración', cuando: [8], cepas: ['pseudomonas', 'thuringiensis'],
+                  porque: 'Momento crítico del rendimiento, y cuando aparece el barrenador.' },
+                { nom: 'Llenado de grano', cuando: [9], cepas: ['pseudomonas', 'methylo'],
+                  porque: 'El peso del grano se define aquí, y depende de la hoja que siga viva.' },
+                { nom: 'Madurez y cosecha', cuando: [10], cepas: ['trichoderma'],
+                  porque: 'Incorporar el rastrojo con inóculo acelera su descomposición para el siguiente ciclo.' }
+            ]
+        },
+        hortalizas: {
+            unidad: 'mes', ciclo: 'Anual · varios ciclos al año',
+            etapas: [
+                { nom: 'Almácigo y trasplante', cuando: [0, 1], cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'La plántula llega con raíz herida: el damping-off es la pérdida más común.' },
+                { nom: 'Desarrollo vegetativo', cuando: [2, 3], cepas: ['subtilis', 'methylo'],
+                  porque: 'Crecimiento acelerado con alta demanda de nitrógeno.' },
+                { nom: 'Floración y cuajado', cuando: [4, 5], cepas: ['pseudomonas', 'thuringiensis'],
+                  porque: 'Fósforo para la flor, y presión de larvas en cuanto aparece el fruto.' },
+                { nom: 'Cosecha escalonada', cuando: [6, 7, 8], cepas: ['pseudomonas', 'pichia'],
+                  porque: 'Se cosecha durante semanas: la planta no descansa y la fruta se expone.' },
+                { nom: 'Fin de ciclo', cuando: [9, 10, 11], cepas: ['trichoderma'],
+                  porque: 'Sanear el suelo entre ciclos evita arrastrar inóculo al siguiente.' }
+            ]
+        },
+        agave: {
+            unidad: 'anio', ciclo: 'Plurianual · seis a siete años',
+            etapas: [
+                { nom: 'Plantación', cuando: [1], cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'El hijuelo arranca sin raíz funcional: lo que se inocule aquí lo acompaña años.' },
+                { nom: 'Crecimiento temprano', cuando: [2, 3], cepas: ['subtilis', 'pseudomonas'],
+                  porque: 'Se forma la piña. Nutrición disponible en un suelo que suele ser pobre y delgado.' },
+                { nom: 'Crecimiento medio', cuando: [4, 5], cepas: ['subtilis', 'trichoderma'],
+                  porque: 'Años de menor atención, donde la pudrición de cogollo hace su daño sin verse.' },
+                { nom: 'Maduración', cuando: [6, 7], cepas: ['pseudomonas'],
+                  porque: 'La acumulación de azúcares define el valor de la piña al momento de la jima.' }
+            ]
+        }
+    };
+
+    /* Lo que la página le dice al productor sobre estas fechas. Va visible
+       junto al calendario, no escondido en un pie de página. */
+    const AVISO_FENOLOGIA = 'Calendario de referencia para el altiplano y el bajío. ' +
+        'Las fechas se recorren con tu región, altitud y variedad, y las aplicaciones ' +
+        'son una guía general: un especialista las ajusta a tu predio.';
+
     const PROBLEMAS = {
         costo:      { id:'costo',      icon:'fi-rr-sack-dollar',       nom:'Costo insostenible de insumos biológicos comerciales.' },
         suelo:      { id:'suelo',      icon:'fi-rr-land-layers',       nom:'Degradación física y química del suelo.' },

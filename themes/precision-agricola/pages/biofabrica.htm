@@ -858,7 +858,10 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     <template x-for="p in problemasOrdenados" :key="p.id">
                         <button type="button" class="op" :aria-pressed="problemas.includes(p.id)" @click="toggleProblema(p.id)">
                             <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
-                            <span class="cuerpo" x-text="p.nom"></span>
+                            <span class="cuerpo">
+                                <span x-text="p.nom"></span>
+                                <span class="sub" x-show="p.sub" x-text="p.sub"></span>
+                            </span>
                         </button>
                     </template>
                 </div>
@@ -1549,12 +1552,18 @@ function diagnostico() {
         'son una guía general: un especialista las ajusta a tu predio.';
 
     const PROBLEMAS = {
-        costo:      { id:'costo',      icon:'fi-rr-sack-dollar',       nom:'Costo insostenible de insumos biológicos comerciales.' },
-        suelo:      { id:'suelo',      icon:'fi-rr-land-layers',       nom:'Degradación física y química del suelo.' },
-        patogenos:  { id:'patogenos',  icon:'fi-rr-shield-virus',      nom:'Incidencia de patógenos radiculares (Fusarium, Phytophthora, etc.).' },
-        nutrientes: { id:'nutrientes', icon:'fi-rr-plant-growth',      nom:'Baja eficiencia en la asimilación de nutrientes.' },
-        foliar:     { id:'foliar',     icon:'fi-rr-leaf',              nom:'Presión de enfermedades foliares.' },
-        plagas:     { id:'plagas',     icon:'fi-rr-bug',               nom:'Presión entomológica aguda (lepidópteros, coleópteros y plagas del suelo).' }
+        costo:      { id:'costo',      icon:'fi-rr-sack-dollar',  nom:'Costo de los insumos',
+                      sub:'Los biológicos comerciales salen muy caros' },
+        suelo:      { id:'suelo',      icon:'fi-rr-land-layers',  nom:'Suelo degradado',
+                      sub:'Pérdida de estructura y de fertilidad' },
+        patogenos:  { id:'patogenos',  icon:'fi-rr-shield-virus', nom:'Patógenos en la raíz',
+                      sub:'Fusarium, Phytophthora y similares' },
+        nutrientes: { id:'nutrientes', icon:'fi-rr-plant-growth', nom:'Poca absorción de nutrientes',
+                      sub:'Se fertiliza y la planta no responde' },
+        foliar:     { id:'foliar',     icon:'fi-rr-leaf',         nom:'Enfermedades en la hoja',
+                      sub:'Presión foliar que se repite cada ciclo' },
+        plagas:     { id:'plagas',     icon:'fi-rr-bug',          nom:'Presión de plagas',
+                      sub:'Larvas, barrenadores y plagas del suelo' }
     };
 
     /* Banco inicial de datos, escrito a mano y revisable.
@@ -1614,10 +1623,14 @@ function diagnostico() {
             'Zacatecas'
         ],
         practicas: [
-            { id:'quimicos',  icon:'fi-rr-ban',              nom:'Manejo 100% convencional (No utilizo microorganismos)' },
-            { id:'compro',    icon:'fi-rr-shopping-cart',    nom:'Compro biológicos comerciales formulados (envasados).' },
-            { id:'artesanal', icon:'fi-rr-flask',            nom:'Ya propago/multiplico de forma artesanal.' },
-            { id:'produzco',  icon:'fi-rr-industry-windows', nom:'Cuento con biorreactores o equipo propio.' }
+            { id:'quimicos',  icon:'fi-rr-ban',              nom:'Manejo convencional',
+              sub:'Todavía no uso microorganismos' },
+            { id:'compro',    icon:'fi-rr-shopping-cart',    nom:'Los compro formulados',
+              sub:'Producto comercial envasado' },
+            { id:'artesanal', icon:'fi-rr-flask',            nom:'Los propago artesanal',
+              sub:'Multiplico por mi cuenta, sin equipo' },
+            { id:'produzco',  icon:'fi-rr-industry-windows', nom:'Tengo biorreactores',
+              sub:'Equipo propio en operación' }
         ],
         mesesDisponibles: [
             { id:'ene', nom:'Ene' }, { id:'feb', nom:'Feb' }, { id:'mar', nom:'Mar' },

@@ -708,7 +708,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         </span>
                     </button>
 
-                    <button type="button" class="camino-op es-litros" @click="via = 'litros'; ir(10)">
+                    <button type="button" class="camino-op es-litros" @click="via = 'litros'; ir(1)">
                         <span class="camino-marca"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
                         <span class="camino-cuerpo">
                             <span class="camino-nom">Comprar por litro</span>
@@ -1016,127 +1016,10 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             </div>
         </template>
 
-        <!-- ══ 10 · Litros · cultivo ═══════════════════ -->
-        <template x-if="paso === 10">
-            <div>
-                <button class="atras" @click="ir(0)">← Atrás</button>
-                <p class="paso-n">Paso 1 de 3</p>
-                <h2 class="pregunta">¿Qué cultivas?</h2>
-                <p class="apoyo">Elige uno o varios.</p>
-                <div class="ops">
-                    <template x-for="c in CULTIVOS" :key="c.id">
-                        <button type="button" class="op" :aria-pressed="cultivos.includes(c.id)"
-                                @click="toggleCultivo(c.id)">
-                            <span class="ico"><i class="fi" :class="c.icon" aria-hidden="true"></i></span>
-                            <span class="cuerpo">
-                                <span x-text="c.nom"></span>
-                                <span class="sub" x-show="c.det" x-text="c.det"></span>
-                            </span>
-                        </button>
-                    </template>
-                </div>
-                <div class="campo" style="margin-top:1.2rem">
-                    <label for="estado-litros">Estado de la República donde está tu operación</label>
-                    <select id="estado-litros" x-model="estado">
-                        <option value="">Selecciona un estado</option>
-                        <template x-for="e in estadosMexico" :key="e">
-                            <option :value="e" x-text="e"></option>
-                        </template>
-                    </select>
-                </div>
-                <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(11)" :disabled="cultivos.length === 0 || !estado">Continuar</button>
-                </div>
-            </div>
-        </template>
-
-        <!-- ══ 11 · Litros · problema ══════════════════ -->
-        <template x-if="paso === 11">
-            <div>
-                <button class="atras" @click="ir(10)">← Atrás</button>
-                <p class="paso-n">Paso 2 de 3</p>
-                <h2 class="pregunta">¿Cuál es el principal desafío limitante en tu operación hoy?</h2>
-                <p class="apoyo">Elige uno o varios. Con eso te sugerimos qué cepas pedir.</p>
-                <div class="ops">
-                    <template x-for="p in problemasOrdenados" :key="p.id">
-                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)"
-                                @click="toggleProblema(p.id)">
-                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
-                            <span class="cuerpo"><span x-text="p.nom"></span></span>
-                        </button>
-                    </template>
-                </div>
-                <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(12)" :disabled="problemas.length === 0">Continuar</button>
-                </div>
-            </div>
-        </template>
-
-        <!-- ══ 12 · Litros · cantidad y precio ═════════ -->
-        <template x-if="paso === 12">
-            <div>
-                <button class="atras" @click="ir(11)">← Atrás</button>
-                <p class="paso-n">Paso 3 de 3</p>
-                <h2 class="pregunta">¿Cuántos litros te interesan?</h2>
-                <p class="apoyo">Mueve la barra. Se vende la cantidad que necesites.</p>
-
-                <div class="pedido">
-                    <p class="pedido-cifra">
-                        <span x-text="litrosPedido"></span><span class="u">L</span>
-                    </p>
-                    <input type="range" class="pedido-barra" min="20" max="1000" step="20"
-                           x-model.number="litrosPedido"
-                           aria-label="Litros que quieres comprar">
-                    <div class="pedido-topes"><span>20 L</span><span>1,000 L</span></div>
-
-                    <p class="pedido-total">
-                        <span class="et">Tu pedido</span>
-                        <strong x-text="mxn(totalLitros)"></strong>
-                        <span class="unit" x-text="mxn(PRECIO_LITRO) + ' por litro · MXN'"></span>
-                    </p>
-                </div>
-
-                <template x-if="cepasSugeridas.length">
-                    <div class="sugerencia">
-                        <div class="petris" aria-hidden="true">
-                            <img src="{{ 'assets/images/biofabrica/petri-0.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-1.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-2.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-3.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-4.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-5.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                        </div>
-                        <p class="sugerencia-txt">
-                            <span x-text="fraseProblema"></span>
-                            te sugerimos
-                            <strong x-text="cepasSugeridas.map(c => c.nombre).join(' y ')"></strong>.
-                        </p>
-                        <p class="sugerencia-pie">Cepas propagadas y verificadas en nuestro laboratorio. En la cotización lo afinamos contigo.</p>
-                    </div>
-                </template>
-
-                <figure class="entrega">
-                    <img src="{{ 'assets/images/biofabrica/presentaciones-640.webp'|theme }}"
-                         srcset="{{ 'assets/images/biofabrica/presentaciones-640.webp'|theme }} 640w,
-                                 {{ 'assets/images/biofabrica/presentaciones-1100.webp'|theme }} 1100w"
-                         sizes="(max-width: 480px) 88vw, 420px"
-                         width="640" height="580" decoding="async"
-                         alt="Bioinsumos de Precisión Agrícola en garrafa, botella y bolsa metalizada">
-                    <figcaption>Se entrega en garrafa, botella o bolsa metalizada, según el volumen.</figcaption>
-                </figure>
-
-                <div style="margin-top:1.6rem">
-                    <button class="btn" @click="registrarLitros()">Recibir mi cotización</button>
-                    <button class="btn-txt" @click="via = 'equipo'; ir(1)">¿Y si mejor produzco los míos?</button>
-                </div>
-            </div>
-        </template>
-
         <!-- ══ 7 · Captura ═════════════════════════════ -->
         <template x-if="paso === 7">
             <div>
-                <button class="atras" @click="ir(via === 'litros' ? 12 : 6)"
-                        x-text="via === 'litros' ? '← Volver a mi pedido' : '← Volver a mi configuración'"></button>
+                <button class="atras" @click="ir(6)">← Volver a mi configuración</button>
                 <p class="paso-n">Último paso</p>
                 <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
@@ -1362,7 +1245,6 @@ function diagnostico() {
            calcula recuperacion; 'litros' es una compra, y a una compra no se
            le proyecta retorno: son tres preguntas y un precio. */
         via: 'equipo',
-        litrosPedido: 100,
         estado: '',
         ha: 20,
         practica: null,
@@ -1472,9 +1354,6 @@ function diagnostico() {
                 .sort((a, b) => b._p - a._p);
         },
 
-        /* Camino de litros: precio fijo por litro, sin derivar nada. */
-        get PRECIO_LITRO() { return VENTA_LITRO; },
-        get totalLitros()  { return this.litrosPedido * VENTA_LITRO; },
         /* Las dos que mejor responden a lo que dijo. Solo para orientar la
            conversacion con Ventas, no para cerrar el pedido aqui. */
         get cepasSugeridas() { return this.cepasOrdenadas.slice(0, 2); },
@@ -1574,7 +1453,6 @@ function diagnostico() {
 
         /* La palanca: qué se le ofrece. Nadie sale sin oferta. */
         get palanca() {
-            if (this.via === 'litros') return 'litros';
             if (this.noSabe || this.gasto <= 0) return 'campo';
             if (this.practica === 'produzco')   return 'mejoras';
             const m = this.meses;
@@ -1713,11 +1591,6 @@ function diagnostico() {
             return '$' + Math.round(n).toLocaleString('es-MX');
         },
 
-        registrarLitros() {
-            medir('pedido_litros', { litros: this.litrosPedido, total: this.totalLitros });
-            this.ir(7);
-        },
-
         ir(n) {
             if (n > this.paso) medir('paso_' + n, { desde: this.paso });
             this.paso = n;
@@ -1789,27 +1662,6 @@ function diagnostico() {
         get resumen() {
             const nom = id => (CEPAS.find(c => c.id === id) || {}).nombre || id;
             const nomProb = id => (PROBLEMAS[id] || {}).nom || id;
-
-            /* Compra de litros: superficie, gasto y practica nunca se
-               preguntaron. Va "Superficie:" vacia a proposito, para que la
-               hoja no tome el valor por omision del formulario y lo registre
-               como si el productor lo hubiera contestado. */
-            if (this.via === 'litros') {
-                return [
-                    'RUTA: litros',
-                    'Compra: litros ya producidos',
-                    'Cultivos: ' + this.nombresCultivos.join(' / '),
-                    'Estado: ' + this.estado,
-                    'Superficie: ',
-                    'Problema principal: ' + nomProb(this.problemaPrincipal),
-                    'Problemas seleccionados: ' + this.problemas.map(nomProb).join(' / '),
-                    'Litros pedidos: ' + this.litrosPedido,
-                    'Precio por litro: ' + this.mxn(VENTA_LITRO),
-                    'Total: ' + this.mxn(this.totalLitros),
-                    'Cepas sugeridas: ' + this.cepasSugeridas.map(c => c.nombre).join(' / '),
-                    'Financiamiento: ' + (this.quiereFinanciamiento ? 'INTERESADO' : 'no')
-                ].join(' | ');
-            }
 
             const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
             const nomPractica = id => (this.practicas.find(p => p.id === id) || {}).nom || id;
@@ -1901,8 +1753,7 @@ function diagnostico() {
                 body: p.toString()
             })
             .then(() => {
-                medir('lead', { palanca: this.palanca,
-                                total: this.via === 'litros' ? this.totalLitros : this.precioConfig,
+                medir('lead', { palanca: this.palanca, total: this.precioConfig,
                                 financiamiento: this.quiereFinanciamiento ? 1 : 0 });
                 window.location.href = '/gracias-diagnostico';
             })

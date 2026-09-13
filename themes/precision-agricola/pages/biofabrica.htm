@@ -1111,6 +1111,22 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                 </template>
 
                 <!-- Configurador -->
+
+                <div class="total">
+                    <button class="btn" @click="ir(8)">Ver mi configuración</button>
+                </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 8 · Configuración y precio ═══════════════ -->
+        {# Se separo del resultado: entender que conviene y armar lo que se
+           compra son dos momentos distintos, y juntos median 6.2 pantallas
+           de scroll justo cuando el productor esta decidiendo. #}
+        <template x-if="paso === 8">
+            <div>
+                <button class="atras" @click="ir(6)">← Volver al resultado</button>
+                <p class="paso-n">Tu configuración</p>
                 <template x-if="palanca !== 'litros' && palanca !== 'campo'">
                     <div class="surge surge-3">
                         <p class="cfg-tit">Tu configuración · ajústala</p>
@@ -1195,7 +1211,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         <!-- ══ 7 · Captura ═════════════════════════════ -->
         <template x-if="paso === 7">
             <div>
-                <button class="atras" @click="ir(6)">← Volver a mi configuración</button>
+                <button class="atras" @click="ir(8)">← Volver a mi configuración</button>
                 <p class="paso-n">Último paso</p>
                 <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
@@ -1605,7 +1621,14 @@ function diagnostico() {
             { id:'oct', nom:'Oct' }, { id:'nov', nom:'Nov' }, { id:'dic', nom:'Dic' }
         ],
 
-        get avance() { return Math.round((Math.min(this.paso, 7) / 7) * 100); },
+        get avance() {
+            /* El orden del recorrido es 0 a 6, luego 8 -la configuracion- y
+               al final 7, la captura. Se mapea a mano para que la barra
+               avance como el recorrido y no como el numero de paso. */
+            const orden = { 0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 8:7, 7:8 };
+            const n = orden[this.paso];
+            return Math.round(((n === undefined ? 0 : n) / 8) * 100);
+        },
 
         get preguntaGasto() {
             if (this.practica === 'compro')   return '¿Cuánto pagas por ha en un mes activo de microorganismos?';

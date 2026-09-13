@@ -502,6 +502,13 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             margin-top: .6rem; font-size: .8rem; color: var(--txt-3);
         }
 
+        /* Dos preguntas en una pantalla: la segunda necesita aire y una
+           linea que la separe, o se leen como si fueran la misma. */
+        .pregunta.segunda {
+            margin-top: 2.2rem; padding-top: 1.6rem;
+            border-top: 1px solid var(--line);
+        }
+
         /* ── Etapas del cultivo ─────────────────────────────────── */
 
         .fenologia { margin-top: .9rem; }
@@ -844,7 +851,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         <!-- ══ 1 · Problema ════════════════════════════ -->
         <template x-if="paso === 1">
             <div>
-                <p class="paso-n">Paso 1 de 5</p>
+                <p class="paso-n">Paso 1 de 4</p>
                 <h2 class="pregunta">¿Cuál es el principal desafío limitante en tu operación hoy?</h2>
                 <p class="apoyo">Elige uno o varios problemas que tengas.</p>
                 <div class="ops">
@@ -865,7 +872,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
         <template x-if="paso === 2">
             <div>
                 <button class="atras" @click="ir(1)">← Atrás</button>
-                <p class="paso-n">Paso 2 de 5</p>
+                <p class="paso-n">Paso 2 de 4</p>
                 <h2 class="pregunta">¿Qué cultivas?</h2>
                 <p class="apoyo">Elige uno o varios.</p>
                 <div class="ops">
@@ -895,33 +902,27 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             </div>
         </template>
 
-        <!-- ══ 3 · Superficie ══════════════════════════ -->
+        <!-- ══ 3 · Superficie y práctica ═══════════════ -->
+        {# Eran dos pasos de una pregunta corta cada uno, de una pantalla
+           escasa. Juntos hacen una pantalla honesta y le quitan un toque al
+           productor. Las opciones ya no avanzan solas: con dos preguntas en
+           la misma pantalla, avanzar al tocar una saltaria la otra. #}
         <template x-if="paso === 3">
             <div>
                 <button class="atras" @click="ir(2)">← Atrás</button>
-                <p class="paso-n">Paso 3 de 5</p>
+                <p class="paso-n">Paso 3 de 4</p>
                 <h2 class="pregunta">¿Cuánta superficie tienes en producción?</h2>
-                <div style="margin:1.8rem 0 .5rem">
+                <div style="margin:1.4rem 0 .5rem">
                     <span class="cifra-viva" x-text="ha"></span>
                     <span class="cifra-viva u"> ha</span>
                 </div>
                 <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
                 <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
-                <div style="margin-top:1.6rem">
-                    <button class="btn" @click="ir(4)">Continuar</button>
-                </div>
-            </div>
-        </template>
 
-        <!-- ══ 4 · Práctica actual ═════════════════════ -->
-        <template x-if="paso === 4">
-            <div>
-                <button class="atras" @click="ir(3)">← Atrás</button>
-                <p class="paso-n">Paso 4 de 5</p>
-                <h2 class="pregunta">¿Cómo gestionas tu carga microbiana actualmente?</h2>
+                <h2 class="pregunta segunda">¿Cómo gestionas tu carga microbiana actualmente?</h2>
                 <div class="ops">
                     <template x-for="p in practicas" :key="p.id">
-                        <button class="op" :aria-pressed="practica === p.id" @click="practica = p.id; ir(5)">
+                        <button class="op" :aria-pressed="practica === p.id" @click="practica = p.id">
                             <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
                             <span class="cuerpo">
                                 <span x-text="p.nom"></span>
@@ -930,14 +931,18 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         </button>
                     </template>
                 </div>
+
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="ir(5)" :disabled="!practica">Continuar</button>
+                </div>
             </div>
         </template>
 
         <!-- ══ 5 · Gasto ═══════════════════════════════ -->
         <template x-if="paso === 5">
             <div>
-                <button class="atras" @click="ir(4)">← Atrás</button>
-                <p class="paso-n">Paso 5 de 5</p>
+                <button class="atras" @click="ir(3)">← Atrás</button>
+                <p class="paso-n">Paso 4 de 4</p>
                 <h2 class="pregunta" x-text="preguntaGasto"></h2>
                 <p class="apoyo">Ponlo por mes activo. Luego marca cuándo aplicas.</p>
 
@@ -1625,9 +1630,9 @@ function diagnostico() {
             /* El orden del recorrido es 0 a 6, luego 8 -la configuracion- y
                al final 7, la captura. Se mapea a mano para que la barra
                avance como el recorrido y no como el numero de paso. */
-            const orden = { 0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 8:7, 7:8 };
+            const orden = { 0:0, 1:1, 2:2, 3:3, 5:4, 6:5, 8:6, 7:7 };
             const n = orden[this.paso];
-            return Math.round(((n === undefined ? 0 : n) / 8) * 100);
+            return Math.round(((n === undefined ? 0 : n) / 7) * 100);
         },
 
         get preguntaGasto() {

@@ -545,12 +545,18 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
         .fen-etapa.hoy { border-top-color: var(--amber); }
-        .fen-etapa.activa {
-            background: rgba(126,217,87,.16);
-            border-top-color: var(--lime);
+        /* Dos estados distintos: "marcada" es que el productor aplica en
+           esa etapa, "abierta" es que esta viendo su detalle. */
+        .fen-etapa.marcada {
+            background: rgba(126,217,87,.18);
             color: var(--txt);
         }
-        .fen-etapa.activa .fen-cuando { color: var(--lime); }
+        .fen-etapa.marcada .fen-cuando { color: var(--lime); }
+        .fen-etapa.abierta { border-top-color: var(--lime); }
+        .fen-etapa.abierta:not(.marcada) { background: rgba(255,255,255,.10); }
+        .fen-etapa.marcada .fen-nom::after {
+            content: " ✓"; color: var(--lime); font-weight: 700;
+        }
 
         .fen-detalle {
             padding: .9rem 1rem;
@@ -966,11 +972,70 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         <h3>¿En qué meses tienes ese gasto?</h3>
                         <span x-text="mesesSeleccionadosTxt"></span>
                     </div>
-                    <div class="presets">
-                        <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
-                        <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
-                        <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
+                {# El año del productor en su cultivo. Toca una etapa y se
+                   abre el porqué de lo que se le recomienda: es lo que
+                   convierte la sugerencia de cepas en un argumento en vez
+                   de un puntaje sin explicar. #}
+                <template x-if="fenologia">
+                    <div class="fenologia surge">
+                        <div class="fen-cab">
+                            <p class="fen-tit">Tu año en <span x-text="nombresCultivos[0].toLowerCase()"></span></p>
+                            <span class="fen-ciclo">Toca las etapas en que aplicas</span>
+                        </div>
+
+                        <div class="fen-tira" role="tablist" :aria-label="'Etapas del cultivo'">
+                            <template x-for="(e, i) in fenologia.etapas" :key="i">
+                                <button type="button" class="fen-etapa"
+                                        role="tab"
+                                        :class="{ marcada: etapaMarcada(i), abierta: i === etapaVista, hoy: i === etapaDeHoy }"
+                                        :aria-selected="i === etapaVista"
+                                        :aria-pressed="etapaMarcada(i)"
+                                        :style="'flex-grow:' + e.cuando.length"
+                                        @click="toggleEtapa(i)">
+                                    <span class="fen-cuando" x-text="etiquetaCuando(e)"></span>
+                                    <span class="fen-nom" x-text="e.nom"></span>
+                                </button>
+                            </template>
+                        </div>
+
+                        <template x-if="etapa">
+                            <div class="fen-detalle">
+                                <p class="fen-etiqueta">
+                                    <span x-text="etapa.nom"></span>
+                                    <span class="fen-meses" x-text="etiquetaCuando(etapa)"></span>
+                                    <span class="fen-hoy" x-show="etapaVista === etapaDeHoy && fenologia.unidad === 'mes'">estás aquí</span>
+                                </p>
+                                <p class="fen-porque" x-text="etapa.porque"></p>
+                                <div class="fen-cepas">
+                                    <template x-for="c in etapa.cepas" :key="c">
+                                        <span class="fen-cepa">
+                                            <i class="fi fi-rr-microscope-bacteria" aria-hidden="true"></i>
+                                            <span x-text="nombreCepa(c)"></span>
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <p class="fen-aviso" x-text="avisoFenologia"></p>
+
+                        <template x-if="cultivos.length > 1">
+                            <p class="fen-aviso">
+                                Elegiste <span x-text="cultivos.length"></span> cultivos y sus ciclos no coinciden.
+                                Se muestra el de <span x-text="nombresCultivos[0].toLowerCase()"></span>;
+                                en la cotización los revisamos todos.
+                            </p>
+                        </template>
                     </div>
+                </template>
+
+                    <template x-if="!fenologia">
+                        <div class="presets">
+                            <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
+                            <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
+                            <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
+                        </div>
+                    </template>
                     <div class="meses-grid">
                         <template x-for="m in mesesDisponibles" :key="m.id">
                             <button type="button" class="mes-chip"
@@ -1057,61 +1122,6 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </div>
                 </template>
 
-                {# El año del productor en su cultivo. Toca una etapa y se
-                   abre el porqué de lo que se le recomienda: es lo que
-                   convierte la sugerencia de cepas en un argumento en vez
-                   de un puntaje sin explicar. #}
-                <template x-if="fenologia">
-                    <div class="fenologia surge surge-2">
-                        <div class="fen-cab">
-                            <p class="fen-tit">Tu año en <span x-text="nombresCultivos[0].toLowerCase()"></span></p>
-                            <span class="fen-ciclo" x-text="fenologia.ciclo"></span>
-                        </div>
-
-                        <div class="fen-tira" role="tablist" :aria-label="'Etapas del cultivo'">
-                            <template x-for="(e, i) in fenologia.etapas" :key="i">
-                                <button type="button" class="fen-etapa"
-                                        role="tab"
-                                        :class="{ activa: i === etapaVista, hoy: i === etapaDeHoy }"
-                                        :aria-selected="i === etapaVista"
-                                        :style="'flex-grow:' + e.cuando.length"
-                                        @click="etapaAbierta = i">
-                                    <span class="fen-cuando" x-text="etiquetaCuando(e)"></span>
-                                    <span class="fen-nom" x-text="e.nom"></span>
-                                </button>
-                            </template>
-                        </div>
-
-                        <template x-if="etapa">
-                            <div class="fen-detalle">
-                                <p class="fen-etiqueta">
-                                    <span x-text="etapa.nom"></span>
-                                    <span class="fen-meses" x-text="etiquetaCuando(etapa)"></span>
-                                    <span class="fen-hoy" x-show="etapaVista === etapaDeHoy && fenologia.unidad === 'mes'">estás aquí</span>
-                                </p>
-                                <p class="fen-porque" x-text="etapa.porque"></p>
-                                <div class="fen-cepas">
-                                    <template x-for="c in etapa.cepas" :key="c">
-                                        <span class="fen-cepa">
-                                            <i class="fi fi-rr-microscope-bacteria" aria-hidden="true"></i>
-                                            <span x-text="nombreCepa(c)"></span>
-                                        </span>
-                                    </template>
-                                </div>
-                            </div>
-                        </template>
-
-                        <p class="fen-aviso" x-text="avisoFenologia"></p>
-
-                        <template x-if="cultivos.length > 1">
-                            <p class="fen-aviso">
-                                Elegiste <span x-text="cultivos.length"></span> cultivos y sus ciclos no coinciden.
-                                Se muestra el de <span x-text="nombresCultivos[0].toLowerCase()"></span>;
-                                en la cotización los revisamos todos.
-                            </p>
-                        </template>
-                    </div>
-                </template>
 
                 <template x-if="palanca !== 'campo'">
                     <div class="metricas surge surge-1">
@@ -1759,6 +1769,36 @@ function diagnostico() {
             return n.length === 1 ? n[0] : n[0] + ' a ' + n[n.length - 1];
         },
         nombreCepa(id) { return (CEPAS.find(c => c.id === id) || {}).nombre || id; },
+
+        /* Tocar una etapa marca sus meses: las etapas son mejores preajustes
+           que "ciclo corto" o "medio ano", porque hablan del cultivo del
+           productor y no de un calendario generico. Si ya estaban todos
+           marcados, los quita: el mismo boton sirve para las dos cosas. */
+        toggleEtapa(i) {
+            this.etapaAbierta = i;
+            const f = this.fenologia;
+            if (!f || f.unidad !== 'mes') return;
+            const ids = f.etapas[i].cuando.map(m => this.mesesDisponibles[m].id);
+            const todos = ids.every(id => this.mesesActivos.includes(id));
+            if (todos) {
+                this.mesesActivos = this.mesesActivos.filter(id => !ids.includes(id));
+            } else {
+                ids.forEach(id => { if (!this.mesesActivos.includes(id)) this.mesesActivos.push(id); });
+            }
+            /* Ordenados como el ano, igual que toggleMes: el resumen que se
+               manda a la hoja los lista y deben leerse en orden.
+               Y NO se llama a calcular(): eso avanza al paso 6, y tocar una
+               etapa sacaba al productor de la pantalla en la que esta. */
+            const orden = this.mesesDisponibles.map(m => m.id);
+            this.mesesActivos.sort((a, b) => orden.indexOf(a) - orden.indexOf(b));
+        },
+        /* Una etapa se ve marcada cuando sus meses estan todos activos, no
+           cuando esta abierta: lo que importa es lo que el productor eligio. */
+        etapaMarcada(i) {
+            const f = this.fenologia;
+            if (!f || f.unidad !== 'mes') return false;
+            return f.etapas[i].cuando.every(m => this.mesesActivos.includes(this.mesesDisponibles[m].id));
+        },
 
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
         /* Expuestos para la plantilla: así el texto que ve el visitante sale

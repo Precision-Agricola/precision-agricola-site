@@ -287,7 +287,11 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
         .total {
             position: sticky; bottom: 0; z-index: 15;
-            background: linear-gradient(to top, var(--bg) 72%, transparent);
+            /* Fondo opaco con el borde superior difuminado por sombra. El
+               degradado anterior dejaba 28% transparente, y con el paso 6
+               ya poblado se veian las tarjetas a traves de la barra. */
+            background: var(--bg);
+            box-shadow: 0 -16px 18px -4px var(--bg);
             padding: 1rem 0 1.1rem; margin-top: 1rem;
         }
         .total-fila {
@@ -498,6 +502,150 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             margin-top: .6rem; font-size: .8rem; color: var(--txt-3);
         }
 
+        /* ── Jerarquia del paso 6 ──────────────────────────────── */
+
+        /* La comparacion es la evidencia del veredicto, asi que va pegada a
+           el. La curva explica la comparacion, asi que va plegada: quien
+           quiera el porque la abre, y quien no, no la tiene que rodear. */
+        .porque {
+            margin-top: .9rem;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255,255,255,.02);
+        }
+        .porque > summary {
+            padding: .75rem 1rem; cursor: pointer; list-style: none;
+            font-size: .88rem; color: var(--txt-2);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .porque > summary::-webkit-details-marker { display: none; }
+        .porque > summary::after {
+            content: ''; width: 7px; height: 7px; flex-shrink: 0;
+            border-right: 2px solid var(--txt-3); border-bottom: 2px solid var(--txt-3);
+            transform: rotate(45deg) translate(-2px,-2px);
+            transition: transform .2s ease;
+        }
+        .porque[open] > summary::after { transform: rotate(225deg) translate(-1px,-1px); }
+        .porque[open] > summary { color: var(--txt); }
+        .porque > .curva, .porque > .escala { margin: 0 .8rem .8rem; }
+        .porque > .curva { border: 0; background: transparent; padding: 0 0 .5rem; }
+
+        /* ── Comparacion de caminos, traida de /cotizador ─────── */
+        /* ── Lo que necesita ─────────────────────────────────────── */
+
+        .necesita {
+            margin: 1rem 0 0; text-align: center;
+            font-size: .95rem; color: var(--txt-2);
+        }
+        .necesita strong { color: var(--txt); font-family: 'Montserrat', sans-serif; }
+
+        /* ── Los dos caminos ─────────────────────────────────────── */
+
+        .opciones { display: grid; gap: .8rem; grid-template-columns: 1fr 1fr; margin-top: 1rem; }
+
+        .opcion {
+            position: relative;
+            display: flex; flex-direction: column; gap: .1rem;
+            padding: 1.1rem .9rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radio);
+            text-align: center;
+            transition: border-color .3s ease, background .3s ease, transform .3s ease;
+        }
+        .opcion .titulo {
+            font-size: .78rem; letter-spacing: .05em; text-transform: uppercase;
+            color: var(--txt-3); margin-bottom: .4rem;
+        }
+        .opcion .por-ha {
+            font-family: 'Montserrat', sans-serif; font-weight: 800;
+            font-size: clamp(1.5rem, 7vw, 1.95rem); line-height: 1;
+            color: var(--txt-2); letter-spacing: -.01em;
+            transition: color .3s ease;
+        }
+        .opcion .por-ha-u { font-size: .72rem; color: var(--txt-3); margin-bottom: .5rem; }
+        .opcion .monto {
+            font-family: 'Montserrat', sans-serif; font-weight: 600;
+            font-size: .95rem; color: var(--txt-2);
+        }
+        .opcion .detalle { font-size: .76rem; color: var(--txt-3); line-height: 1.35; margin-top: .15rem; }
+
+        /* El sello solo existe en la opción que gana, y aparece creciendo para que
+           el cambio se note al mover la perilla: es el punto de la página. */
+        .opcion .sello {
+            position: absolute; top: -.6rem; left: 50%;
+            transform: translateX(-50%) scale(.6);
+            padding: .18rem .6rem; border-radius: 20px;
+            background: var(--lime); color: #0d1a12;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: .68rem; letter-spacing: .04em; white-space: nowrap;
+            opacity: 0; pointer-events: none;
+            transition: opacity .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+        }
+        .opcion.gana {
+            border-color: var(--lime);
+            background: linear-gradient(165deg, rgba(126,217,87,.10), var(--card));
+            transform: translateY(-2px);
+        }
+        .opcion.gana .por-ha { color: var(--lime); }
+        .opcion.gana .monto  { color: var(--txt); }
+        .opcion.gana .sello  { opacity: 1; transform: translateX(-50%) scale(1); }
+
+        /* ── La curva ────────────────────────────────────────────── */
+
+        .curva {
+            margin: 1rem 0 0; padding: .9rem .8rem .7rem;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radio);
+        }
+        .curva svg { display: block; width: 100%; height: auto; }
+        .curva figcaption {
+            display: flex; flex-wrap: wrap; gap: .35rem .9rem;
+            margin-top: .5rem; font-size: .74rem; color: var(--txt-3);
+        }
+        .curva .clave { display: inline-flex; align-items: center; gap: .35rem; }
+        .curva .raya { display: inline-block; width: 15px; height: 2px; border-radius: 1px; }
+        .curva .raya.es-producir { background: var(--lime); }
+        .curva .raya.es-comprar {
+            background: linear-gradient(90deg, var(--txt-2) 55%, transparent 55%);
+            background-size: 7px 2px;
+        }
+        .curva .punto {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+            background: var(--amber); border: 1.5px solid var(--bg);
+        }
+        .curva .pie { flex-basis: 100%; line-height: 1.4; }
+
+        /* ── El aviso de escala ──────────────────────────────────── */
+
+        .escala {
+            margin: 1rem 0 0; padding: .9rem 1.05rem;
+            border-radius: 12px; border: 1px solid;
+            font-size: .88rem; line-height: 1.5;
+        }
+        .escala:empty { display: none; }
+        .escala strong { font-family: 'Montserrat', sans-serif; }
+
+        .escala.es-ajuste {
+            background: rgba(224,163,60,.08); border-color: rgba(224,163,60,.26);
+            border-left: 3px solid var(--amber); color: var(--txt-2);
+        }
+        .escala.es-ajuste strong { color: var(--amber); }
+
+        .escala.es-optima {
+            background: rgba(126,217,87,.08); border-color: rgba(126,217,87,.26);
+            border-left: 3px solid var(--lime); color: var(--txt-2);
+        }
+        .escala.es-optima strong { color: var(--lime); }
+
+        .escala.es-plano {
+            background: rgba(255,255,255,.04); border-color: var(--line);
+            border-left: 3px solid var(--txt-3); color: var(--txt-2);
+        }
+        .escala.es-plano strong { color: var(--txt); }
+
+
         .gancho-equipo figcaption { min-width: 0; }
         .gancho-equipo .marca-equipo {
             display: block; font-family: 'Montserrat', sans-serif;
@@ -524,7 +672,18 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
 <body>
 
-<div class="app" x-data="diagnostico()" x-cloak>
+{# Los precios salen de Settings -> Customize theme y viajan por atributos
+   data-, porque Twig no procesa el bloque de JavaScript de abajo. Antes
+   estaban escritos en el codigo y cada ajuste era un commit y un despliegue. #}
+<div class="app" x-cloak
+     x-data="diagnostico()"
+     data-precio="{{ this.theme.cotizador_precio_litro }}"
+     data-precio-lote="{{ this.theme.cotizador_precio_lote }}"
+     data-dosis="{{ this.theme.cotizador_dosis_ha }}"
+     data-litros-lote="{{ this.theme.cotizador_litros_lote }}"
+     data-referencia="{{ this.theme.cotizador_referencia_ha }}"
+     data-reactor="{{ this.theme.cotizador_reactor }}"
+     data-monitoreo="{{ this.theme.cotizador_monitoreo }}">
 
     <header class="barra">
         <img src="{{ 'assets/images/logo-pa.png'|theme }}" alt="Precisión Agrícola">
@@ -581,7 +740,7 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                         </span>
                     </button>
 
-                    <button type="button" class="camino-op es-litros" @click="via = 'litros'; ir(10)">
+                    <button type="button" class="camino-op es-litros" @click="via = 'litros'; ir(1)">
                         <span class="camino-marca"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
                         <span class="camino-cuerpo">
                             <span class="camino-nom">Comprar por litro</span>
@@ -742,6 +901,50 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     <p x-text="veredicto.texto"></p>
                 </div>
 
+                {# Los dos caminos con los numeros del productor. Reemplaza al
+                   embudo de litros que vivia en una pagina aparte. #}
+                <template x-if="palanca !== 'campo' && ha > 0">
+                    <div class="surge surge-2">
+                        <p class="necesita">Para <strong x-text="ha + ' ha'"></strong> necesitas
+                           <strong x-text="num(litrosAplicacion) + ' L'"></strong> por aplicación.</p>
+
+                        <div class="opciones">
+                            <div class="opcion" :class="{ gana: !convieneProducir }">
+                                <span class="titulo">Comprarlos terminados</span>
+                                <span class="por-ha" x-text="mxn(comprarPorHa)"></span>
+                                <span class="por-ha-u">por hectárea</span>
+                                <span class="monto" x-text="mxn(comprarTotal)"></span>
+                                <span class="detalle" x-text="num(litrosAplicacion) + ' L, justo lo que ocupas'"></span>
+                                <span class="sello">Te conviene</span>
+                            </div>
+                            <div class="opcion" :class="{ gana: convieneProducir }">
+                                <span class="titulo">Producirlos tú</span>
+                                <span class="por-ha" x-text="mxn(producirPorHa)"></span>
+                                <span class="por-ha-u">por hectárea</span>
+                                <span class="monto" x-text="mxn(producirTotal)"></span>
+                                <span class="detalle" x-text="num(tandas) + (tandas === 1 ? ' tanda de ' : ' tandas de ') + num(loteLitros) + ' L'"></span>
+                                <span class="sello">Te conviene</span>
+                            </div>
+                        </div>
+
+                        <details class="porque" open>
+                        <summary>¿Por qué cambia según la superficie?</summary>
+                        <figure class="curva">
+                            <svg id="grafica" viewBox="0 0 320 156" role="img"
+                                 aria-labelledby="curva-pie" preserveAspectRatio="xMidYMid meet"></svg>
+                            <figcaption id="curva-pie">
+                                <span class="clave"><i class="raya es-producir"></i>Producirlos</span>
+                                <span class="clave"><i class="raya es-comprar"></i>Comprarlos terminados</span>
+                                <span class="clave"><i class="punto"></i>Tú</span>
+                                <span class="pie">Pesos por hectárea, según tu superficie. Cada diente es una tanda nueva que se paga entera.</span>
+                            </figcaption>
+                        </figure>
+
+                        <p class="escala" :class="claseEscala" x-html="textoEscala"></p>
+                        </details>
+                    </div>
+                </template>
+
                 <template x-if="palanca !== 'campo'">
                     <div class="metricas surge surge-1">
                         <div class="metrica">
@@ -848,127 +1051,10 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             </div>
         </template>
 
-        <!-- ══ 10 · Litros · cultivo ═══════════════════ -->
-        <template x-if="paso === 10">
-            <div>
-                <button class="atras" @click="ir(0)">← Atrás</button>
-                <p class="paso-n">Paso 1 de 3</p>
-                <h2 class="pregunta">¿Qué cultivas?</h2>
-                <p class="apoyo">Elige uno o varios.</p>
-                <div class="ops">
-                    <template x-for="c in CULTIVOS" :key="c.id">
-                        <button type="button" class="op" :aria-pressed="cultivos.includes(c.id)"
-                                @click="toggleCultivo(c.id)">
-                            <span class="ico"><i class="fi" :class="c.icon" aria-hidden="true"></i></span>
-                            <span class="cuerpo">
-                                <span x-text="c.nom"></span>
-                                <span class="sub" x-show="c.det" x-text="c.det"></span>
-                            </span>
-                        </button>
-                    </template>
-                </div>
-                <div class="campo" style="margin-top:1.2rem">
-                    <label for="estado-litros">Estado de la República donde está tu operación</label>
-                    <select id="estado-litros" x-model="estado">
-                        <option value="">Selecciona un estado</option>
-                        <template x-for="e in estadosMexico" :key="e">
-                            <option :value="e" x-text="e"></option>
-                        </template>
-                    </select>
-                </div>
-                <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(11)" :disabled="cultivos.length === 0 || !estado">Continuar</button>
-                </div>
-            </div>
-        </template>
-
-        <!-- ══ 11 · Litros · problema ══════════════════ -->
-        <template x-if="paso === 11">
-            <div>
-                <button class="atras" @click="ir(10)">← Atrás</button>
-                <p class="paso-n">Paso 2 de 3</p>
-                <h2 class="pregunta">¿Cuál es el principal desafío limitante en tu operación hoy?</h2>
-                <p class="apoyo">Elige uno o varios. Con eso te sugerimos qué cepas pedir.</p>
-                <div class="ops">
-                    <template x-for="p in problemasOrdenados" :key="p.id">
-                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)"
-                                @click="toggleProblema(p.id)">
-                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
-                            <span class="cuerpo"><span x-text="p.nom"></span></span>
-                        </button>
-                    </template>
-                </div>
-                <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(12)" :disabled="problemas.length === 0">Continuar</button>
-                </div>
-            </div>
-        </template>
-
-        <!-- ══ 12 · Litros · cantidad y precio ═════════ -->
-        <template x-if="paso === 12">
-            <div>
-                <button class="atras" @click="ir(11)">← Atrás</button>
-                <p class="paso-n">Paso 3 de 3</p>
-                <h2 class="pregunta">¿Cuántos litros te interesan?</h2>
-                <p class="apoyo">Mueve la barra. Se vende la cantidad que necesites.</p>
-
-                <div class="pedido">
-                    <p class="pedido-cifra">
-                        <span x-text="litrosPedido"></span><span class="u">L</span>
-                    </p>
-                    <input type="range" class="pedido-barra" min="20" max="1000" step="20"
-                           x-model.number="litrosPedido"
-                           aria-label="Litros que quieres comprar">
-                    <div class="pedido-topes"><span>20 L</span><span>1,000 L</span></div>
-
-                    <p class="pedido-total">
-                        <span class="et">Tu pedido</span>
-                        <strong x-text="mxn(totalLitros)"></strong>
-                        <span class="unit" x-text="mxn(PRECIO_LITRO) + ' por litro · MXN'"></span>
-                    </p>
-                </div>
-
-                <template x-if="cepasSugeridas.length">
-                    <div class="sugerencia">
-                        <div class="petris" aria-hidden="true">
-                            <img src="{{ 'assets/images/biofabrica/petri-0.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-1.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-2.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-3.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-4.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                            <img src="{{ 'assets/images/biofabrica/petri-5.webp'|theme }}" width="220" height="220" decoding="async" alt="">
-                        </div>
-                        <p class="sugerencia-txt">
-                            <span x-text="fraseProblema"></span>
-                            te sugerimos
-                            <strong x-text="cepasSugeridas.map(c => c.nombre).join(' y ')"></strong>.
-                        </p>
-                        <p class="sugerencia-pie">Cepas propagadas y verificadas en nuestro laboratorio. En la cotización lo afinamos contigo.</p>
-                    </div>
-                </template>
-
-                <figure class="entrega">
-                    <img src="{{ 'assets/images/biofabrica/presentaciones-640.webp'|theme }}"
-                         srcset="{{ 'assets/images/biofabrica/presentaciones-640.webp'|theme }} 640w,
-                                 {{ 'assets/images/biofabrica/presentaciones-1100.webp'|theme }} 1100w"
-                         sizes="(max-width: 480px) 88vw, 420px"
-                         width="640" height="580" decoding="async"
-                         alt="Bioinsumos de Precisión Agrícola en garrafa, botella y bolsa metalizada">
-                    <figcaption>Se entrega en garrafa, botella o bolsa metalizada, según el volumen.</figcaption>
-                </figure>
-
-                <div style="margin-top:1.6rem">
-                    <button class="btn" @click="registrarLitros()">Recibir mi cotización</button>
-                    <button class="btn-txt" @click="via = 'equipo'; ir(1)">¿Y si mejor produzco los míos?</button>
-                </div>
-            </div>
-        </template>
-
         <!-- ══ 7 · Captura ═════════════════════════════ -->
         <template x-if="paso === 7">
             <div>
-                <button class="atras" @click="ir(via === 'litros' ? 12 : 6)"
-                        x-text="via === 'litros' ? '← Volver a mi pedido' : '← Volver a mi configuración'"></button>
+                <button class="atras" @click="ir(6)">← Volver a mi configuración</button>
                 <p class="paso-n">Último paso</p>
                 <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
@@ -1049,23 +1135,41 @@ function diagnostico() {
     /* ── Catálogo · cotización 353 del 21/08/2026 ─────────────────────
        Todos los precios son ANTES DE IVA, igual que la cotización.
        Si se actualizan, se cambian aquí y todo lo demás se recalcula. */
-    const P_REACTOR   = 149000;   // biorreactor 190 L acero inoxidable
-    const P_MONITOREO = 49000;    // pH, oxígeno disuelto, temperatura y turbidez
+    /* Los precios llegan del backend por atributos data-. El valor tras el
+       || es el respaldo: si un campo del panel queda vacio, la pagina sigue
+       calculando en vez de llenarse de NaN. */
+    const CFG = (function () {
+        var n = document.querySelector('.app');
+        var d = n ? n.dataset : {};
+        var f = function (v, x) { var p = parseFloat(v); return isNaN(p) ? x : p; };
+        return {
+            litro:      f(d.precio, 150),
+            lote:       f(d.precioLote, 24000),
+            dosis:      f(d.dosis, 4),
+            litrosLote: f(d.litrosLote, 200),
+            referencia: f(d.referencia, 900),
+            reactor:    f(d.reactor, 30000),
+            monitoreo:  f(d.monitoreo, 49000)
+        };
+    })();
+
+    const P_REACTOR   = CFG.reactor;   // era 149000, ahora del backend   // biorreactor 190 L acero inoxidable
+    const P_MONITOREO = CFG.monitoreo;
 
     /* El lote vuelve a 180 L: es lo que cabe en un tanque de 190 dejando
        cabeza para la espuma de la aireación. La cotización 353 decía 200 L,
        que no caben. Los precios de los paquetes NO cambian.
        La cobertura se deriva de la dosis declarada en la 353 (200 L para
        50 ha, o sea 4 L/ha), así que 180 L alcanzan para 45. */
-    const LOTE_L  = 180;
-    const DOSIS_L_HA = 4;
+    const LOTE_L  = CFG.litrosLote;
+    const DOSIS_L_HA = CFG.dosis;
     const LOTE_HA = LOTE_L / DOSIS_L_HA;
 
     /* Precio del litro terminado que vendemos ya producido. Sale de la
        cotización 348, que es la unica que lo trae por escrito. Ojo: los
        precios de equipo de arriba son de la 353, mas reciente. Si Ventas
        actualiza el litro, se cambia aqui y nada mas. */
-    const VENTA_LITRO = 239;
+    const VENTA_LITRO = CFG.litro;
 
     /* Formas de pago, tal como las cotiza Ventas en la 353.
        El plazo de las mensualidades no está definido todavía, así que aquí
@@ -1092,8 +1196,11 @@ function diagnostico() {
 
     /* El costo por litro ya no es un número suelto: sale de los precios de
        arriba, así que no puede quedar desincronizado del catálogo. */
-    const COSTO_LITRO = CEPAS.reduce((s, c) => s + c.precio, 0) / CEPAS.length / LOTE_L;
-    const TASA_AHORRO = (VENTA_LITRO - COSTO_LITRO) / VENTA_LITRO;
+    /* El costo por litro producido sale del precio de la tanda, que ahora
+       lo fija Ventas desde el backend. Ya no se deriva del promedio de los
+       paquetes de cepas ni se convierte en una tasa plana de ahorro: el
+       ahorro depende de la escala, y eso se calcula por operacion. */
+    const COSTO_LITRO = CFG.lote / LOTE_L;
 
     /* Aguacate se deja aparte de los demas frutales aunque lo sea: es el de
        mayor peso comercial y tiene patologia propia (Phytophthora) que cambia
@@ -1173,7 +1280,6 @@ function diagnostico() {
            calcula recuperacion; 'litros' es una compra, y a una compra no se
            le proyecta retorno: son tres preguntas y un precio. */
         via: 'equipo',
-        litrosPedido: 100,
         estado: '',
         ha: 20,
         practica: null,
@@ -1283,9 +1389,6 @@ function diagnostico() {
                 .sort((a, b) => b._p - a._p);
         },
 
-        /* Camino de litros: precio fijo por litro, sin derivar nada. */
-        get PRECIO_LITRO() { return VENTA_LITRO; },
-        get totalLitros()  { return this.litrosPedido * VENTA_LITRO; },
         /* Las dos que mejor responden a lo que dijo. Solo para orientar la
            conversacion con Ventas, no para cerrar el pedido aqui. */
         get cepasSugeridas() { return this.cepasOrdenadas.slice(0, 2); },
@@ -1310,9 +1413,34 @@ function diagnostico() {
         get loteHa()      { return LOTE_HA; },
 
         get gastoAnual()  { return this.gastoHaAnual * this.ha; },
-        get ahorroHaAnual() { return Math.round(this.gastoHaAnual * TASA_AHORRO); },
-        get ahorroAnual() { return Math.round(this.gastoAnual * TASA_AHORRO); },
-        get costoOnFarmAnual() { return this.gastoAnual - this.ahorroAnual; },
+        /* ── Los dos caminos ───────────────────────────────────────────
+           Antes el ahorro era una tasa plana aplicada al gasto declarado, y
+           eso le prometia ahorro a quien en realidad perderia dinero: una
+           tanda se fermenta entera aunque se ocupe a medias, asi que el
+           costo por hectarea depende de que tan bien encaje la superficie.
+           Ahora se comparan los dos caminos con el mismo volumen. */
+        get litrosAplicacion() { return this.ha * DOSIS_L_HA; },
+        get comprarPorHa()     { return VENTA_LITRO * DOSIS_L_HA; },
+        get comprarTotal()     { return this.litrosAplicacion * VENTA_LITRO; },
+
+        get tandas()        { return Math.ceil(this.litrosAplicacion / LOTE_L) || 0; },
+        get producirTotal() { return this.tandas * CFG.lote; },
+        get producirPorHa() { return this.ha > 0 ? this.producirTotal / this.ha : 0; },
+        /* El mejor costo posible produciendo, con las tandas al tope. */
+        get producirPorHaLleno() { return CFG.lote / LOTE_L * DOSIS_L_HA; },
+        get litrosSobrantes()    { return this.tandas * LOTE_L - this.litrosAplicacion; },
+        get haQueLlena()         { return (this.tandas * LOTE_L) / DOSIS_L_HA; },
+
+        get convieneProducir() { return this.ha > 0 && this.producirPorHa < this.comprarPorHa; },
+        get mejorPorHa()       { return this.convieneProducir ? this.producirPorHa : this.comprarPorHa; },
+
+        /* Lo que se ahorra al ano contra seguir comprando terminado, con los
+           meses de aplicacion que el productor declaro. */
+        get ahorroHaAnual() {
+            return Math.round((this.comprarPorHa - this.mejorPorHa) * this.mesesGasto);
+        },
+        get ahorroAnual() { return Math.round(this.ahorroHaAnual * this.ha); },
+        get costoOnFarmAnual() { return Math.round(this.mejorPorHa * this.mesesGasto * this.ha); },
         get litrosMes()   { return Math.round((this.gasto * this.ha) / VENTA_LITRO); },
         cepaPorId(id) { return CEPAS.find(c => c.id === id) || null; },
         get precioCepas() {
@@ -1350,13 +1478,16 @@ function diagnostico() {
         /* Hectáreas a las que, con su mismo gasto por ha, el equipo se paga en 18 meses. */
         get haUmbral() {
             if (this.gasto <= 0 || this.mesesGasto <= 0) return null;
-            const minimo = this.precioEntrada;
-            return Math.ceil(minimo / (1.5 * this.gasto * this.mesesGasto * TASA_AHORRO));
+            /* A partir de aqui producir baja de lo que cuesta comprarlo:
+               es donde la tanda empieza a repartirse entre suficientes
+               hectareas. Sale del cociente entre el precio de la tanda y el
+               costo por hectarea de comprar, sin tasas inventadas. */
+            const porTanda = CFG.lote / this.comprarPorHa;
+            return Math.ceil(this.tandas > 0 ? this.tandas * porTanda : porTanda);
         },
 
         /* La palanca: qué se le ofrece. Nadie sale sin oferta. */
         get palanca() {
-            if (this.via === 'litros') return 'litros';
             if (this.noSabe || this.gasto <= 0) return 'campo';
             if (this.practica === 'produzco')   return 'mejoras';
             const m = this.meses;
@@ -1383,8 +1514,16 @@ function diagnostico() {
                 },
                 litros: {
                     etiqueta: 'Servicio sin inversión en equipo',
-                    titulo: 'Podemos suministrarte litros ya producidos',
-                    texto: 'Por tu escala actual, puede convenir iniciar con litros producidos por nosotros. Al alcanzar una superficie aproximada de ' + (this.haUmbral || '—') + ' ha con este gasto y estos meses de aplicación, el equipo propio puede ser más conveniente.',
+                    titulo: this.convieneProducir
+                        ? 'Producir te sale más barato por hectárea, pero el equipo tardaría en pagarse'
+                        : 'Podemos suministrarte litros ya producidos',
+                    texto: this.convieneProducir
+                        ? 'A ' + this.mxn(this.producirPorHa) + ' por hectárea produciendo contra ' +
+                          this.mxn(this.comprarPorHa) + ' comprando, la diferencia es real, pero con ' +
+                          this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación al año el equipo tarda en recuperarse. ' +
+                          'Empieza con litros producidos por nosotros y da el paso cuando apliques más seguido o crezca la superficie.'
+                        : 'Por tu escala actual, conviene iniciar con litros producidos por nosotros. Al acercarte a ' +
+                          (this.haUmbral || '—') + ' ha, el equipo propio empieza a tener sentido.',
                     cta: 'Solicitar cotización de litros',
                     cierreTitulo: '¿A dónde te enviamos la cotización de litros?'
                 },
@@ -1411,19 +1550,96 @@ function diagnostico() {
             return c ? DATOS[c] : null;
         },
 
+        num(n) { return new Intl.NumberFormat('es-MX', { maximumFractionDigits: 0 }).format(n || 0); },
+
+        /* El aviso de escala: por que le conviene o no, y con cuanta
+           superficie cambiaria. Es lo unico que le dice algo que no sabia. */
+        get claseEscala() {
+            if (this.producirPorHaLleno >= this.comprarPorHa) return 'es-plano';
+            return this.litrosSobrantes === 0 ? 'es-optima' : 'es-ajuste';
+        },
+        get textoEscala() {
+            if (this.ha <= 0) return '';
+            if (this.producirPorHaLleno >= this.comprarPorHa) {
+                return 'A los precios de hoy, producir no baja de <strong>' +
+                    this.mxn(this.producirPorHaLleno) + ' por hectárea</strong> ni con las ' +
+                    'tandas al tope, así que comprarlos terminados conviene a cualquier escala.';
+            }
+            if (this.litrosSobrantes === 0) {
+                return 'Tu superficie aprovecha las tandas <strong>al tope</strong>: no se ' +
+                    'desperdicia nada, y es el mejor costo posible produciendo.';
+            }
+            return 'Te sobran <strong>' + this.num(this.litrosSobrantes) + ' L</strong> de ' +
+                'capacidad, porque una tanda se fermenta entera aunque se ocupe a medias. ' +
+                'Con <strong>' + this.num(this.haQueLlena) + ' ha</strong> producir bajaría a ' +
+                '<strong>' + this.mxn(this.producirPorHaLleno) + ' por hectárea</strong>.';
+        },
+
+        /* La curva explica de un vistazo por que el costo sube y baja con la
+           superficie. Solo dibuja pesos por hectarea, que ya estan escritos
+           arriba: no agrega nada que no fuera publico. */
+        dibujarCurva() {
+            const svg = document.getElementById('grafica');
+            if (!svg || this.ha <= 0) return;
+
+            const W = 320, H = 156, mI = 40, mD = 8, mS = 12, mB = 22;
+            const ancho = W - mI - mD, alto = H - mS - mB;
+            const haPorTanda = LOTE_L / DOSIS_L_HA;
+            const maxHa = Math.max(haPorTanda * 5, Math.ceil(this.ha * 1.5 / haPorTanda) * haPorTanda);
+            const maxY  = this.comprarPorHa * 2;
+
+            const X = (ha) => mI + (ha / maxHa) * ancho;
+            const Y = (v)  => mS + alto - (Math.min(v, maxY) / maxY) * alto;
+            const e = [];
+
+            for (let i = 0; i <= 2; i++) {
+                const val = maxY * i / 2, y = Y(val);
+                e.push('<line x1="' + mI + '" y1="' + y + '" x2="' + (W - mD) + '" y2="' + y +
+                       '" stroke="rgba(255,255,255,.08)" stroke-width="1"/>');
+                e.push('<text x="' + (mI - 6) + '" y="' + (y + 3.5) + '" text-anchor="end" ' +
+                       'font-size="8.5" fill="#6d8a77">' + this.mxn(val) + '</text>');
+            }
+            for (let k = 1; k * haPorTanda <= maxHa; k++) {
+                const ha = k * haPorTanda;
+                e.push('<text x="' + X(ha) + '" y="' + (H - 7) + '" text-anchor="middle" ' +
+                       'font-size="8.5" fill="#6d8a77">' + this.num(ha) + '</text>');
+            }
+            const tandas = Math.ceil(maxHa / haPorTanda);
+            for (let t = 1; t <= tandas; t++) {
+                const desde = (t - 1) * haPorTanda, hasta = Math.min(t * haPorTanda, maxHa);
+                const pts = [], paso = haPorTanda / 24;
+                for (let x = desde + paso; x <= hasta + 0.001; x += paso) {
+                    pts.push(X(x).toFixed(1) + ',' + Y(t * CFG.lote / x).toFixed(1));
+                }
+                if (pts.length > 1) {
+                    e.push('<polyline points="' + pts.join(' ') + '" fill="none" ' +
+                           'stroke="#7ed957" stroke-width="2" stroke-linejoin="round"/>');
+                }
+            }
+            e.push('<line x1="' + X(0) + '" y1="' + Y(this.comprarPorHa) + '" x2="' + X(maxHa) +
+                   '" y2="' + Y(this.comprarPorHa) + '" stroke="#a9c2b1" stroke-width="2" ' +
+                   'stroke-dasharray="5 4"/>');
+            if (this.ha <= maxHa) {
+                const px = X(this.ha), py = Y(this.mejorPorHa);
+                e.push('<line x1="' + px + '" y1="' + mS + '" x2="' + px + '" y2="' + (mS + alto) +
+                       '" stroke="rgba(255,255,255,.25)" stroke-width="1" stroke-dasharray="2 3"/>');
+                e.push('<circle cx="' + px + '" cy="' + py + '" r="4.5" fill="#e0a33c" ' +
+                       'stroke="#0d1a12" stroke-width="2"/>');
+            }
+            svg.innerHTML = e.join('');
+        },
+
         mxn(n) {
             if (!isFinite(n)) return '—';
             return '$' + Math.round(n).toLocaleString('es-MX');
         },
 
-        registrarLitros() {
-            medir('pedido_litros', { litros: this.litrosPedido, total: this.totalLitros });
-            this.ir(7);
-        },
-
         ir(n) {
             if (n > this.paso) medir('paso_' + n, { desde: this.paso });
             this.paso = n;
+            /* El <svg> no existe hasta que Alpine monta la plantilla del paso,
+               asi que el dibujo espera un tick. */
+            if (n === 6) setTimeout(() => this.dibujarCurva(), 0);
             window.scrollTo({ top: 0, behavior: 'instant' });
         },
 
@@ -1489,27 +1705,6 @@ function diagnostico() {
         get resumen() {
             const nom = id => (CEPAS.find(c => c.id === id) || {}).nombre || id;
             const nomProb = id => (PROBLEMAS[id] || {}).nom || id;
-
-            /* Compra de litros: superficie, gasto y practica nunca se
-               preguntaron. Va "Superficie:" vacia a proposito, para que la
-               hoja no tome el valor por omision del formulario y lo registre
-               como si el productor lo hubiera contestado. */
-            if (this.via === 'litros') {
-                return [
-                    'RUTA: litros',
-                    'Compra: litros ya producidos',
-                    'Cultivos: ' + this.nombresCultivos.join(' / '),
-                    'Estado: ' + this.estado,
-                    'Superficie: ',
-                    'Problema principal: ' + nomProb(this.problemaPrincipal),
-                    'Problemas seleccionados: ' + this.problemas.map(nomProb).join(' / '),
-                    'Litros pedidos: ' + this.litrosPedido,
-                    'Precio por litro: ' + this.mxn(VENTA_LITRO),
-                    'Total: ' + this.mxn(this.totalLitros),
-                    'Cepas sugeridas: ' + this.cepasSugeridas.map(c => c.nombre).join(' / '),
-                    'Financiamiento: ' + (this.quiereFinanciamiento ? 'INTERESADO' : 'no')
-                ].join(' | ');
-            }
 
             const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
             const nomPractica = id => (this.practicas.find(p => p.id === id) || {}).nom || id;
@@ -1601,8 +1796,7 @@ function diagnostico() {
                 body: p.toString()
             })
             .then(() => {
-                medir('lead', { palanca: this.palanca,
-                                total: this.via === 'litros' ? this.totalLitros : this.precioConfig,
+                medir('lead', { palanca: this.palanca, total: this.precioConfig,
                                 financiamiento: this.quiereFinanciamiento ? 1 : 0 });
                 window.location.href = '/gracias-diagnostico';
             })

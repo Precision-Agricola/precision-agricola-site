@@ -1,0 +1,83 @@
+# Precios del embudo /biofabrica, editables desde Settings -> Customize theme.
+#
+# Antes vivian escritos en la pagina y cada ajuste era un commit y un
+# despliegue. Ahora los cambia Ventas sola.
+#
+# Los valores por omisión salen del modelo de negocio en Python, que Eduardo
+# confirmó el 11/09/2026 como los vigentes: $150 por litro, lote de 200 L y
+# dosis de 4 L/ha. Ojo: /biofabrica todavía trae los de la cotización 353
+# ($239/L y lote de 180 L), así que el sitio tiene dos precios por litro
+# hasta que se decida alinear esa página.
+tabs:
+    fields:
+        cotizador_precio_litro:
+            tab: Cotizador
+            label: Precio de venta por litro
+            comment: 'En pesos, sin IVA. Es el precio que ve el público.'
+            type: number
+            default: 150
+            span: left
+
+        cotizador_dosis_ha:
+            tab: Cotizador
+            label: Dosis por hectárea
+            comment: 'Litros de bioinsumo por hectárea, por aplicación.'
+            type: number
+            default: 4
+            span: right
+
+        cotizador_litros_lote:
+            tab: Cotizador
+            label: Capacidad del lote
+            comment: 'Litros que produce la biofábrica por ciclo de fermentación.'
+            type: number
+            default: 200
+            span: left
+
+        cotizador_precio_lote:
+            tab: Cotizador
+            label: Precio del paquete de insumos por lote
+            comment: 'Lo que paga quien produce en su propia biofábrica, por cada tanda. PENDIENTE de confirmar con Ventas: no sale del modelo de Python ni de la COT 353. Umbral duro: si pasa de $30,000 (lo que cuestan 200 L terminados), producir deja de convenir a cualquier escala y la página lo dirá.'
+            type: number
+            default: 24000
+            span: left
+
+        cotizador_referencia_ha:
+            tab: Cotizador
+            label: Costo del producto comercial por hectárea
+            comment: 'Referencia de mercado para calcular el ahorro. PENDIENTE: es el único valor que no sale del modelo de negocio, y sostiene todo el argumento de ahorro. Debe validarlo el equipo agronómico; es la cifra más fácil de rebatir si está inflada.'
+            type: number
+            default: 900
+            span: right
+
+        cotizador_reactor:
+            tab: Cotizador
+            label: Precio del biorreactor
+            comment: 'Equipo completo, sin monitoreo.'
+            type: number
+            default: 30000
+            span: left
+
+        cotizador_monitoreo:
+            tab: Cotizador
+            label: Precio del sistema de monitoreo
+            comment: 'pH, oxígeno disuelto, temperatura y turbidez. Se cotiza aparte.'
+            type: number
+            default: 49000
+            span: right
+
+        cotizador_whatsapp:
+            tab: Cotizador
+            label: Número de WhatsApp
+            comment: 'Solo dígitos, con código de país. Ejemplo: 524921234567. Prueba el enlace con el número real antes de publicar: si está mal, WhatsApp abre igual pero con un contacto inexistente.'
+            type: text
+            default: '524921234567'
+            span: left
+
+        cotizador_nota_precio:
+            tab: Cotizador
+            label: Nota al pie del precio
+            comment: 'Aclaración que acompaña la cifra, para dejar claro que es un estimado.'
+            type: text
+            default: 'Precio estimado sin IVA, sujeto a confirmación.'
+            span: right

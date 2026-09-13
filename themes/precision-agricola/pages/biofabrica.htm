@@ -502,6 +502,109 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
             margin-top: .6rem; font-size: .8rem; color: var(--txt-3);
         }
 
+        /* ── Calendario fenológico ──────────────────────────────── */
+
+        .fenologia {
+            margin-top: 1rem; padding: 1.1rem 1rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+        }
+        .fen-cab {
+            display: flex; flex-wrap: wrap; align-items: baseline;
+            justify-content: space-between; gap: .3rem .8rem; margin-bottom: .9rem;
+        }
+        .fen-tit {
+            margin: 0; font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 1rem;
+        }
+        .fen-ciclo { font-size: .76rem; color: var(--txt-3); }
+
+        /* La tira reparte el ancho según cuántos meses dura cada etapa, así
+           que se lee como una línea de tiempo y no como pestañas iguales. */
+        .fen-tira {
+            display: flex; gap: 2px; margin-bottom: .9rem;
+            border-radius: 10px; overflow: hidden;
+        }
+        .fen-etapa {
+            flex: 1 1 0; min-width: 0; flex-basis: 0;
+            display: flex; flex-direction: column; gap: .1rem;
+            padding: .55rem .35rem .6rem;
+            background: rgba(255,255,255,.05);
+            border: 0; border-top: 2px solid transparent;
+            cursor: pointer; text-align: left; color: var(--txt-2);
+            transition: background .18s ease, color .18s ease, border-color .18s ease;
+        }
+        .fen-etapa:hover { background: rgba(255,255,255,.09); }
+        .fen-etapa .fen-cuando {
+            font-size: .64rem; letter-spacing: .04em; text-transform: uppercase;
+            color: var(--txt-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .fen-etapa .fen-nom {
+            font-size: .72rem; line-height: 1.25;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .fen-etapa.hoy { border-top-color: var(--amber); }
+        .fen-etapa.activa {
+            background: rgba(126,217,87,.16);
+            border-top-color: var(--lime);
+            color: var(--txt);
+        }
+        .fen-etapa.activa .fen-cuando { color: var(--lime); }
+
+        .fen-detalle {
+            padding: .9rem 1rem;
+            background: rgba(255,255,255,.03);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+        }
+        .fen-etiqueta {
+            margin: 0 0 .4rem; display: flex; flex-wrap: wrap;
+            align-items: baseline; gap: .5rem;
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .95rem;
+        }
+        .fen-etiqueta .fen-meses {
+            font-family: 'DM Sans', sans-serif; font-weight: 400;
+            font-size: .78rem; color: var(--txt-3);
+        }
+        .fen-etiqueta .fen-hoy {
+            font-family: 'DM Sans', sans-serif; font-weight: 500;
+            font-size: .68rem; letter-spacing: .05em; text-transform: uppercase;
+            color: #0d1a12; background: var(--amber);
+            padding: .1rem .45rem; border-radius: 20px;
+        }
+        .fen-porque {
+            margin: 0 0 .75rem; font-size: .88rem; line-height: 1.5; color: var(--txt-2);
+        }
+        .fen-cepas { display: flex; flex-wrap: wrap; gap: .4rem; }
+        .fen-cepa {
+            display: inline-flex; align-items: center; gap: .35rem;
+            padding: .3rem .6rem; border-radius: 20px;
+            background: rgba(126,217,87,.12);
+            border: 1px solid rgba(126,217,87,.28);
+            font-size: .8rem; color: var(--txt);
+        }
+        .fen-cepa i { font-size: .85rem; color: var(--lime); }
+
+        .fen-aviso {
+            margin: .8rem 0 0; font-size: .74rem; line-height: 1.45; color: var(--txt-3);
+        }
+
+        /* Los meses que el cultivo pide, marcados en el paso del gasto para
+           que la selección deje de ser a ciegas. */
+        .mes-chip.del-cultivo::after {
+            content: ''; display: block;
+            width: 4px; height: 4px; border-radius: 50%;
+            background: var(--lime); margin: .18rem auto 0;
+        }
+        .mes-pista {
+            margin: .5rem 0 0; font-size: .76rem; color: var(--txt-3); line-height: 1.45;
+        }
+        .mes-pista i {
+            display: inline-block; width: 4px; height: 4px; border-radius: 50%;
+            background: var(--lime); vertical-align: middle; margin: 0 .25rem 2px;
+        }
+
         /* ── Jerarquia del paso 6 ──────────────────────────────── */
 
         /* La comparacion es la evidencia del veredicto, asi que va pegada a
@@ -870,9 +973,18 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
                     </div>
                     <div class="meses-grid">
                         <template x-for="m in mesesDisponibles" :key="m.id">
-                            <button type="button" class="mes-chip" :aria-pressed="mesesActivos.includes(m.id)" @click="toggleMes(m.id)" x-text="m.nom"></button>
+                            <button type="button" class="mes-chip"
+                                    :class="{ 'del-cultivo': mesesDelCultivo.includes(mesesDisponibles.indexOf(m)) }"
+                                    :aria-pressed="mesesActivos.includes(m.id)"
+                                    @click="toggleMes(m.id)" x-text="m.nom"></button>
                         </template>
                     </div>
+                    <template x-if="mesesDelCultivo.length">
+                        <p class="mes-pista">
+                            Los meses con <i></i> son los que tu cultivo suele pedir.
+                            Márcalos como te toque a ti: es tu calendario, no el del libro.
+                        </p>
+                    </template>
                 </div>
 
                 <template x-if="gasto > 0 && mesesGasto > 0">
@@ -942,6 +1054,62 @@ meta_description = "Responde cinco preguntas y calcula con tus propios números 
 
                         <p class="escala" :class="claseEscala" x-html="textoEscala"></p>
                         </details>
+                    </div>
+                </template>
+
+                {# El año del productor en su cultivo. Toca una etapa y se
+                   abre el porqué de lo que se le recomienda: es lo que
+                   convierte la sugerencia de cepas en un argumento en vez
+                   de un puntaje sin explicar. #}
+                <template x-if="fenologia">
+                    <div class="fenologia surge surge-2">
+                        <div class="fen-cab">
+                            <p class="fen-tit">Tu año en <span x-text="nombresCultivos[0].toLowerCase()"></span></p>
+                            <span class="fen-ciclo" x-text="fenologia.ciclo"></span>
+                        </div>
+
+                        <div class="fen-tira" role="tablist" :aria-label="'Etapas del cultivo'">
+                            <template x-for="(e, i) in fenologia.etapas" :key="i">
+                                <button type="button" class="fen-etapa"
+                                        role="tab"
+                                        :class="{ activa: i === etapaVista, hoy: i === etapaDeHoy }"
+                                        :aria-selected="i === etapaVista"
+                                        :style="'flex-grow:' + e.cuando.length"
+                                        @click="etapaAbierta = i">
+                                    <span class="fen-cuando" x-text="etiquetaCuando(e)"></span>
+                                    <span class="fen-nom" x-text="e.nom"></span>
+                                </button>
+                            </template>
+                        </div>
+
+                        <template x-if="etapa">
+                            <div class="fen-detalle">
+                                <p class="fen-etiqueta">
+                                    <span x-text="etapa.nom"></span>
+                                    <span class="fen-meses" x-text="etiquetaCuando(etapa)"></span>
+                                    <span class="fen-hoy" x-show="etapaVista === etapaDeHoy && fenologia.unidad === 'mes'">estás aquí</span>
+                                </p>
+                                <p class="fen-porque" x-text="etapa.porque"></p>
+                                <div class="fen-cepas">
+                                    <template x-for="c in etapa.cepas" :key="c">
+                                        <span class="fen-cepa">
+                                            <i class="fi fi-rr-microscope-bacteria" aria-hidden="true"></i>
+                                            <span x-text="nombreCepa(c)"></span>
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <p class="fen-aviso" x-text="avisoFenologia"></p>
+
+                        <template x-if="cultivos.length > 1">
+                            <p class="fen-aviso">
+                                Elegiste <span x-text="cultivos.length"></span> cultivos y sus ciclos no coinciden.
+                                Se muestra el de <span x-text="nombresCultivos[0].toLowerCase()"></span>;
+                                en la cotización los revisamos todos.
+                            </p>
+                        </template>
                     </div>
                 </template>
 
@@ -1270,6 +1438,8 @@ function diagnostico() {
      * por año: el agave tarda seis o siete años en madurar y un calendario
      * mensual no le dice nada al productor.
      */
+    const MESES_CORTOS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
     const FENOLOGIA = {
         aguacate: {
             unidad: 'mes', ciclo: 'Perenne · se repite cada año',
@@ -1415,6 +1585,7 @@ function diagnostico() {
            calcula recuperacion; 'litros' es una compra, y a una compra no se
            le proyecta retorno: son tres preguntas y un precio. */
         via: 'equipo',
+        etapaAbierta: null,
         estado: '',
         ha: 20,
         practica: null,
@@ -1540,6 +1711,54 @@ function diagnostico() {
             };
             return f[this.problemaPrincipal] || 'Para lo que nos comentas,';
         },
+
+        /* ── Fenologia ─────────────────────────────────────────────────
+           El calendario es del primer cultivo elegido: con dos o mas, los
+           ciclos no coinciden y mezclarlos daria un calendario que no le
+           sirve a ninguno. Se dice cual se esta mostrando. */
+        get fenologia() { return FENOLOGIA[this.cultivo] || null; },
+        get avisoFenologia() { return AVISO_FENOLOGIA; },
+
+        /* En que etapa cae hoy. Para los plurianuales no hay forma de
+           saberlo sin preguntar, asi que se abre la primera. */
+        get etapaDeHoy() {
+            const f = this.fenologia;
+            if (!f) return 0;
+            if (f.unidad !== 'mes') return 0;
+            const m = new Date().getMonth();
+            const i = f.etapas.findIndex(e => e.cuando.includes(m));
+            return i === -1 ? 0 : i;
+        },
+        get etapaVista() {
+            return this.etapaAbierta === null ? this.etapaDeHoy : this.etapaAbierta;
+        },
+        get etapa() {
+            const f = this.fenologia;
+            return f ? f.etapas[this.etapaVista] : null;
+        },
+        /* Los meses que el cultivo pide, para que el paso 5 deje de ser
+           casillas en blanco. */
+        get mesesDelCultivo() {
+            const f = this.fenologia;
+            if (!f || f.unidad !== 'mes') return [];
+            const m = f.etapas.reduce((a, e) => a.concat(e.cuando), []);
+            /* En un perenne todos los meses tienen etapa, asi que marcarlos
+               todos es no marcar ninguno. La pista solo aparece cuando de
+               verdad distingue, como en granos, que ocupa de mayo a
+               noviembre y el resto del ano descansa. */
+            return m.length >= 12 ? [] : m;
+        },
+        etiquetaCuando(e) {
+            const f = this.fenologia;
+            if (!f) return '';
+            if (f.unidad !== 'mes') {
+                return e.cuando.length === 1 ? 'Año ' + e.cuando[0]
+                     : 'Años ' + e.cuando[0] + ' a ' + e.cuando[e.cuando.length - 1];
+            }
+            const n = e.cuando.map(m => MESES_CORTOS[m]);
+            return n.length === 1 ? n[0] : n[0] + ' a ' + n[n.length - 1];
+        },
+        nombreCepa(id) { return (CEPAS.find(c => c.id === id) || {}).nombre || id; },
 
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
         /* Expuestos para la plantilla: así el texto que ve el visitante sale

@@ -1323,15 +1323,12 @@ function diagnostico() {
     ];
 
     const CEPAS = [
-        { id:'subtilis',     precio:29850, nombre:'Bacillus subtilis',            rol:'Fijación de nitrógeno',   desc:'Fija nitrógeno atmosférico y ayuda al cultivo a resistir suelos salinos o sequía. Compite por espacio con hongos patógenos.' },
-        { id:'pseudomonas',  precio:29850, nombre:'Pseudomonas asgharzadehiana',  rol:'Desbloqueo de nutrientes',desc:'Solubiliza el fósforo y el potasio atrapados en el suelo y los vuelve disponibles para la raíz.' },
-        { id:'trichoderma',  precio:33450, nombre:'Trichoderma asperellum',       rol:'Escudo radicular',        desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo.' },
-        { id:'thuringiensis',precio:29850, nombre:'Bacillus thuringiensis',       rol:'Biocontrol de plagas',    desc:'Enemigo natural de larvas y orugas. Controla plagas sin dejar residuos químicos.' },
-        { id:'methylo',      precio:35850, nombre:'Methylobacterium spp.',        rol:'Vigor foliar',            desc:'Vive en las hojas. Estimula el crecimiento aéreo e incrementa la eficiencia fotosintética.' },
-        /* Pichia anomala no aparece en la cotización 353. Se conserva con su
-           precio anterior para no retirar del catálogo un producto que quizá
-           siga vigente, pero Ventas debe confirmar si sigue o si se descontinuó. */
-        { id:'pichia',       precio:27000, nombre:'Pichia anomala',               rol:'Defensa aérea',           desc:'Moviliza zinc, calcio y hierro. Barrera natural contra oídio, botrytis y mildiu.' }
+        { id:'subtilis',      precio:CFG.lote, nombre:'Bacillus subtilis',       rol:'Biofungicida y enraizamiento activo', desc:'Destruye paredes celulares de hongos patógenos como Fusarium y Rhizoctonia. También sintetiza hormonas que estimulan un crecimiento radicular vigoroso.' },
+        { id:'thuringiensis', precio:CFG.lote, nombre:'Bacillus thuringiensis',  rol:'Biocontrol de plagas',                 desc:'Insecticida biológico contra larvas y orugas. Controla plagas sin dejar residuos químicos, ideal para agricultura de exportación.' },
+        { id:'pumilus',       precio:CFG.lote, nombre:'Bacillus pumilus',        rol:'Inmunidad foliar inducida',            desc:'Activa el sistema de resistencia inducida en hojas y enciende defensas naturales del cultivo contra cenicillas, royas y mildiu antes de que ocurran.' },
+        { id:'safensis',      precio:CFG.lote, nombre:'Bacillus safensis',       rol:'Desbloqueo mineral y tolerancia al estrés', desc:'Solubiliza fósforo y potasio atrapados en el suelo. Regula el metabolismo de la planta para tolerar sequía, salinidad o calor.' },
+        { id:'trichoderma',   precio:CFG.lote, nombre:'Trichoderma harzianum',   rol:'Escudo radicular y regeneración',      desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo a largo plazo.' },
+        { id:'pseudomonas',   precio:CFG.lote, nombre:'Pseudomonas spp.',        rol:'Colonización rápida y protección',     desc:'Bacterias de establecimiento rápido que ayudan a combatir patógenos y protegen la raíz desde el primer día.' }
     ];
     const PRECIO_CEPA_MIN = Math.min(...CEPAS.map(c => c.precio));
 
@@ -1360,22 +1357,22 @@ function diagnostico() {
 
     /* Puntajes: el problema pesa más que el cultivo. */
     const POR_PROBLEMA = {
-        costo:      { subtilis:2, pseudomonas:2, trichoderma:2, thuringiensis:1, methylo:1, pichia:1 },
-        suelo:      { trichoderma:3, subtilis:2, pseudomonas:1 },
-        patogenos:  { trichoderma:3, subtilis:1, pichia:1 },
-        nutrientes: { pseudomonas:3, subtilis:2, methylo:1 },
-        foliar:     { pichia:3, methylo:2 },
-        plagas:     { thuringiensis:3, pichia:1 }
+        costo:      { subtilis:1, thuringiensis:1, pumilus:1, safensis:1, trichoderma:1, pseudomonas:1 },
+        suelo:      { trichoderma:3, safensis:2, pseudomonas:2, subtilis:1 },
+        patogenos:  { trichoderma:3, pseudomonas:2, subtilis:2, pumilus:1 },
+        nutrientes: { safensis:3, pseudomonas:2, subtilis:1 },
+        foliar:     { pumilus:3, subtilis:1, pseudomonas:1 },
+        plagas:     { thuringiensis:3, pumilus:1 }
     };
     const POR_CULTIVO = {
-        berries:  { pichia:2, thuringiensis:1, trichoderma:1 },
-        aguacate: { trichoderma:2, pseudomonas:1 },
-        agave:    { subtilis:2, trichoderma:1 },
-        frutales: { trichoderma:2, pseudomonas:1, pichia:1 },
-        hortalizas:{ pichia:2, thuringiensis:2, trichoderma:1 },
-        granos:   { pseudomonas:2, subtilis:2, thuringiensis:1 },
-        cana:     { subtilis:2, thuringiensis:2, pseudomonas:1 },
-        otro:     {}
+        berries:   { pumilus:2, thuringiensis:1, trichoderma:1, pseudomonas:1 },
+        aguacate:  { trichoderma:2, pseudomonas:2, subtilis:1, safensis:1 },
+        agave:     { safensis:2, subtilis:1, trichoderma:1 },
+        frutales:  { trichoderma:2, pumilus:1, pseudomonas:1, safensis:1 },
+        hortalizas:{ trichoderma:2, thuringiensis:2, pumilus:1, pseudomonas:1 },
+        granos:    { safensis:2, subtilis:2, thuringiensis:1, pumilus:1 },
+        cana:      { safensis:2, subtilis:2, thuringiensis:1 },
+        otro:      {}
     };
 
     /* Orden de los problemas según el cultivo: cada quien ve primero lo suyo. */
@@ -1419,13 +1416,13 @@ function diagnostico() {
             etapas: [
                 { nom: 'Reposo invernal', cuando: [11, 0], cepas: ['trichoderma', 'subtilis'],
                   porque: 'La raíz descansa: es cuando mejor se sanea el suelo y se repone materia orgánica antes del arranque.' },
-                { nom: 'Floración', cuando: [1, 2], cepas: ['pseudomonas', 'pichia'],
-                  porque: 'La flor demanda fósforo y es el momento más expuesto a hongos aéreos.' },
-                { nom: 'Amarre de fruto', cuando: [3, 4], cepas: ['subtilis', 'pseudomonas'],
-                  porque: 'El árbol decide cuánta fruta retiene. Nitrógeno y potasio disponibles reducen la caída.' },
-                { nom: 'Llenado de fruto', cuando: [5, 6, 7, 8], cepas: ['pseudomonas', 'methylo'],
-                  porque: 'Etapa de mayor demanda: potasio para el fruto y actividad foliar sostenida.' },
-                { nom: 'Cosecha y postcosecha', cuando: [9, 10], cepas: ['trichoderma', 'pichia'],
+                { nom: 'Floración', cuando: [1, 2], cepas: ['pumilus', 'pseudomonas'],
+                  porque: 'La flor es un punto sensible: conviene activar defensa foliar y proteger raíz desde el arranque.' },
+                { nom: 'Amarre de fruto', cuando: [3, 4], cepas: ['safensis', 'pseudomonas'],
+                  porque: 'El árbol decide cuánta fruta retiene. Minerales disponibles y raíz protegida reducen la caída.' },
+                { nom: 'Llenado de fruto', cuando: [5, 6, 7, 8], cepas: ['safensis', 'pumilus'],
+                  porque: 'Etapa de mayor demanda: minerales disponibles y hoja protegida para sostener el llenado.' },
+                { nom: 'Cosecha y postcosecha', cuando: [9, 10], cepas: ['trichoderma', 'pseudomonas'],
                   porque: 'Tras la cosecha el árbol queda débil y el suelo cansado; es la ventana para recuperarlo.' }
             ]
         },
@@ -1434,12 +1431,12 @@ function diagnostico() {
             etapas: [
                 { nom: 'Establecimiento', cuando: [8, 9], cepas: ['trichoderma', 'pseudomonas'],
                   porque: 'Raíz nueva en suelo recién movido: el momento de mayor riesgo de patógenos radiculares.' },
-                { nom: 'Crecimiento vegetativo', cuando: [10, 11, 0], cepas: ['subtilis', 'methylo'],
-                  porque: 'Se construye la planta que va a producir. Nitrógeno y área foliar.' },
-                { nom: 'Floración y amarre', cuando: [1, 2], cepas: ['pseudomonas', 'pichia'],
-                  porque: 'Fósforo para la flor, y protección contra botrytis, que es el problema clásico en berries.' },
-                { nom: 'Producción', cuando: [3, 4, 5, 6], cepas: ['pseudomonas', 'pichia'],
-                  porque: 'Cosecha continua por meses: la planta no para y la fruta se expone a hongos.' },
+                { nom: 'Crecimiento vegetativo', cuando: [10, 11, 0], cepas: ['subtilis', 'pumilus'],
+                  porque: 'Se construye la planta que va a producir: raíz activa y defensas foliares listas.' },
+                { nom: 'Floración y amarre', cuando: [1, 2], cepas: ['safensis', 'pumilus'],
+                  porque: 'Minerales disponibles para la flor y resistencia inducida contra enfermedades foliares.' },
+                { nom: 'Producción', cuando: [3, 4, 5, 6], cepas: ['pumilus', 'thuringiensis'],
+                  porque: 'Cosecha continua por meses: la fruta se expone a enfermedades y aumenta la presión de larvas.' },
                 { nom: 'Poda y recuperación', cuando: [7], cepas: ['trichoderma', 'subtilis'],
                   porque: 'Se sanea suelo y raíz antes del siguiente establecimiento.' }
             ]
@@ -1449,13 +1446,13 @@ function diagnostico() {
             etapas: [
                 { nom: 'Reposo y poda', cuando: [11, 0], cepas: ['trichoderma', 'subtilis'],
                   porque: 'Sin hoja, el trabajo es al suelo: sanidad radicular y materia orgánica.' },
-                { nom: 'Brotación y floración', cuando: [1, 2], cepas: ['pseudomonas', 'pichia'],
-                  porque: 'Arranque explosivo que consume reservas, con la flor expuesta.' },
-                { nom: 'Cuajado', cuando: [3, 4], cepas: ['subtilis', 'pseudomonas'],
-                  porque: 'Define la carga del año. Nutrición disponible reduce la caída de fruto chico.' },
-                { nom: 'Desarrollo de fruto', cuando: [5, 6, 7], cepas: ['pseudomonas', 'methylo'],
-                  porque: 'Potasio para calibre y fotosíntesis sostenida.' },
-                { nom: 'Cosecha y postcosecha', cuando: [8, 9, 10], cepas: ['trichoderma', 'pichia'],
+                { nom: 'Brotación y floración', cuando: [1, 2], cepas: ['pumilus', 'safensis'],
+                  porque: 'Arranque explosivo que consume reservas, con flor y hoja expuestas.' },
+                { nom: 'Cuajado', cuando: [3, 4], cepas: ['safensis', 'pseudomonas'],
+                  porque: 'Define la carga del año. Minerales disponibles y raíz protegida reducen la caída de fruto chico.' },
+                { nom: 'Desarrollo de fruto', cuando: [5, 6, 7], cepas: ['safensis', 'pumilus'],
+                  porque: 'Potasio para calibre y defensa foliar sostenida.' },
+                { nom: 'Cosecha y postcosecha', cuando: [8, 9, 10], cepas: ['trichoderma', 'pseudomonas'],
                   porque: 'Recuperar reservas para el siguiente ciclo y proteger la fruta almacenada.' }
             ]
         },
@@ -1466,9 +1463,9 @@ function diagnostico() {
                   porque: 'La soca rebrota de una raíz vieja y cargada de inóculo: es la etapa más vulnerable.' },
                 { nom: 'Macollamiento', cuando: [0, 1, 2], cepas: ['subtilis', 'pseudomonas'],
                   porque: 'Se define el número de tallos por cepa, y eso decide el rendimiento.' },
-                { nom: 'Crecimiento rápido', cuando: [3, 4, 5, 6], cepas: ['subtilis', 'methylo'],
-                  porque: 'Máxima demanda de nitrógeno y de área foliar activa.' },
-                { nom: 'Maduración', cuando: [7, 8], cepas: ['pseudomonas'],
+                { nom: 'Crecimiento rápido', cuando: [3, 4, 5, 6], cepas: ['subtilis', 'safensis'],
+                  porque: 'Máxima demanda de raíz activa y minerales disponibles bajo estrés.' },
+                { nom: 'Maduración', cuando: [7, 8], cepas: ['safensis'],
                   porque: 'El potasio manda en la acumulación de sacarosa.' },
                 { nom: 'Zafra', cuando: [9], cepas: ['trichoderma'],
                   porque: 'Tras el corte el suelo queda expuesto, y conviene inocularlo antes del rebrote.' }
@@ -1481,12 +1478,12 @@ function diagnostico() {
             etapas: [
                 { nom: 'Preparación y siembra', cuando: [4, 5], cepas: ['trichoderma', 'pseudomonas'],
                   porque: 'Tratar la semilla y el suelo es la aplicación con mejor retorno de todo el ciclo.' },
-                { nom: 'Desarrollo vegetativo', cuando: [6, 7], cepas: ['subtilis', 'methylo'],
-                  porque: 'La planta construye su estructura: nitrógeno y hoja sana.' },
+                { nom: 'Desarrollo vegetativo', cuando: [6, 7], cepas: ['subtilis', 'pumilus'],
+                  porque: 'La planta construye su estructura: raíz vigorosa y hoja protegida.' },
                 { nom: 'Floración', cuando: [8], cepas: ['pseudomonas', 'thuringiensis'],
                   porque: 'Momento crítico del rendimiento, y cuando aparece el barrenador.' },
-                { nom: 'Llenado de grano', cuando: [9], cepas: ['pseudomonas', 'methylo'],
-                  porque: 'El peso del grano se define aquí, y depende de la hoja que siga viva.' },
+                { nom: 'Llenado de grano', cuando: [9], cepas: ['safensis', 'pumilus'],
+                  porque: 'El peso del grano se define aquí; depende de minerales disponibles y hoja funcional.' },
                 { nom: 'Madurez y cosecha', cuando: [10], cepas: ['trichoderma'],
                   porque: 'Incorporar el rastrojo con inóculo acelera su descomposición para el siguiente ciclo.' }
             ]
@@ -1496,12 +1493,12 @@ function diagnostico() {
             etapas: [
                 { nom: 'Almácigo y trasplante', cuando: [0, 1], cepas: ['trichoderma', 'pseudomonas'],
                   porque: 'La plántula llega con raíz herida: el damping-off es la pérdida más común.' },
-                { nom: 'Desarrollo vegetativo', cuando: [2, 3], cepas: ['subtilis', 'methylo'],
-                  porque: 'Crecimiento acelerado con alta demanda de nitrógeno.' },
+                { nom: 'Desarrollo vegetativo', cuando: [2, 3], cepas: ['subtilis', 'pumilus'],
+                  porque: 'Crecimiento acelerado con raíz activa y defensa foliar temprana.' },
                 { nom: 'Floración y cuajado', cuando: [4, 5], cepas: ['pseudomonas', 'thuringiensis'],
                   porque: 'Fósforo para la flor, y presión de larvas en cuanto aparece el fruto.' },
-                { nom: 'Cosecha escalonada', cuando: [6, 7, 8], cepas: ['pseudomonas', 'pichia'],
-                  porque: 'Se cosecha durante semanas: la planta no descansa y la fruta se expone.' },
+                { nom: 'Cosecha escalonada', cuando: [6, 7, 8], cepas: ['pumilus', 'thuringiensis'],
+                  porque: 'Se cosecha durante semanas: la planta no descansa y la fruta se expone a enfermedades y larvas.' },
                 { nom: 'Fin de ciclo', cuando: [9, 10, 11], cepas: ['trichoderma'],
                   porque: 'Sanear el suelo entre ciclos evita arrastrar inóculo al siguiente.' }
             ]
@@ -1515,7 +1512,7 @@ function diagnostico() {
                   porque: 'Se forma la piña. Nutrición disponible en un suelo que suele ser pobre y delgado.' },
                 { nom: 'Crecimiento medio', cuando: [4, 5], cepas: ['subtilis', 'trichoderma'],
                   porque: 'Años de menor atención, donde la pudrición de cogollo hace su daño sin verse.' },
-                { nom: 'Maduración', cuando: [6, 7], cepas: ['pseudomonas'],
+                { nom: 'Maduración', cuando: [6, 7], cepas: ['safensis'],
                   porque: 'La acumulación de azúcares define el valor de la piña al momento de la jima.' }
             ]
         }
@@ -1541,15 +1538,12 @@ function diagnostico() {
     const DATOS = {
         /* Las cifras se arman con las constantes del catálogo para que no
            puedan quedar contradiciendo a los precios de arriba. */
-        subtilis:     'Un lote de <strong>Bacillus subtilis</strong> rinde ' + LOTE_L + ' litros y cubre ' + LOTE_HA +
-                      ' hectáreas. Comprados a $' + VENTA_LITRO + '/L costarían <strong>$' +
-                      (VENTA_LITRO * LOTE_L).toLocaleString('es-MX') + '</strong>; producirlos te cuesta <strong>$' +
-                      CEPAS[0].precio.toLocaleString('es-MX') + '</strong>.',
-        pseudomonas:  'El fósforo que ya está en tu suelo suele estar bloqueado. <strong>Pseudomonas</strong> lo libera sin que compres más fertilizante.',
-        trichoderma:  '<strong>Trichoderma</strong> no solo frena patógenos: mejora la estructura del suelo, y ese efecto se acumula ciclo tras ciclo.',
-        thuringiensis:'<strong>Bacillus thuringiensis</strong> no deja residuos químicos, lo que importa si exportas.',
-        methylo:      '<strong>Methylobacterium</strong> trabaja en la hoja, no en el suelo: es de los pocos que suben la eficiencia fotosintética.',
-        pichia:       '<strong>Pichia anomala</strong> moviliza zinc, calcio y hierro mientras protege contra oídio y botrytis.'
+        subtilis:      '<strong>Bacillus subtilis</strong> actúa como biofungicida y promotor radicular: ayuda contra Fusarium y Rhizoctonia mientras impulsa un crecimiento de raíz más vigoroso.',
+        thuringiensis: '<strong>Bacillus thuringiensis</strong> es el consorcio de biocontrol para larvas y orugas, sin dejar residuos químicos.',
+        pumilus:       '<strong>Bacillus pumilus</strong> activa defensas foliares naturales para anticiparse a cenicillas, royas y mildiu.',
+        safensis:      '<strong>Bacillus safensis</strong> desbloquea fósforo y potasio del suelo, y ayuda al cultivo a tolerar sequía, salinidad o calor.',
+        trichoderma:   '<strong>Trichoderma harzianum</strong> protege la raíz contra patógenos del suelo y favorece regeneración radicular a largo plazo.',
+        pseudomonas:   '<strong>Pseudomonas spp.</strong> coloniza rápido la raíz y ayuda a protegerla desde los primeros días de aplicación.'
     };
 
     return {

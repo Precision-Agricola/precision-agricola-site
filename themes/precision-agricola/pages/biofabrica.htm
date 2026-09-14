@@ -1121,8 +1121,12 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                 <!-- Configurador -->
 
                 <div class="total">
-                    <button class="btn" @click="ir(8)">Ver mi configuración</button>
-                </div>
+                    <template x-if="configurable">
+                        <button class="btn" @click="ir(8)">Ver mi configuración</button>
+                    </template>
+                    <template x-if="!configurable">
+                        <button class="btn" @click="ir(7)" x-text="veredicto.cta"></button>
+                    </template>
                 </div>
             </div>
         </template>
@@ -1135,7 +1139,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
             <div>
                 <button class="atras" @click="ir(6)">← Volver al resultado</button>
                 <p class="paso-n">Tu configuración</p>
-                <template x-if="palanca !== 'litros' && palanca !== 'campo'">
+                <template x-if="configurable">
                     <div class="surge surge-3">
                         <p class="cfg-tit">Tu configuración · ajústala</p>
 
@@ -1186,7 +1190,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                 <!-- Formas de pago. Se muestran tal como las cotiza Ventas:
                      no se calcula ninguna tabla de amortización porque el
                      plazo no está definido, y no vamos a inventarlo. -->
-                <template x-if="palanca !== 'litros' && palanca !== 'campo'">
+                <template x-if="configurable">
                     <div class="surge surge-3">
                         <p class="cfg-tit">Cómo pagarlo</p>
                         <div class="pagos">
@@ -1204,7 +1208,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                 </template>
 
                 <div class="total">
-                    <template x-if="palanca !== 'litros' && palanca !== 'campo'">
+                    <template x-if="configurable">
                         <div class="total-fila">
                             <span class="et">Total de tu configuración<br>
                                 <span style="font-size:.72rem;color:var(--txt-3)">pesos mexicanos, más IVA</span></span>
@@ -1219,7 +1223,8 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         <!-- ══ 7 · Captura ═════════════════════════════ -->
         <template x-if="paso === 7">
             <div>
-                <button class="atras" @click="ir(8)">← Volver a mi configuración</button>
+                <button class="atras" @click="ir(configurable ? 8 : 6)"
+                        x-text="configurable ? '← Volver a mi configuración' : '← Volver al resultado'"></button>
                 <p class="paso-n">Último paso</p>
                 <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
@@ -1642,10 +1647,15 @@ function diagnostico() {
         get avance() {
             /* El orden del recorrido es 0 a 6, luego 8 -la configuracion- y
                al final 7, la captura. Se mapea a mano para que la barra
-               avance como el recorrido y no como el numero de paso. */
-            const orden = { 0:0, 1:1, 2:2, 3:3, 5:4, 6:5, 8:6, 7:7 };
+               avance como el recorrido y no como el numero de paso.
+               Quien no configura se salta el 8: su recorrido tiene una
+               parada menos y la barra se reparte entre las que si recorre. */
+            const orden = this.configurable
+                ? { 0:0, 1:1, 2:2, 3:3, 5:4, 6:5, 8:6, 7:7 }
+                : { 0:0, 1:1, 2:2, 3:3, 5:4, 6:5, 7:6 };
+            const total = this.configurable ? 7 : 6;
             const n = orden[this.paso];
-            return Math.round(((n === undefined ? 0 : n) / 7) * 100);
+            return Math.round(((n === undefined ? 0 : n) / total) * 100);
         },
 
         get preguntaGasto() {
@@ -1857,6 +1867,11 @@ function diagnostico() {
            Depende de 'practica' y no de 'palanca' para no crear un ciclo,
            porque la palanca se decide a partir del precio. */
         get incluyeReactor() { return this.practica !== 'produzco'; },
+
+        /* Hay algo que armar? Quien compra litros no configura biorreactor,
+           y a quien no pudimos calcularle le toca visita en campo. En esos
+           dos casos el paso 8 no tiene contenido y el recorrido lo salta. */
+        get configurable() { return this.palanca !== 'litros' && this.palanca !== 'campo'; },
         get precioConfig() {
             return (this.incluyeReactor ? P_REACTOR : 0)
                  + (this.monitoreo ? P_MONITOREO : 0)
@@ -2118,7 +2133,7 @@ function diagnostico() {
                 'Problema principal: ' + nomProblema(this.problemaPrincipal),
                 'Problemas seleccionados: ' + this.problemas.map(nomProblema).join(' / ')
             ];
-            if (this.palanca !== 'litros' && this.palanca !== 'campo') {
+            if (this.configurable) {
                 partes.push('Monitoreo: ' + (this.monitoreo ? 'si' : 'no'));
                 partes.push('Cepas: ' + this.cepas.map(nom).join(' / '));
                 partes.push('Total: ' + this.mxn(this.precioConfig));

@@ -1648,14 +1648,18 @@ function diagnostico() {
             /* El orden del recorrido es 0 a 6, luego 8 -la configuracion- y
                al final 7, la captura. Se mapea a mano para que la barra
                avance como el recorrido y no como el numero de paso.
-               Quien no configura se salta el 8: su recorrido tiene una
-               parada menos y la barra se reparte entre las que si recorre. */
-            const orden = this.configurable
-                ? { 0:0, 1:1, 2:2, 3:3, 5:4, 6:5, 8:6, 7:7 }
-                : { 0:0, 1:1, 2:2, 3:3, 5:4, 6:5, 7:6 };
-            const total = this.configurable ? 7 : 6;
+
+               Depende solo de 'paso', a proposito. Llego a depender de
+               'configurable' para repartir mejor las paradas de quien se
+               salta el 8, y eso ataba la barra a 'palanca', que sale de las
+               cifras que el productor esta capturando: al subir la perilla
+               de hectareas de 20 a 50 la barra retrocedia de 50 a 43 por
+               ciento. Quien se salta el 8 pasa de 71 a 100 de un salto en
+               el ultimo paso; eso es preferible a una barra que se mueve
+               sola mientras respondes. */
+            const orden = { 0:0, 1:1, 2:2, 3:3, 5:4, 6:5, 8:6, 7:7 };
             const n = orden[this.paso];
-            return Math.round(((n === undefined ? 0 : n) / total) * 100);
+            return Math.round(((n === undefined ? 0 : n) / 7) * 100);
         },
 
         get preguntaGasto() {

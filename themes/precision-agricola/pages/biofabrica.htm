@@ -1151,7 +1151,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                                     <span class="rol">Base del sistema</span>
                                     <span class="det">Tanque de 190 L en acero inoxidable grado farmacéutico. Ultrafiltración, UV-C, control automático de aireación, agitación y temperatura, sanitizado con ozono.</span>
                                 </span>
-                                <span class="precio">$129,000</span>
+                                <span class="precio" x-text="mxn(precioReactor)"></span>
                             </div>
                         </template>
 
@@ -1168,7 +1168,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                                 <span class="rol">Opcional</span>
                                 <span class="det">Sensores de pH, oxígeno disuelto y temperatura para vigilar cada lote.</span>
                             </span>
-                            <span class="precio">$39,000</span>
+                            <span class="precio" x-text="mxn(precioMonitoreo)"></span>
                         </button>
 
                         <p class="cfg-tit">Cepas · cada una rinde <span x-text="loteLitros"></span> L por lote, para <span x-text="loteHa"></span> ha</p>
@@ -1351,13 +1351,18 @@ function diagnostico() {
         { id:'arrendamiento',nom:'Arrendamiento', det:'$21,500 al mes, con plazo mínimo de 3 meses.' }
     ];
 
+    /* Precios de la COT 353. El catalogo lo actualizo Raul en b519f00 y
+       trajo dos cepas que esa cotizacion no incluye: pumilus y safensis.
+       Quedan al mismo precio que los otros dos Bacillus del catalogo,
+       que es lo unico que se puede sostener con lo que hay. VENTAS DEBE
+       CONFIRMARLOS antes de publicar. */
     const CEPAS = [
-        { id:'subtilis',      precio:CFG.lote, nombre:'Bacillus subtilis',       rol:'Biofungicida y enraizamiento activo', desc:'Destruye paredes celulares de hongos patógenos como Fusarium y Rhizoctonia. También sintetiza hormonas que estimulan un crecimiento radicular vigoroso.' },
-        { id:'thuringiensis', precio:CFG.lote, nombre:'Bacillus thuringiensis',  rol:'Biocontrol de plagas',                 desc:'Insecticida biológico contra larvas y orugas. Controla plagas sin dejar residuos químicos, ideal para agricultura de exportación.' },
-        { id:'pumilus',       precio:CFG.lote, nombre:'Bacillus pumilus',        rol:'Inmunidad foliar inducida',            desc:'Activa el sistema de resistencia inducida en hojas y enciende defensas naturales del cultivo contra cenicillas, royas y mildiu antes de que ocurran.' },
-        { id:'safensis',      precio:CFG.lote, nombre:'Bacillus safensis',       rol:'Desbloqueo mineral y tolerancia al estrés', desc:'Solubiliza fósforo y potasio atrapados en el suelo. Regula el metabolismo de la planta para tolerar sequía, salinidad o calor.' },
-        { id:'trichoderma',   precio:CFG.lote, nombre:'Trichoderma harzianum',   rol:'Escudo radicular y regeneración',      desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo a largo plazo.' },
-        { id:'pseudomonas',   precio:CFG.lote, nombre:'Pseudomonas spp.',        rol:'Colonización rápida y protección',     desc:'Bacterias de establecimiento rápido que ayudan a combatir patógenos y protegen la raíz desde el primer día.' }
+        { id:'subtilis',      precio:29850, nombre:'Bacillus subtilis',       rol:'Biofungicida y enraizamiento activo', desc:'Destruye paredes celulares de hongos patógenos como Fusarium y Rhizoctonia. También sintetiza hormonas que estimulan un crecimiento radicular vigoroso.' },
+        { id:'thuringiensis', precio:29850, nombre:'Bacillus thuringiensis',  rol:'Biocontrol de plagas',                 desc:'Insecticida biológico contra larvas y orugas. Controla plagas sin dejar residuos químicos, ideal para agricultura de exportación.' },
+        { id:'pumilus',       precio:29850, nombre:'Bacillus pumilus',        rol:'Inmunidad foliar inducida',            desc:'Activa el sistema de resistencia inducida en hojas y enciende defensas naturales del cultivo contra cenicillas, royas y mildiu antes de que ocurran.' },
+        { id:'safensis',      precio:29850, nombre:'Bacillus safensis',       rol:'Desbloqueo mineral y tolerancia al estrés', desc:'Solubiliza fósforo y potasio atrapados en el suelo. Regula el metabolismo de la planta para tolerar sequía, salinidad o calor.' },
+        { id:'trichoderma',   precio:33450, nombre:'Trichoderma harzianum',   rol:'Escudo radicular y regeneración',      desc:'Hongo agresivo contra patógenos del suelo. Potencia el crecimiento de la raíz y mejora la estructura del suelo a largo plazo.' },
+        { id:'pseudomonas',   precio:29850, nombre:'Pseudomonas spp.',        rol:'Colonización rápida y protección',     desc:'Bacterias de establecimiento rápido que ayudan a combatir patógenos y protegen la raíz desde el primer día.' }
     ];
     const PRECIO_CEPA_MIN = Math.min(...CEPAS.map(c => c.precio));
 
@@ -1817,6 +1822,11 @@ function diagnostico() {
            del catálogo y no de un número escrito a mano que se desincroniza. */
         get loteLitros()  { return LOTE_L; },
         get loteHa()      { return LOTE_HA; },
+        /* El precio del equipo se escribia a mano en el markup y el total
+           lo sumaba del backend: la ficha decia $129,000 y el total sumaba
+           $30,000. Ahora ambos leen lo mismo. */
+        get precioReactor()   { return P_REACTOR; },
+        get precioMonitoreo() { return P_MONITOREO; },
 
         get gastoAnual()  { return this.gastoHaAnual * this.ha; },
         /* ── Los dos caminos ───────────────────────────────────────────

@@ -31,3 +31,8 @@ nbproject
 # Local PHP-version shims (machine-specific path)
 /php.bat
 /artisan.bat
+
+# Fuentes pesadas de las que ya existe la derivada servida. El PNG de
+# tunnels_berries pesa 2.8 MB y de el sale tunnels_berries_og.jpg, que
+# son 204 KB y si esta en el repositorio.
+themes/precision-agricola/assets/images/bioreactors/tunnels_berries.png

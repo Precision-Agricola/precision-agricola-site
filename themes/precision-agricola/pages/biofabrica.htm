@@ -502,12 +502,6 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
             margin-top: .6rem; font-size: .8rem; color: var(--txt-3);
         }
 
-        /* Dos preguntas en una pantalla: la segunda necesita aire y una
-           linea que la separe, o se leen como si fueran la misma. */
-        .pregunta.segunda {
-            margin-top: 2.2rem; padding-top: 1.6rem;
-            border-top: 1px solid var(--line);
-        }
 
         /* ── Etapas del cultivo ─────────────────────────────────── */
 
@@ -629,6 +623,68 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
 
         /* ── Comparacion de caminos, traida de /cotizador ─────── */
         /* ── Lo que necesita ─────────────────────────────────────── */
+
+        /* ── Perilla de superficie dentro del resultado ──── */
+
+        /* Se lee como control, no como dato: el numero en lima avisa que
+           es lo que el productor puede mover, y todo lo de abajo responde. */
+        .ajusta {
+            margin: 1rem 0 .2rem; padding: .9rem 1rem 1rem;
+            background: var(--card);
+            border: 1px solid var(--line); border-radius: 16px;
+        }
+        .ajusta-cab {
+            display: flex; align-items: baseline; justify-content: space-between;
+            gap: .8rem; margin-bottom: .55rem;
+        }
+        .ajusta-et {
+            font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+            text-transform: uppercase; color: var(--txt-3);
+        }
+        .ajusta-val {
+            font-family: 'Montserrat', sans-serif; font-weight: 800;
+            font-size: 1.55rem; line-height: 1; color: var(--lime);
+        }
+
+        /* ── Los dos salidas ──────────────────────────────── */
+
+        /* Fichas anchas en vez de dos botones: cada camino dice que es y
+           que incluye. El productor no tiene que deducirlo del veredicto. */
+        .salidas { margin-top: 1.6rem; }
+        .salidas-tit {
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 1.05rem; margin: 0 0 .7rem;
+        }
+        .salida {
+            display: flex; align-items: center; gap: .85rem; width: 100%;
+            padding: .95rem 1rem; margin-bottom: .6rem;
+            background: var(--card); color: var(--txt);
+            border: 1.5px solid var(--line); border-radius: 14px;
+            cursor: pointer; text-align: left;
+            transition: border-color .18s ease, background .18s ease, transform .12s ease;
+        }
+        .salida:hover { background: rgba(255,255,255,.06); }
+        .salida:active { transform: scale(.99); }
+        .salida-ico {
+            flex: 0 0 auto; display: grid; place-items: center;
+            width: 40px; height: 40px; border-radius: 11px;
+            background: rgba(126,217,87,.12); color: var(--lime); font-size: 1.05rem;
+        }
+        .salida-cuerpo { flex: 1; display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+        .salida-nom {
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .98rem;
+        }
+        .salida-det { font-size: .8rem; line-height: 1.35; color: var(--txt-3); }
+        .salida-flecha { flex: 0 0 auto; color: var(--txt-3); font-size: 1.1rem; }
+
+        /* El destacado es el que el veredicto recomienda. El otro sigue
+           siendo un boton de verdad, no letra chica. */
+        .salida.destacado {
+            background: var(--lime); color: #0d1a12; border-color: var(--lime);
+        }
+        .salida.destacado .salida-ico { background: rgba(13,26,18,.12); color: #0d1a12; }
+        .salida.destacado .salida-det { color: rgba(13,26,18,.72); }
+        .salida.destacado .salida-flecha { color: #0d1a12; }
 
         .necesita {
             margin: 1rem 0 0; text-align: center;
@@ -914,15 +970,10 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
             <div>
                 <button class="atras" @click="ir(2)">← Atrás</button>
                 <p class="paso-n">Paso 3 de 4</p>
-                <h2 class="pregunta">¿Cuánta superficie tienes en producción?</h2>
-                <div style="margin:1.4rem 0 .5rem">
-                    <span class="cifra-viva" x-text="ha"></span>
-                    <span class="cifra-viva u"> ha</span>
-                </div>
-                <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
-                <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
-
-                <h2 class="pregunta segunda">¿Cómo gestionas tu carga microbiana actualmente?</h2>
+                {# La perilla de superficie se mudo al paso 6. Ahi la
+                   comparacion se recalcula al moverla, que es donde el
+                   numero significa algo; aqui era una cifra a ciegas. #}
+                <h2 class="pregunta">¿Cómo gestionas tu carga microbiana actualmente?</h2>
                 <div class="ops">
                     <template x-for="p in practicas" :key="p.id">
                         <button class="op" :aria-pressed="practica === p.id" @click="practica = p.id">
@@ -1049,6 +1100,19 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                     <p x-text="veredicto.texto"></p>
                 </div>
 
+                {# La perilla vive aqui: todo lo de abajo -litros por
+                   aplicacion, los dos costos por hectarea, las tandas y la
+                   curva- se recalcula al moverla. Va fuera de la condicion
+                   de 'campo' para que siempre se pueda ajustar. #}
+                <div class="ajusta surge surge-1">
+                    <div class="ajusta-cab">
+                        <span class="ajusta-et">Tu superficie</span>
+                        <span class="ajusta-val"><span x-text="ha"></span> ha</span>
+                    </div>
+                    <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
+                    <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
+                </div>
+
                 {# Los dos caminos con los numeros del productor. Reemplaza al
                    embudo de litros que vivia en una pagina aparte. #}
                 <template x-if="palanca !== 'campo' && ha > 0">
@@ -1075,7 +1139,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                             </div>
                         </div>
 
-                        <details class="porque" open>
+                        <details class="porque">
                         <summary>¿Por qué cambia según la superficie?</summary>
                         <figure class="curva">
                             <svg id="grafica" viewBox="0 0 320 156" role="img"
@@ -1120,13 +1184,32 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
 
                 <!-- Configurador -->
 
-                <div class="total">
-                    <template x-if="configurable">
-                        <button class="btn" @click="ir(8)">Ver mi configuración</button>
-                    </template>
-                    <template x-if="!configurable">
-                        <button class="btn" @click="ir(7)" x-text="veredicto.cta"></button>
-                    </template>
+                {# Los dos caminos, siempre los dos. Antes el configurador se
+                   le escondia a quien caia en 'litros' o 'campo': el 44 por
+                   ciento de las superficies entre 1 y 250 ha, que se quedaban
+                   sin ver el equipo por como caen las tandas y no por una
+                   decision suya. Ahora se ven ambos y el veredicto solo decide
+                   cual va destacado. #}
+                <div class="salidas surge surge-3">
+                    <p class="salidas-tit">¿Cómo le entramos?</p>
+
+                    <button type="button" class="salida" :class="{ destacado: configurable }" @click="ir(8)">
+                        <span class="salida-ico"><i class="fi fi-rr-industry-windows" aria-hidden="true"></i></span>
+                        <span class="salida-cuerpo">
+                            <span class="salida-nom">Armar mi equipo</span>
+                            <span class="salida-det">El biorreactor y las cepas que te tocan, con su precio</span>
+                        </span>
+                        <span class="salida-flecha" aria-hidden="true">→</span>
+                    </button>
+
+                    <button type="button" class="salida" :class="{ destacado: !configurable }" @click="ir(7)">
+                        <span class="salida-ico"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
+                        <span class="salida-cuerpo">
+                            <span class="salida-nom">Que nosotros te los produzcamos</span>
+                            <span class="salida-det">Te entregamos los litros listos, sin comprar equipo</span>
+                        </span>
+                        <span class="salida-flecha" aria-hidden="true">→</span>
+                    </button>
                 </div>
             </div>
         </template>
@@ -1139,8 +1222,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
             <div>
                 <button class="atras" @click="ir(6)">← Volver al resultado</button>
                 <p class="paso-n">Tu configuración</p>
-                <template x-if="configurable">
-                    <div class="surge surge-3">
+                <div class="surge surge-3">
                         <p class="cfg-tit">Tu configuración · ajústala</p>
 
                         <template x-if="incluyeReactor">
@@ -1185,13 +1267,11 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                             </button>
                         </template>
                     </div>
-                </template>
 
                 <!-- Formas de pago. Se muestran tal como las cotiza Ventas:
                      no se calcula ninguna tabla de amortización porque el
                      plazo no está definido, y no vamos a inventarlo. -->
-                <template x-if="configurable">
-                    <div class="surge surge-3">
+                <div class="surge surge-3">
                         <p class="cfg-tit">Cómo pagarlo</p>
                         <div class="pagos">
                             <template x-for="p in FORMAS_PAGO" :key="p.id">
@@ -1205,16 +1285,13 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                             </template>
                         </div>
                     </div>
-                </template>
 
                 <div class="total">
-                    <template x-if="configurable">
                         <div class="total-fila">
                             <span class="et">Total de tu configuración<br>
                                 <span style="font-size:.72rem;color:var(--txt-3)">pesos mexicanos, más IVA</span></span>
                             <span class="v" x-text="mxn(precioConfig)"></span>
                         </div>
-                    </template>
                     <button class="btn" @click="ir(7)" x-text="veredicto.cta"></button>
                 </div>
             </div>
@@ -1223,8 +1300,8 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         <!-- ══ 7 · Captura ═════════════════════════════ -->
         <template x-if="paso === 7">
             <div>
-                <button class="atras" @click="ir(configurable ? 8 : 6)"
-                        x-text="configurable ? '← Volver a mi configuración' : '← Volver al resultado'"></button>
+                <button class="atras" @click="ir(vengoDe)"
+                        x-text="vengoDe === 8 ? '← Volver a mi configuración' : '← Volver al resultado'"></button>
                 <p class="paso-n">Último paso</p>
                 <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
@@ -1605,6 +1682,11 @@ function diagnostico() {
         problemas: [],
         monitoreo: false,
         cepas: [],
+        /* Ahora cualquiera puede entrar al configurador, asi que 'palanca' ya
+           no dice si lo vio. Estas dos guardan el recorrido real: de que le
+           contamos a Ventas y a donde regresa el boton de atras. */
+        vioConfigurador: false,
+        vengoDe: 6,
         quiereFinanciamiento: false,
         formaPago: "contado",
         FORMAS_PAGO: FORMAS_PAGO,
@@ -2057,6 +2139,8 @@ function diagnostico() {
 
         ir(n) {
             if (n > this.paso) medir('paso_' + n, { desde: this.paso });
+            if (n === 8) this.vioConfigurador = true;
+            if (n === 7) this.vengoDe = this.paso;
             this.paso = n;
             /* El <svg> no existe hasta que Alpine monta la plantilla del paso,
                asi que el dibujo espera un tick. */
@@ -2141,7 +2225,7 @@ function diagnostico() {
                 'Problema principal: ' + nomProblema(this.problemaPrincipal),
                 'Problemas seleccionados: ' + this.problemas.map(nomProblema).join(' / ')
             ];
-            if (this.configurable) {
+            if (this.vioConfigurador) {
                 partes.push('Monitoreo: ' + (this.monitoreo ? 'si' : 'no'));
                 partes.push('Cepas: ' + this.cepas.map(nom).join(' / '));
                 partes.push('Total: ' + this.mxn(this.precioConfig));

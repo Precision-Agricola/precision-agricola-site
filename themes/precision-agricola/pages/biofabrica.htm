@@ -394,35 +394,22 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
             filter: drop-shadow(0 10px 16px rgba(0,0,0,.45));
         }
         /* ── Los dos caminos del gancho ──────────────────────────── */
-        .dos-caminos { display: flex; flex-direction: column; gap: .7rem; margin-top: 1.5rem; }
-        .camino-op {
-            display: grid; grid-template-columns: 4.4rem 1fr;
-            align-items: center; gap: .9rem;
-            width: 100%; min-height: 6.7rem; padding: .85rem 1rem .85rem .85rem;
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.13);
-            border-radius: 14px; cursor: pointer; text-align: left;
-            color: var(--txt); font: inherit;
-            transition: border-color .18s ease, background .18s ease, transform .18s ease;
+        /* Las dos modalidades como sello, no como pregunta: informan que
+           existen ambas sin pedir una decision que todavia no puede tomar. */
+        .arranque { margin-top: 1.5rem; }
+        /* Una frase, no dos fichas: apiladas y a ancho completo volvian a
+           parecer los botones que este cambio quita. */
+        .modalidades {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: .25rem .9rem; margin: 0 0 .9rem;
+            font-size: .86rem; color: var(--txt-2); text-align: center;
         }
-        .camino-op:hover, .camino-op:focus-visible {
-            border-color: var(--lime); background: rgba(255,255,255,.08); transform: translateY(-1px);
+        .modalidad { display: inline-flex; align-items: center; gap: .4rem; }
+        .modalidad i { font-size: 1rem; color: var(--lime); }
+        .arranque-pie {
+            margin: .75rem 0 0; font-size: .82rem; line-height: 1.45;
+            color: var(--txt-3); text-align: center;
         }
-        .camino-op:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
-
-        .camino-marca {
-            width: 4.4rem; height: 4.4rem; border-radius: 11px;
-            display: grid; place-items: center; overflow: hidden;
-            background: rgba(255,255,255,.06);
-        }
-        .camino-marca i { font-size: 1.7rem; color: var(--lime); }
-
-        .camino-cuerpo { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
-        .camino-nom {
-            font-family: 'Montserrat', sans-serif; font-weight: 700;
-            font-size: 1.02rem; line-height: 1.2;
-        }
-        .camino-sub { font-size: .84rem; color: var(--txt-2); line-height: 1.35; }
 
         /* ── Pantalla del pedido ─────────────────────────────────── */
         .pedido {
@@ -887,24 +874,18 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                     </figcaption>
                 </figure>
 
-                <!-- Los dos caminos pesan lo mismo: comprar litros no es el
-                     premio de consolacion de quien no puede pagar el equipo. -->
-                <div class="surge surge-3 dos-caminos">
-                    <button type="button" class="camino-op" @click="via = 'equipo'; ir(1)">
-                        <span class="camino-marca"><i class="fi fi-rr-flask" aria-hidden="true"></i></span>
-                        <span class="camino-cuerpo">
-                            <span class="camino-nom">Producir mis microorganismos</span>
-                            <span class="camino-sub">Calcula en cuánto se paga tu biofábrica</span>
-                        </span>
-                    </button>
-
-                    <button type="button" class="camino-op es-litros" @click="via = 'litros'; ir(1)">
-                        <span class="camino-marca"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
-                        <span class="camino-cuerpo">
-                            <span class="camino-nom">Comprar por litro</span>
-                            <span class="camino-sub">Ya producidos, listos para aplicar</span>
-                        </span>
-                    </button>
+                <!-- Las dos modalidades se anuncian, no se preguntan. Aqui
+                     eran dos botones que parecian bifurcar el embudo y los dos
+                     llamaban a ir(1): la 'via' que elegian no se leia en
+                     ninguna parte. La eleccion de verdad esta al final del
+                     paso 6, cuando ya hay numeros que la sostengan. -->
+                <div class="surge surge-3 arranque">
+                    <p class="modalidades">
+                        <span class="modalidad"><i class="fi fi-rr-jug" aria-hidden="true"></i>Te vendemos por litro</span>
+                        <span class="modalidad"><i class="fi fi-rr-flask" aria-hidden="true"></i>o el equipo para producirlos</span>
+                    </p>
+                    <button type="button" class="btn" @click="ir(1)">Calcular lo que me conviene</button>
+                    <p class="arranque-pie">Con tus números te decimos cuál de las dos te sale mejor.</p>
                 </div>
             </div>
         </template>
@@ -1676,10 +1657,6 @@ function diagnostico() {
 
     return {
         paso: 0,
-        /* Que vino a comprar. 'equipo' recorre el diagnostico completo y le
-           calcula recuperacion; 'litros' es una compra, y a una compra no se
-           le proyecta retorno: son tres preguntas y un precio. */
-        via: 'equipo',
         etapaAbierta: null,
         estado: '',
         ha: 20,

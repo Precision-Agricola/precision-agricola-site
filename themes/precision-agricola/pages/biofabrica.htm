@@ -884,7 +884,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                         <span class="modalidad"><i class="fi fi-rr-jug" aria-hidden="true"></i>Te vendemos por litro</span>
                         <span class="modalidad"><i class="fi fi-rr-flask" aria-hidden="true"></i>o el equipo para producirlos</span>
                     </p>
-                    <button type="button" class="btn" @click="ir(1)">Calcular lo que me conviene</button>
+                    <button type="button" class="btn" @click="ir(1)">Ver qué me conviene</button>
                     <p class="arranque-pie">Con tus números te decimos cuál de las dos te sale mejor.</p>
                 </div>
             </div>
@@ -1183,7 +1183,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                    decision suya. Ahora se ven ambos y el veredicto solo decide
                    cual va destacado. #}
                 <div class="salidas surge surge-3">
-                    <p class="salidas-tit">¿Cómo le entramos?</p>
+                    <p class="salidas-tit">¿Cómo quieres seguir?</p>
 
                     <button type="button" class="salida" :class="{ destacado: configurable }" @click="ir(8)">
                         <span class="salida-ico"><i class="fi fi-rr-industry-windows" aria-hidden="true"></i></span>
@@ -1197,7 +1197,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                     <button type="button" class="salida" :class="{ destacado: !configurable }" @click="ir(7)">
                         <span class="salida-ico"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
                         <span class="salida-cuerpo">
-                            <span class="salida-nom">Que nosotros te los produzcamos</span>
+                            <span class="salida-nom">Comprarlos ya producidos</span>
                             <span class="salida-det">Te entregamos los litros listos, sin comprar equipo</span>
                         </span>
                         <span class="salida-flecha" aria-hidden="true">→</span>
@@ -1701,7 +1701,7 @@ function diagnostico() {
               sub:'Todavía no uso microorganismos' },
             { id:'compro',    icon:'fi-rr-shopping-cart',    nom:'Los compro formulados',
               sub:'Producto comercial envasado' },
-            { id:'artesanal', icon:'fi-rr-flask',            nom:'Los propago artesanal',
+            { id:'artesanal', icon:'fi-rr-flask',            nom:'Los propago en el rancho',
               sub:'Multiplico por mi cuenta, sin equipo' },
             { id:'produzco',  icon:'fi-rr-industry-windows', nom:'Tengo biorreactores',
               sub:'Equipo propio en operación' }

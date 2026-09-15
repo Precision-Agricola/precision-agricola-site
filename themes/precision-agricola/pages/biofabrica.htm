@@ -358,6 +358,11 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         .surge-2 { animation-delay: .12s; }
         .surge-3 { animation-delay: .18s; }
 
+        /* Para el veredicto que se reemplaza: solo opacidad. El desplazamiento
+           de 'surge' se siente como brinco cuando el bloque ya estaba ahi. */
+        @keyframes asoma { from { opacity: 0; } to { opacity: 1; } }
+        .asoma { animation: asoma .3s ease both; }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
         }
@@ -1094,17 +1099,11 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         <template x-if="paso === 6">
             <div>
                 <button class="atras" @click="ir(5)">← Atrás</button>
-                <div class="veredicto surge">
-                    <span class="et" x-text="veredicto.etiqueta"></span>
-                    <h2 x-text="veredicto.titulo"></h2>
-                    <p x-text="veredicto.texto"></p>
-                </div>
-
-                {# La perilla vive aqui: todo lo de abajo -litros por
-                   aplicacion, los dos costos por hectarea, las tandas y la
-                   curva- se recalcula al moverla. Va fuera de la condicion
-                   de 'campo' para que siempre se pueda ajustar. #}
-                <div class="ajusta surge surge-1">
+                {# La perilla va primero y no despues del veredicto: es lo
+                   que el productor tiene bajo el dedo, y el veredicto cambia
+                   de alto al cambiar de recomendacion -medido, hasta 118 px-.
+                   Anclada arriba, ningun texto la mueve. #}
+                <div class="ajusta surge">
                     <div class="ajusta-cab">
                         <span class="ajusta-et">Tu superficie</span>
                         <span class="ajusta-val"><span x-text="ha"></span> ha</span>
@@ -1112,6 +1111,18 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                     <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
                     <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
                 </div>
+
+                {# Se recrea al cambiar de recomendacion para que se lea como
+                   transicion y no como salto. La clave deja fuera las cifras:
+                   si dependiera del titulo completo se reanimaria en cada
+                   paso de la perilla. #}
+                <template x-for="k in [veredictoClave]" :key="k">
+                    <div class="veredicto asoma">
+                        <span class="et" x-text="veredicto.etiqueta"></span>
+                        <h2 x-text="veredicto.titulo"></h2>
+                        <p x-text="veredicto.texto"></p>
+                    </div>
+                </template>
 
                 {# Los dos caminos con los numeros del productor. Reemplaza al
                    embudo de litros que vivia en una pagina aparte. #}
@@ -1999,6 +2010,10 @@ function diagnostico() {
             return 'litros';
         },
 
+        /* Lo que cambia la FORMA del veredicto, no sus cifras: sirve de
+           clave para recrear el bloque solo cuando cambia el mensaje. */
+        get veredictoClave() { return this.palanca + (this.convieneProducir ? '-produce' : '-compra'); },
+
         get veredicto() {
             const v = {
                 completa: {
@@ -2018,13 +2033,12 @@ function diagnostico() {
                 litros: {
                     etiqueta: 'Servicio sin inversión en equipo',
                     titulo: this.convieneProducir
-                        ? 'Producir te sale más barato por hectárea, pero el equipo tardaría en pagarse'
+                        ? 'Produces más barato de lo que compras'
                         : 'Podemos suministrarte litros ya producidos',
                     texto: this.convieneProducir
-                        ? 'A ' + this.mxn(this.producirPorHa) + ' por hectárea produciendo contra ' +
-                          this.mxn(this.comprarPorHa) + ' comprando, la diferencia es real, pero con ' +
-                          this.mesesSeleccionadosTxt.toLowerCase() + ' de aplicación al año el equipo tarda en recuperarse. ' +
-                          'Empieza con litros producidos por nosotros y da el paso cuando apliques más seguido o crezca la superficie.'
+                        ? this.mxn(this.producirPorHa) + ' por hectárea contra ' + this.mxn(this.comprarPorHa) +
+                          ' comprando. Con ' + this.mesesSeleccionadosTxt.toLowerCase() +
+                          ' de aplicación el equipo tarda en pagarse: empieza con litros nuestros y da el paso al crecer.'
                         : 'Por tu escala actual, conviene iniciar con litros producidos por nosotros. Al acercarte a ' +
                           (this.haUmbral || '—') + ' ha, el equipo propio empieza a tener sentido.',
                     cta: 'Solicitar cotización de litros',

@@ -526,26 +526,14 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         }
         .fen-etapa:hover { background: rgba(255,255,255,.09); }
         .fen-etapa .fen-nom { font-size: .86rem; line-height: 1.25; }
-        .fen-etapa .fen-cuando {
-            font-size: .7rem; letter-spacing: .03em; color: var(--txt-3);
-        }
 
         .fen-etapa.marcada {
             background: rgba(126,217,87,.16);
             border-color: rgba(126,217,87,.5);
             color: var(--txt);
         }
-        .fen-etapa.marcada .fen-cuando { color: var(--lime); }
         .fen-etapa.abierta { border-color: var(--txt-3); }
         .fen-etapa.marcada.abierta { border-color: var(--lime); }
-
-        /* La etapa en que cae hoy: un punto, no una etiqueta. Con cinco
-           fichas, una etiqueta "estás aquí" pesaba más que el dato. */
-        .fen-etapa.hoy .fen-cuando::after {
-            content: ''; display: inline-block;
-            width: 5px; height: 5px; border-radius: 50%;
-            background: var(--amber); margin-left: .3rem; vertical-align: middle;
-        }
 
         .fen-detalle { margin-top: .7rem; }
         .fen-porque {
@@ -1017,11 +1005,10 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                         <div class="fen-etapas">
                             <template x-for="(e, i) in fenologia.etapas" :key="i">
                                 <button type="button" class="fen-etapa"
-                                        :class="{ marcada: etapaMarcada(i), abierta: i === etapaVista, hoy: i === etapaDeHoy }"
+                                        :class="{ marcada: etapaMarcada(i), abierta: i === etapaVista }"
                                         :aria-pressed="etapaMarcada(i)"
                                         @click="toggleEtapa(i)">
                                     <span class="fen-nom" x-text="e.nom"></span>
-                                    <span class="fen-cuando" x-text="etiquetaCuando(e)"></span>
                                 </button>
                             </template>
                         </div>
@@ -1522,7 +1509,6 @@ function diagnostico() {
      * por año: el agave tarda seis o siete años en madurar y un calendario
      * mensual no le dice nada al productor.
      */
-    const MESES_CORTOS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
     const FENOLOGIA = {
         aguacate: {
@@ -1632,11 +1618,12 @@ function diagnostico() {
         }
     };
 
-    /* Lo que la página le dice al productor sobre estas fechas. Va visible
-       junto al calendario, no escondido en un pie de página. */
-    const AVISO_FENOLOGIA = 'Calendario de referencia para el altiplano y el bajío. ' +
-        'Las fechas se recorren con tu región, altitud y variedad, y las aplicaciones ' +
-        'son una guía general: un especialista las ajusta a tu predio.';
+    /* Lo que la página le dice al productor sobre estas etapas. Va visible
+       junto a la rejilla de meses, no escondido en un pie de página.
+       Ya no se muestran fechas: el texto no puede seguir hablando de ellas. */
+    const AVISO_FENOLOGIA = 'Las aplicaciones son una guía general: cada predio tiene ' +
+        'su propio calendario según región, altitud y variedad, y un especialista ' +
+        'lo ajusta a tu caso.';
 
     const PROBLEMAS = {
         costo:      { id:'costo',      icon:'fi-rr-sack-dollar',  nom:'Costo de los insumos',
@@ -1856,18 +1843,7 @@ function diagnostico() {
                noviembre y el resto del ano descansa. */
             return m.length >= 12 ? [] : m;
         },
-        etiquetaCuando(e) {
-            const f = this.fenologia;
-            if (!f) return '';
-            if (f.unidad !== 'mes') {
-                return e.cuando.length === 1 ? 'Año ' + e.cuando[0]
-                     : 'Años ' + e.cuando[0] + ' a ' + e.cuando[e.cuando.length - 1];
-            }
-            const n = e.cuando.map(m => MESES_CORTOS[m]);
-            return n.length === 1 ? n[0] : n[0] + ' a ' + n[n.length - 1];
-        },
         nombreCepa(id) { return (CEPAS.find(c => c.id === id) || {}).nombre || id; },
-
         /* Tocar una etapa marca sus meses: las etapas son mejores preajustes
            que "ciclo corto" o "medio ano", porque hablan del cultivo del
            productor y no de un calendario generico. Si ya estaban todos

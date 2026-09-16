@@ -1133,7 +1133,8 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                         <summary>¿Por qué cambia según la superficie?</summary>
                         <figure class="curva">
                             <svg id="grafica" viewBox="0 0 320 156" role="img"
-                                 aria-labelledby="curva-pie" preserveAspectRatio="xMidYMid meet"></svg>
+                                 aria-labelledby="curva-pie" preserveAspectRatio="xMidYMid meet"
+                                 x-effect="dibujarCurva()"></svg>
                             <figcaption id="curva-pie">
                                 <span class="clave"><i class="raya es-producir"></i>Producirlos</span>
                                 <span class="clave"><i class="raya es-comprar"></i>Comprarlos terminados</span>
@@ -1790,23 +1791,6 @@ function diagnostico() {
                 .sort((a, b) => b._p - a._p);
         },
 
-        /* Las dos que mejor responden a lo que dijo. Solo para orientar la
-           conversacion con Ventas, no para cerrar el pedido aqui. */
-        get cepasSugeridas() { return this.cepasOrdenadas.slice(0, 2); },
-        /* Nombrar el problema que eligio se lee como respuesta; "para lo que
-           nos dijiste" se lee como plantilla. */
-        get fraseProblema() {
-            const f = {
-                costo:      'Para bajar el costo de tus insumos,',
-                suelo:      'Para la degradación de tu suelo,',
-                patogenos:  'Para tus patógenos radiculares,',
-                nutrientes: 'Para la baja absorción de nutrientes,',
-                foliar:     'Para tus enfermedades foliares,',
-                plagas:     'Para la presión de plagas,'
-            };
-            return f[this.problemaPrincipal] || 'Para lo que nos comentas,';
-        },
-
         /* ── Fenologia ─────────────────────────────────────────────────
            El calendario es del primer cultivo elegido: con dos o mas, los
            ciclos no coinciden y mezclarlos daria un calendario que no le
@@ -1830,18 +1814,6 @@ function diagnostico() {
         get etapa() {
             const f = this.fenologia;
             return f ? f.etapas[this.etapaVista] : null;
-        },
-        /* Los meses que el cultivo pide, para que el paso 5 deje de ser
-           casillas en blanco. */
-        get mesesDelCultivo() {
-            const f = this.fenologia;
-            if (!f || f.unidad !== 'mes') return [];
-            const m = f.etapas.reduce((a, e) => a.concat(e.cuando), []);
-            /* En un perenne todos los meses tienen etapa, asi que marcarlos
-               todos es no marcar ninguno. La pista solo aparece cuando de
-               verdad distingue, como en granos, que ocupa de mayo a
-               noviembre y el resto del ano descansa. */
-            return m.length >= 12 ? [] : m;
         },
         nombreCepa(id) { return (CEPAS.find(c => c.id === id) || {}).nombre || id; },
         /* Tocar una etapa marca sus meses: las etapas son mejores preajustes
@@ -1933,9 +1905,8 @@ function diagnostico() {
            porque la palanca se decide a partir del precio. */
         get incluyeReactor() { return this.practica !== 'produzco'; },
 
-        /* Hay algo que armar? Quien compra litros no configura biorreactor,
-           y a quien no pudimos calcularle le toca visita en campo. En esos
-           dos casos el paso 8 no tiene contenido y el recorrido lo salta. */
+        /* Que el veredicto recomiende armar equipo. Los dos caminos se ven
+           siempre; esto solo decide cual de las dos salidas va destacada. */
         get configurable() { return this.palanca !== 'litros' && this.palanca !== 'campo'; },
         get precioConfig() {
             return (this.incluyeReactor ? P_REACTOR : 0)
@@ -2120,10 +2091,10 @@ function diagnostico() {
             if (n === 8) this.vioConfigurador = true;
             if (n === 7) this.vengoDe = this.paso;
             this.paso = n;
-            /* El <svg> no existe hasta que Alpine monta la plantilla del paso,
-               asi que el dibujo espera un tick. */
+            /* El <svg> se dibuja por el x-effect de la propia grafica, que
+               corre al montar y cada vez que cambia 'ha'. */
             if (n === 6) setTimeout(() => this.dibujarCurva(), 0);
-            window.scrollTo({ top: 0, behavior: 'instant' });
+            window.scrollTo({ top: 0, behavior: 'auto' });
         },
 
         seleccionarMeses(tipo) {
@@ -2187,8 +2158,6 @@ function diagnostico() {
         /* Resumen legible que viaja con el lead. */
         get resumen() {
             const nom = id => (CEPAS.find(c => c.id === id) || {}).nombre || id;
-            const nomProb = id => (PROBLEMAS[id] || {}).nom || id;
-
             const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
             const nomPractica = id => (this.practicas.find(p => p.id === id) || {}).nom || id;
             const partes = [

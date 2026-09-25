@@ -290,6 +290,11 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         .pieza.fija .marca-check { background: var(--lime); border-color: var(--lime); }
         .pieza .nom { font-weight: 700; font-size: .93rem; display: block; }
         .pieza .rol { font-size: .78rem; color: var(--lime-deep); font-weight: 600; display: block; margin-top: .05rem; }
+        .pieza .sugerida-etapa {
+            display: inline-block; margin-top: .32rem; padding: .18rem .42rem;
+            border-radius: 999px; background: rgba(126,217,87,.12); color: var(--lime);
+            font-size: .65rem; font-weight: 700;
+        }
         .pieza .det { font-size: .8rem; color: var(--txt-3); display: block; margin-top: .3rem; line-height: 1.45; }
         .pieza .precio {
             font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .88rem;
@@ -549,6 +554,9 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
             background: rgba(126,217,87,.055);
         }
         .etapa-detalle p { margin: 0; color: var(--txt-2); font-size: .78rem; line-height: 1.45; }
+        .etapa-detalle .etapa-detalle-tit {
+            margin-bottom: .25rem; color: var(--txt); font-weight: 700;
+        }
         .etapa-detalle .manejo { margin-top: .32rem; color: var(--txt-3); }
         .etapa-cepas { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .55rem; }
         .etapa-cepa {
@@ -935,7 +943,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                 <template x-if="cultivos.length">
                     <section class="guia-etapas" aria-labelledby="titulo-etapas">
                         <h3 id="titulo-etapas">¿Para qué etapa los necesitas?</h3>
-                        <p class="guia-intro">Elige una etapa por cultivo. La usaremos para orientar los microorganismos de tu cotización.</p>
+                        <p class="guia-intro">Elige una o varias etapas por cultivo. Preseleccionaremos los microorganismos sugeridos para todas ellas.</p>
 
                         <template x-for="id in cultivos" :key="id">
                             <div class="cultivo-etapas">
@@ -943,7 +951,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                                 <div class="etapas-grid">
                                     <template x-for="(e, i) in etapasDeCultivo(id)" :key="e.nom">
                                         <button type="button" class="etapa-op"
-                                                :aria-pressed="etapasPorCultivo[id] === e.nom"
+                                                :aria-pressed="etapaEstaElegida(id, e.nom)"
                                                 @click="elegirEtapa(id, e.nom)">
                                             <span class="etapa-ilustra" aria-hidden="true"><i class="fi" :class="iconoEtapa(i, etapasDeCultivo(id).length)"></i></span>
                                             <span class="etapa-nom" x-text="e.nom"></span>
@@ -951,12 +959,13 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                                     </template>
                                 </div>
 
-                                <template x-if="etapaElegida(id)">
+                                <template x-for="etapa in etapasElegidas(id)" :key="etapa.nom">
                                     <div class="etapa-detalle">
-                                        <p x-text="etapaElegida(id).porque"></p>
-                                        <p class="manejo" x-text="etapaElegida(id).manejo || consejoEtapa(etapaElegida(id).nom)"></p>
-                                        <div class="etapa-cepas" x-show="etapaElegida(id).cepas.length">
-                                            <template x-for="cepa in etapaElegida(id).cepas" :key="cepa">
+                                        <p class="etapa-detalle-tit" x-text="etapa.nom"></p>
+                                        <p x-text="etapa.porque"></p>
+                                        <p class="manejo" x-text="etapa.manejo || consejoEtapa(etapa.nom)"></p>
+                                        <div class="etapa-cepas" x-show="etapa.cepas.length">
+                                            <template x-for="cepa in etapa.cepas" :key="cepa">
                                                 <span class="etapa-cepa" x-text="nombreCepa(cepa)"></span>
                                             </template>
                                         </div>
@@ -1186,7 +1195,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                         <span class="salida-ico"><i class="fi fi-rr-industry-windows" aria-hidden="true"></i></span>
                         <span class="salida-cuerpo">
                             <span class="salida-nom">Armar mi equipo</span>
-                            <span class="salida-det">El biorreactor y las cepas que te tocan, con su precio</span>
+                            <span class="salida-det">El biorreactor y los microorganismos sugeridos para tus etapas, con su precio</span>
                         </span>
                         <span class="salida-flecha" aria-hidden="true">→</span>
                     </button>
@@ -1242,7 +1251,10 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                             <span class="precio" x-text="mxn(precioMonitoreo)"></span>
                         </button>
 
-                        <p class="cfg-tit">Cepas · cada una rinde <span x-text="loteLitros"></span> L por lote, para <span x-text="loteHa"></span> ha</p>
+                        <p class="cfg-tit">Microorganismos · cada paquete rinde <span x-text="loteLitros"></span> L por lote, para <span x-text="loteHa"></span> ha</p>
+                        <p class="apoyo" style="font-size:.84rem;margin:-.25rem 0 .8rem">
+                            Preseleccionamos los sugeridos para tus etapas: <strong x-text="resumenEtapas"></strong>. Puedes quitar o agregar antes de cotizar; el total se actualiza al momento.
+                        </p>
 
                         <template x-for="c in cepasOrdenadas" :key="c.id">
                             <button class="pieza" :aria-pressed="cepas.includes(c.id)" @click="alternarCepa(c.id)">
@@ -1250,6 +1262,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                                 <span class="cuerpo" style="flex:1">
                                     <span class="nom" x-text="c.nombre"></span>
                                     <span class="rol" x-text="c.rol"></span>
+                                    <span class="sugerida-etapa" x-show="cepasSugeridasEtapas.includes(c.id)">Sugerido por tus etapas</span>
                                     <span class="det" x-text="c.desc"></span>
                                 </span>
                                 <span class="precio" x-text="mxn(c.precio)"></span>
@@ -1281,7 +1294,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                                 <span style="font-size:.72rem;color:var(--txt-3)">pesos mexicanos, más IVA</span></span>
                             <span class="v" x-text="mxn(precioConfig)"></span>
                         </div>
-                    <button class="btn" @click="ir(7)" x-text="veredicto.cta"></button>
+                    <button class="btn" @click="ir(7)">Recibir cotización de mi equipo</button>
                 </div>
             </div>
         </template>
@@ -1292,7 +1305,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                 <button class="atras" @click="ir(vengoDe)"
                         x-text="vengoDe === 8 ? '← Volver a mi configuración' : '← Volver al resultado'"></button>
                 <p class="paso-n">Último paso</p>
-                <h2 class="pregunta" x-text="veredicto.cierreTitulo"></h2>
+                <h2 class="pregunta" x-text="vengoDe === 8 ? '¿A dónde te enviamos la cotización de tu equipo?' : veredicto.cierreTitulo"></h2>
                 <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
 
                 <template x-if="errorEnvio">
@@ -1335,7 +1348,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                     </label>
 
                     <button type="submit" class="btn" :disabled="enviando">
-                        <span x-text="enviando ? 'Enviando…' : 'Recibir mi cotización'"></span>
+                        <span x-text="enviando ? 'Enviando…' : (vengoDe === 8 ? 'Recibir cotización de mi equipo' : veredicto.cta)"></span>
                     </button>
                     <p class="legal">Usamos tus datos solo para contactarte sobre esta cotización.</p>
                 </form>
@@ -1751,14 +1764,42 @@ function diagnostico() {
             return [...guia, ETAPA_ASESORIA];
         },
         elegirEtapa(cultivoId, etapaNom) {
-            this.etapasPorCultivo = { ...this.etapasPorCultivo, [cultivoId]: etapaNom };
+            const guardadas = this.etapasPorCultivo[cultivoId];
+            let elegidas = Array.isArray(guardadas) ? guardadas.slice() : (guardadas ? [guardadas] : []);
+            const esAsesoria = etapaNom === ETAPA_ASESORIA.nom;
+
+            if (esAsesoria) {
+                elegidas = elegidas.includes(etapaNom) ? [] : [etapaNom];
+            } else {
+                elegidas = elegidas.filter(nom => nom !== ETAPA_ASESORIA.nom);
+                const i = elegidas.indexOf(etapaNom);
+                if (i === -1) elegidas.push(etapaNom);
+                else elegidas.splice(i, 1);
+            }
+            this.etapasPorCultivo = { ...this.etapasPorCultivo, [cultivoId]: elegidas };
         },
-        etapaElegida(cultivoId) {
-            const elegida = this.etapasPorCultivo[cultivoId];
-            return this.etapasDeCultivo(cultivoId).find(e => e.nom === elegida) || null;
+        etapaEstaElegida(cultivoId, etapaNom) {
+            const elegidas = this.etapasPorCultivo[cultivoId];
+            return Array.isArray(elegidas) ? elegidas.includes(etapaNom) : elegidas === etapaNom;
+        },
+        etapasElegidas(cultivoId) {
+            const guardadas = this.etapasPorCultivo[cultivoId];
+            const elegidas = Array.isArray(guardadas) ? guardadas : (guardadas ? [guardadas] : []);
+            return this.etapasDeCultivo(cultivoId).filter(e => elegidas.includes(e.nom));
         },
         get etapasCompletas() {
-            return this.cultivos.length > 0 && this.cultivos.every(id => !!this.etapaElegida(id));
+            return this.cultivos.length > 0 && this.cultivos.every(id => this.etapasElegidas(id).length > 0);
+        },
+        get resumenEtapas() {
+            return this.cultivos.map(id => this.nombreCultivo(id) + ': ' +
+                (this.etapasElegidas(id).map(e => e.nom).join(', ') || 'sin elegir')).join(' · ');
+        },
+        get cepasSugeridasEtapas() {
+            const sugeridas = new Set();
+            this.cultivos.forEach(id => this.etapasElegidas(id).forEach(etapa => {
+                etapa.cepas.forEach(cepa => sugeridas.add(cepa));
+            }));
+            return CEPAS.map(c => c.id).filter(id => sugeridas.has(id));
         },
         iconoEtapa(i, total) {
             if (i === total - 1) return 'fi-rr-microscope-bacteria';
@@ -1803,8 +1844,8 @@ function diagnostico() {
                         return total + (pc[c.id] || 0);
                     }, 0);
                     const puntosEtapa = this.cultivos.reduce((total, id) => {
-                        const etapa = this.etapaElegida(id);
-                        return total + (etapa && etapa.cepas.includes(c.id) ? 1 : 0);
+                        return total + this.etapasElegidas(id).reduce((subtotal, etapa) =>
+                            subtotal + (etapa.cepas.includes(c.id) ? 1 : 0), 0);
                     }, 0);
                     return { ...c, _p: puntosProblema * 2 + puntosCultivo + puntosEtapa * 3 };
                 })
@@ -1874,6 +1915,9 @@ function diagnostico() {
         /* Que el veredicto recomiende armar equipo. Los dos caminos se ven
            siempre; esto solo decide cual de las dos salidas va destacada. */
         get configurable() { return this.palanca !== 'litros' && this.palanca !== 'campo'; },
+        /* La recomendación económica y la solicitud final pueden diferir: si
+           el productor armó equipo, Ventas debe recibir esa intención. */
+        get rutaSolicitada() { return this.vengoDe === 8 ? 'equipo' : this.palanca; },
         get precioConfig() {
             return (this.incluyeReactor ? P_REACTOR : 0)
                  + (this.monitoreo ? P_MONITOREO : 0)
@@ -2096,19 +2140,19 @@ function diagnostico() {
         calcular() {
             if (this.problemas.length === 0) return;
             this.problema = this.problemaPrincipal;
-            /* Preselecciona según puntaje: 2 cepas si va completo, 1 si va gradual. */
+            /* La configuración empieza con todas las sugerencias de las etapas.
+               Si el productor pidió orientación, conserva el respaldo por puntaje. */
             const orden = this.cepasOrdenadas;
             const cuantas = (this.practica === 'produzco') ? 2 : 1;
-            this.cepas = orden.slice(0, cuantas).map(c => c.id);
-            if (this.palanca === 'completa') {
-                this.cepas = orden.slice(0, 2).map(c => c.id);
-                this.monitoreo = true;
-            }
+            const sugeridas = this.cepasSugeridasEtapas;
+            this.cepas = sugeridas.length ? sugeridas.slice() : orden.slice(0, cuantas).map(c => c.id);
+            if (!sugeridas.length && this.palanca === 'completa') this.cepas = orden.slice(0, 2).map(c => c.id);
+            if (this.palanca === 'completa') this.monitoreo = true;
             /* El evento que de verdad importa: con qué perfil llegó y qué se le ofreció. */
             medir('resultado', {
                 palanca: this.palanca,
                 cultivos: this.cultivos.join(","),
-                etapas: this.cultivos.map(id => this.etapasPorCultivo[id]).join(","),
+                etapas: this.resumenEtapas,
                 hectareas: this.ha,
                 gasto_ha_mes: this.gasto,
                 total: this.precioConfig
@@ -2128,10 +2172,10 @@ function diagnostico() {
             const nomProblema = id => (PROBLEMAS[id] || {}).nom || id;
             const nomPractica = id => (this.practicas.find(p => p.id === id) || {}).nom || id;
             const partes = [
-                'RUTA: ' + this.palanca,
+                'RUTA SOLICITADA: ' + this.rutaSolicitada,
+                'RECOMENDACION CALCULADA: ' + this.palanca,
                 'Cultivos: ' + this.nombresCultivos.join(' / '),
-                'Etapas: ' + this.cultivos.map(id => this.nombreCultivo(id) + ': ' +
-                    ((this.etapaElegida(id) || {}).nom || 'sin elegir')).join(' / '),
+                'Etapas: ' + this.resumenEtapas,
                 'Estado: ' + this.estado,
                 'Superficie: ' + this.ha + ' ha',
                 'Practica: ' + nomPractica(this.practica),
@@ -2143,7 +2187,7 @@ function diagnostico() {
             ];
             if (this.vioConfigurador) {
                 partes.push('Monitoreo: ' + (this.monitoreo ? 'si' : 'no'));
-                partes.push('Cepas: ' + this.cepas.map(nom).join(' / '));
+                partes.push('Microorganismos seleccionados: ' + this.cepas.map(nom).join(' / '));
                 partes.push('Total: ' + this.mxn(this.precioConfig));
                 partes.push('Recuperacion: ' + this.mesesTxt);
             }
@@ -2208,7 +2252,7 @@ function diagnostico() {
             p.append('entry.1073422398', this.resumen);
             /* Campo obligatorio de opción múltiple: se pasa por su opción "Otro". */
             p.append('entry.1366426429', '__other_option__');
-            p.append('entry.1366426429.other_option_response', 'Ruta ' + this.palanca);
+            p.append('entry.1366426429.other_option_response', 'Ruta ' + this.rutaSolicitada);
 
             fetch(atob('aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZm9ybXMvZC9lLzFGQUlwUUxTZHVGVUxzSElVdmhQN1NBdGZPb1Y0MjJWTzVIUTVBNnZnQjVKMXQxV3k1ekZtcWV3L2Zvcm1SZXNwb25zZQ=='), {
                 method: 'POST',
@@ -2217,7 +2261,7 @@ function diagnostico() {
                 body: p.toString()
             })
             .then(() => {
-                medir('lead', { palanca: this.palanca, total: this.precioConfig,
+                medir('lead', { palanca: this.palanca, ruta: this.rutaSolicitada, total: this.precioConfig,
                                 financiamiento: this.quiereFinanciamiento ? 1 : 0 });
                 window.location.href = '/gracias-diagnostico';
             })

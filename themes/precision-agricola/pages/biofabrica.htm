@@ -377,6 +377,9 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
         }
+        @media (max-width: 370px) {
+            .etapas-grid { grid-template-columns: 1fr; }
+        }
         /* ── Formas de pago ── */
         .pagos { display: flex; flex-direction: column; gap: .55rem; }
         .pago {
@@ -506,60 +509,57 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         }
 
 
-        /* ── Etapas del cultivo ─────────────────────────────────── */
-
-        .fenologia { margin-top: .9rem; }
-
-        /* Fichas que envuelven, no una tira proporcional: a 375 px los
-           nombres largos se truncaban en "Preparació…" y el ancho por
-           duración no valía ese precio. */
-        .fen-etapas { display: flex; flex-wrap: wrap; gap: .45rem; }
-
-        .fen-etapa {
-            display: flex; flex-direction: column; gap: .05rem;
-            padding: .5rem .75rem;
-            background: rgba(255,255,255,.05);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            cursor: pointer; text-align: left; color: var(--txt-2);
-            transition: background .18s ease, border-color .18s ease, color .18s ease;
+        /* ── Etapa fenológica elegida por el productor ───────────── */
+        .guia-etapas { margin-top: 1.35rem; }
+        .guia-etapas > h3 {
+            margin: 0; font-size: 1rem; line-height: 1.3;
+            font-family: 'Montserrat', sans-serif; font-weight: 800;
         }
-        .fen-etapa:hover { background: rgba(255,255,255,.09); }
-        .fen-etapa .fen-nom { font-size: .86rem; line-height: 1.25; }
-
-        .fen-etapa.marcada {
-            background: rgba(126,217,87,.16);
-            border-color: rgba(126,217,87,.5);
-            color: var(--txt);
+        .guia-intro { margin: .28rem 0 .85rem; color: var(--txt-2); font-size: .84rem; }
+        .cultivo-etapas {
+            padding: .85rem; margin-top: .7rem; border: 1px solid var(--line);
+            border-radius: .9rem; background: rgba(255,255,255,.025);
         }
-        .fen-etapa.abierta { border-color: var(--txt-3); }
-        .fen-etapa.marcada.abierta { border-color: var(--lime); }
-
-        .fen-detalle { margin-top: .7rem; }
-        .fen-porque {
-            margin: 0 0 .5rem; font-size: .87rem; line-height: 1.5; color: var(--txt-2);
+        .cultivo-etapas h4 {
+            margin: 0 0 .65rem; color: var(--lime); font-size: .78rem;
+            font-family: 'Montserrat', sans-serif; letter-spacing: .04em;
+            text-transform: uppercase;
         }
-        .fen-porque .fen-que {
-            color: var(--txt); font-weight: 500;
+        .etapas-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+        .etapa-op {
+            display: flex; min-width: 0; align-items: center; gap: .55rem;
+            padding: .6rem; border: 1px solid var(--line); border-radius: .72rem;
+            background: var(--card); color: var(--txt-2); font: inherit;
+            text-align: left; cursor: pointer;
+            transition: border-color .18s, background .18s, transform .12s;
         }
-        .fen-porque .fen-que::after { content: ' · '; color: var(--txt-3); }
-
-        .fen-cepas { display: flex; flex-wrap: wrap; gap: .35rem; }
-        .fen-cepa {
-            padding: .22rem .55rem; border-radius: 20px;
-            background: rgba(126,217,87,.12);
-            border: 1px solid rgba(126,217,87,.26);
-            font-size: .76rem; color: var(--txt);
+        .etapa-op:active { transform: scale(.98); }
+        .etapa-op[aria-pressed="true"] {
+            border-color: var(--lime); background: rgba(126,217,87,.1); color: var(--txt);
         }
-
-        .fen-aviso {
-            margin: .7rem 0 0; font-size: .73rem; line-height: 1.45; color: var(--txt-3);
+        .etapa-ilustra {
+            display: grid; place-items: center; flex: 0 0 2.25rem; height: 2.25rem;
+            border-radius: .62rem; background: rgba(126,217,87,.09); color: var(--lime);
         }
-
+        .etapa-ilustra .fi { font-size: 1.25rem; line-height: 1; }
+        .etapa-nom { min-width: 0; font-size: .74rem; font-weight: 700; line-height: 1.2; }
+        .etapa-detalle {
+            margin-top: .65rem; padding: .72rem .8rem;
+            border-left: 2px solid var(--lime); border-radius: 0 .65rem .65rem 0;
+            background: rgba(126,217,87,.055);
+        }
+        .etapa-detalle p { margin: 0; color: var(--txt-2); font-size: .78rem; line-height: 1.45; }
+        .etapa-detalle .manejo { margin-top: .32rem; color: var(--txt-3); }
+        .etapa-cepas { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .55rem; }
+        .etapa-cepa {
+            padding: .22rem .5rem; border-radius: 999px;
+            background: rgba(126,217,87,.1); color: var(--lime);
+            font-size: .67rem; font-style: italic; font-weight: 600;
+        }
+        .etapa-aviso { margin: .75rem 0 0; color: var(--txt-3); font-size: .7rem; line-height: 1.4; }
         /* ── Ajuste fino de meses ───────────────────────────────── */
 
-        /* La rejilla de doce cuadros pasa a segundo plano: con las etapas
-           casi nadie necesita abrirla, y ocupaba media pantalla. */
+        /* La rejilla de doce cuadros queda plegada para mantener corto el paso. */
         .meses-fino { margin-top: .9rem; }
         .meses-fino > summary {
             display: flex; align-items: center; justify-content: space-between;
@@ -931,6 +931,43 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                         </button>
                     </template>
                 </div>
+
+                <template x-if="cultivos.length">
+                    <section class="guia-etapas" aria-labelledby="titulo-etapas">
+                        <h3 id="titulo-etapas">¿Para qué etapa los necesitas?</h3>
+                        <p class="guia-intro">Elige una etapa por cultivo. La usaremos para orientar los microorganismos de tu cotización.</p>
+
+                        <template x-for="id in cultivos" :key="id">
+                            <div class="cultivo-etapas">
+                                <h4 x-text="nombreCultivo(id)"></h4>
+                                <div class="etapas-grid">
+                                    <template x-for="(e, i) in etapasDeCultivo(id)" :key="e.nom">
+                                        <button type="button" class="etapa-op"
+                                                :aria-pressed="etapasPorCultivo[id] === e.nom"
+                                                @click="elegirEtapa(id, e.nom)">
+                                            <span class="etapa-ilustra" aria-hidden="true"><i class="fi" :class="iconoEtapa(i, etapasDeCultivo(id).length)"></i></span>
+                                            <span class="etapa-nom" x-text="e.nom"></span>
+                                        </button>
+                                    </template>
+                                </div>
+
+                                <template x-if="etapaElegida(id)">
+                                    <div class="etapa-detalle">
+                                        <p x-text="etapaElegida(id).porque"></p>
+                                        <p class="manejo" x-text="etapaElegida(id).manejo || consejoEtapa(etapaElegida(id).nom)"></p>
+                                        <div class="etapa-cepas" x-show="etapaElegida(id).cepas.length">
+                                            <template x-for="cepa in etapaElegida(id).cepas" :key="cepa">
+                                                <span class="etapa-cepa" x-text="nombreCepa(cepa)"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <p class="etapa-aviso">Orientación inicial: el diagnóstico del predio y la etiqueta del producto definen la aplicación final.</p>
+                    </section>
+                </template>
+
                 <div class="campo" style="margin-top:1.2rem">
                     <label for="estado-operacion">Estado de la República donde está tu operación</label>
                     <select id="estado-operacion" x-model="estado">
@@ -941,7 +978,7 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                     </select>
                 </div>
                 <div style="margin-top:1.2rem">
-                    <button class="btn" @click="ir(3)" :disabled="cultivos.length === 0 || !estado">Continuar</button>
+                    <button class="btn" @click="ir(3)" :disabled="cultivos.length === 0 || !etapasCompletas || !estado">Continuar</button>
                 </div>
             </div>
         </template>
@@ -997,49 +1034,11 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                         <h3>¿En qué meses tienes ese gasto?</h3>
                         <span x-text="mesesSeleccionadosTxt"></span>
                     </div>
-                {# Las etapas del cultivo son los preajustes de meses. Van como
-                   fichas que envuelven, no como tira proporcional: a 375 px
-                   los nombres largos se truncaban en "Preparació…". #}
-                <template x-if="fenologia">
-                    <div class="fenologia surge">
-                        <div class="fen-etapas">
-                            <template x-for="(e, i) in fenologia.etapas" :key="i">
-                                <button type="button" class="fen-etapa"
-                                        :class="{ marcada: etapaMarcada(i), abierta: i === etapaVista }"
-                                        :aria-pressed="etapaMarcada(i)"
-                                        @click="toggleEtapa(i)">
-                                    <span class="fen-nom" x-text="e.nom"></span>
-                                </button>
-                            </template>
-                        </div>
-
-                        <template x-if="etapa">
-                            <div class="fen-detalle">
-                                <p class="fen-porque">
-                                    <span class="fen-que" x-text="etapa.nom"></span>
-                                    <span x-text="etapa.porque"></span>
-                                </p>
-                                <div class="fen-cepas">
-                                    <template x-for="c in etapa.cepas" :key="c">
-                                        <span class="fen-cepa" x-text="nombreCepa(c)"></span>
-                                    </template>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </template>
-
-                {# Los preajustes genéricos sólo para cultivos sin calendario. #}
-                <template x-if="!fenologia">
-                    <div class="presets">
-                        <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
-                        <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
-                        <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
-                    </div>
-                </template>
-
-                {# La rejilla de meses pasa a segundo plano: con las etapas ya
-                   no hace falta abrirla, y ocupaba doce cuadros de la pantalla. #}
+                <div class="presets">
+                    <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
+                    <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
+                    <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
+                </div>
                 <details class="meses-fino">
                     {# El conteo ya sale en el encabezado del bloque; aquí
                        repetirlo era decir dos veces lo mismo. #}
@@ -1054,7 +1053,6 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
                                     @click="toggleMes(m.id)" x-text="m.nom"></button>
                         </template>
                     </div>
-                    <p class="fen-aviso" x-show="fenologia" x-text="avisoFenologia"></p>
                 </details>
                 </div>
 
@@ -1489,143 +1487,119 @@ function diagnostico() {
         otro:     ['costo','suelo','patogenos','nutrientes','foliar','plagas']
     };
 
-    /* ── Ciclos fenológicos ────────────────────────────────────────────
-     *
-     * Para que la recomendación de cepas tenga un porqué agronómico en vez
-     * de sólo un puntaje, y para que los meses de aplicación salgan del
-     * cultivo en lugar de casillas sueltas.
-     *
-     * Dos cosas distintas conviven aquí, y conviene no confundirlas:
-     *
-     *   Las ETAPAS son conocimiento agronómico estándar. Los meses son los
-     *   típicos del altiplano y el bajío mexicano, y se recorren con la
-     *   región, la altitud y la variedad.
-     *
-     *   Las CEPAS por etapa son criterio comercial nuestro, derivado del rol
-     *   de cada una. NO están validadas por un agrónomo todavía. La página
-     *   lo dice con todas sus letras; no quites ese aviso sin que alguien
-     *   del área las firme.
-     *
-     * "unidad" separa los cultivos que se miden por mes de los que se miden
-     * por año: el agave tarda seis o siete años en madurar y un calendario
-     * mensual no le dice nada al productor.
-     */
-
+    /* Etapas reconocibles en campo. No llevan meses: el productor indica el
+       estado real del cultivo y esa selección orienta la cotización. Las
+       cepas son una guía comercial inicial que debe confirmar un especialista. */
     const FENOLOGIA = {
         aguacate: {
-            unidad: 'mes', ciclo: 'Perenne · se repite cada año',
             etapas: [
-                { nom: 'Reposo invernal', cuando: [11, 0], cepas: ['trichoderma', 'subtilis'],
-                  porque: 'La raíz descansa: es cuando mejor se sanea el suelo y se repone materia orgánica antes del arranque.' },
-                { nom: 'Floración', cuando: [1, 2], cepas: ['pumilus', 'pseudomonas'],
+                { nom: 'Recuperación y brotación', cepas: ['trichoderma', 'subtilis'],
+                  porque: 'Entre la cosecha y los nuevos brotes conviene revisar raíz, suelo y reservas del árbol.' },
+                { nom: 'Floración', cepas: ['pumilus', 'pseudomonas'],
                   porque: 'La flor es un punto sensible: conviene activar defensa foliar y proteger raíz desde el arranque.' },
-                { nom: 'Amarre de fruto', cuando: [3, 4], cepas: ['safensis', 'pseudomonas'],
-                  porque: 'El árbol decide cuánta fruta retiene. Minerales disponibles y raíz protegida reducen la caída.' },
-                { nom: 'Llenado de fruto', cuando: [5, 6, 7, 8], cepas: ['safensis', 'pumilus'],
+                { nom: 'Amarre de fruto', cepas: ['safensis', 'pseudomonas'],
+                  porque: 'El cuajado define la carga inicial; conviene vigilar caída de fruto y señales de estrés.' },
+                { nom: 'Llenado de fruto', cepas: ['safensis', 'pumilus'],
                   porque: 'Etapa de mayor demanda: minerales disponibles y hoja protegida para sostener el llenado.' },
-                { nom: 'Cosecha y postcosecha', cuando: [9, 10], cepas: ['trichoderma', 'pseudomonas'],
-                  porque: 'Tras la cosecha el árbol queda débil y el suelo cansado; es la ventana para recuperarlo.' }
+                { nom: 'Cosecha y postcosecha', cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'Después de la cosecha se evalúan raíces, vigor y reservas antes del siguiente flujo.' }
             ]
         },
         berries: {
-            unidad: 'mes', ciclo: 'Perenne de ciclo corto',
             etapas: [
-                { nom: 'Establecimiento', cuando: [8, 9], cepas: ['trichoderma', 'pseudomonas'],
+                { nom: 'Establecimiento', cepas: ['trichoderma', 'pseudomonas'],
                   porque: 'Raíz nueva en suelo recién movido: el momento de mayor riesgo de patógenos radiculares.' },
-                { nom: 'Crecimiento vegetativo', cuando: [10, 11, 0], cepas: ['subtilis', 'pumilus'],
+                { nom: 'Crecimiento vegetativo', cepas: ['subtilis', 'pumilus'],
                   porque: 'Se construye la planta que va a producir: raíz activa y defensas foliares listas.' },
-                { nom: 'Floración y amarre', cuando: [1, 2], cepas: ['safensis', 'pumilus'],
+                { nom: 'Floración y amarre', cepas: ['safensis', 'pumilus'],
                   porque: 'Minerales disponibles para la flor y resistencia inducida contra enfermedades foliares.' },
-                { nom: 'Producción', cuando: [3, 4, 5, 6], cepas: ['pumilus', 'thuringiensis'],
-                  porque: 'Cosecha continua por meses: la fruta se expone a enfermedades y aumenta la presión de larvas.' },
-                { nom: 'Poda y recuperación', cuando: [7], cepas: ['trichoderma', 'subtilis'],
+                { nom: 'Producción', cepas: ['pumilus', 'subtilis'],
+                  porque: 'La cosecha prolongada requiere monitoreo frecuente de fruto, follaje y humedad.' },
+                { nom: 'Poda y recuperación', cepas: ['trichoderma', 'subtilis'],
                   porque: 'Se sanea suelo y raíz antes del siguiente establecimiento.' }
             ]
         },
         frutales: {
-            unidad: 'mes', ciclo: 'Perenne caducifolio',
             etapas: [
-                { nom: 'Reposo y poda', cuando: [11, 0], cepas: ['trichoderma', 'subtilis'],
-                  porque: 'Sin hoja, el trabajo es al suelo: sanidad radicular y materia orgánica.' },
-                { nom: 'Brotación y floración', cuando: [1, 2], cepas: ['pumilus', 'safensis'],
+                { nom: 'Reposo, poda o renovación', cepas: ['trichoderma', 'subtilis'],
+                  porque: 'Según la especie, esta pausa permite ordenar poda, sanidad radicular y suelo.' },
+                { nom: 'Brotación y floración', cepas: ['pumilus', 'safensis'],
                   porque: 'Arranque explosivo que consume reservas, con flor y hoja expuestas.' },
-                { nom: 'Cuajado', cuando: [3, 4], cepas: ['safensis', 'pseudomonas'],
+                { nom: 'Cuajado', cepas: ['safensis', 'pseudomonas'],
                   porque: 'Define la carga del año. Minerales disponibles y raíz protegida reducen la caída de fruto chico.' },
-                { nom: 'Desarrollo de fruto', cuando: [5, 6, 7], cepas: ['safensis', 'pumilus'],
+                { nom: 'Desarrollo de fruto', cepas: ['safensis', 'pumilus'],
                   porque: 'Potasio para calibre y defensa foliar sostenida.' },
-                { nom: 'Cosecha y postcosecha', cuando: [8, 9, 10], cepas: ['trichoderma', 'pseudomonas'],
-                  porque: 'Recuperar reservas para el siguiente ciclo y proteger la fruta almacenada.' }
+                { nom: 'Cosecha y postcosecha', cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'Tras la cosecha conviene recuperar reservas y retirar fruta o tejido enfermo.' }
             ]
         },
         cana: {
-            unidad: 'mes', ciclo: 'Perenne de socas',
             etapas: [
-                { nom: 'Brotación', cuando: [10, 11], cepas: ['trichoderma', 'pseudomonas'],
-                  porque: 'La soca rebrota de una raíz vieja y cargada de inóculo: es la etapa más vulnerable.' },
-                { nom: 'Macollamiento', cuando: [0, 1, 2], cepas: ['subtilis', 'pseudomonas'],
+                { nom: 'Germinación y emergencia', cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'La emergencia uniforme establece la población de tallos del nuevo ciclo o rebrote.' },
+                { nom: 'Macollamiento', cepas: ['subtilis', 'pseudomonas'],
                   porque: 'Se define el número de tallos por cepa, y eso decide el rendimiento.' },
-                { nom: 'Crecimiento rápido', cuando: [3, 4, 5, 6], cepas: ['subtilis', 'safensis'],
+                { nom: 'Crecimiento rápido', cepas: ['subtilis', 'safensis'],
                   porque: 'Máxima demanda de raíz activa y minerales disponibles bajo estrés.' },
-                { nom: 'Maduración', cuando: [7, 8], cepas: ['safensis'],
-                  porque: 'El potasio manda en la acumulación de sacarosa.' },
-                { nom: 'Zafra', cuando: [9], cepas: ['trichoderma'],
-                  porque: 'Tras el corte el suelo queda expuesto, y conviene inocularlo antes del rebrote.' }
+                { nom: 'Maduración', cepas: ['safensis'],
+                  porque: 'Disminuye el crecimiento y aumenta la acumulación de sacarosa en los tallos.' },
+                { nom: 'Cosecha y rebrote de soca', cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'Después del corte se revisan cepas, residuos y condiciones para el siguiente rebrote.' }
             ]
         },
-        /* Los meses de diciembre a abril quedan vacios a proposito: el
-           terreno descansa entre ciclos. No es un hueco que llenar. */
         granos: {
-            unidad: 'mes', ciclo: 'Anual · un ciclo por temporada',
             etapas: [
-                { nom: 'Preparación y siembra', cuando: [4, 5], cepas: ['trichoderma', 'pseudomonas'],
-                  porque: 'Tratar la semilla y el suelo es la aplicación con mejor retorno de todo el ciclo.' },
-                { nom: 'Desarrollo vegetativo', cuando: [6, 7], cepas: ['subtilis', 'pumilus'],
+                { nom: 'Preparación y siembra', cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'La semilla y la plántula enfrentan el riesgo de patógenos y estrés de establecimiento.' },
+                { nom: 'Desarrollo vegetativo', cepas: ['subtilis', 'pumilus'],
                   porque: 'La planta construye su estructura: raíz vigorosa y hoja protegida.' },
-                { nom: 'Floración', cuando: [8], cepas: ['pseudomonas', 'thuringiensis'],
-                  porque: 'Momento crítico del rendimiento, y cuando aparece el barrenador.' },
-                { nom: 'Llenado de grano', cuando: [9], cepas: ['safensis', 'pumilus'],
+                { nom: 'Floración', cepas: ['pumilus', 'safensis'],
+                  porque: 'La floración es sensible al estrés y define el número potencial de granos.' },
+                { nom: 'Llenado de grano', cepas: ['safensis', 'pumilus'],
                   porque: 'El peso del grano se define aquí; depende de minerales disponibles y hoja funcional.' },
-                { nom: 'Madurez y cosecha', cuando: [10], cepas: ['trichoderma'],
-                  porque: 'Incorporar el rastrojo con inóculo acelera su descomposición para el siguiente ciclo.' }
+                { nom: 'Madurez y cosecha', cepas: ['trichoderma'],
+                  porque: 'El cierre del ciclo permite evaluar residuos y suelo antes de la siguiente siembra.' }
             ]
         },
         hortalizas: {
-            unidad: 'mes', ciclo: 'Anual · varios ciclos al año',
             etapas: [
-                { nom: 'Almácigo y trasplante', cuando: [0, 1], cepas: ['trichoderma', 'pseudomonas'],
+                { nom: 'Almácigo y trasplante', cepas: ['trichoderma', 'pseudomonas'],
                   porque: 'La plántula llega con raíz herida: el damping-off es la pérdida más común.' },
-                { nom: 'Desarrollo vegetativo', cuando: [2, 3], cepas: ['subtilis', 'pumilus'],
+                { nom: 'Desarrollo vegetativo', cepas: ['subtilis', 'pumilus'],
                   porque: 'Crecimiento acelerado con raíz activa y defensa foliar temprana.' },
-                { nom: 'Floración y cuajado', cuando: [4, 5], cepas: ['pseudomonas', 'thuringiensis'],
-                  porque: 'Fósforo para la flor, y presión de larvas en cuanto aparece el fruto.' },
-                { nom: 'Cosecha escalonada', cuando: [6, 7, 8], cepas: ['pumilus', 'thuringiensis'],
-                  porque: 'Se cosecha durante semanas: la planta no descansa y la fruta se expone a enfermedades y larvas.' },
-                { nom: 'Fin de ciclo', cuando: [9, 10, 11], cepas: ['trichoderma'],
+                { nom: 'Floración y cuajado', cepas: ['pumilus', 'safensis'],
+                  porque: 'La flor y el fruto recién cuajado son sensibles al estrés hídrico y sanitario.' },
+                { nom: 'Desarrollo del órgano de cosecha', cepas: ['safensis', 'subtilis'],
+                  porque: 'Fruto, hoja, raíz o cabeza concentran la demanda productiva, según la hortaliza.' },
+                { nom: 'Fin de ciclo', cepas: ['trichoderma'],
                   porque: 'Sanear el suelo entre ciclos evita arrastrar inóculo al siguiente.' }
             ]
         },
         agave: {
-            unidad: 'anio', ciclo: 'Plurianual · seis a siete años',
             etapas: [
-                { nom: 'Plantación', cuando: [1], cepas: ['trichoderma', 'pseudomonas'],
-                  porque: 'El hijuelo arranca sin raíz funcional: lo que se inocule aquí lo acompaña años.' },
-                { nom: 'Crecimiento temprano', cuando: [2, 3], cepas: ['subtilis', 'pseudomonas'],
-                  porque: 'Se forma la piña. Nutrición disponible en un suelo que suele ser pobre y delgado.' },
-                { nom: 'Crecimiento medio', cuando: [4, 5], cepas: ['subtilis', 'trichoderma'],
-                  porque: 'Años de menor atención, donde la pudrición de cogollo hace su daño sin verse.' },
-                { nom: 'Maduración', cuando: [6, 7], cepas: ['safensis'],
+                { nom: 'Plantación', cepas: ['trichoderma', 'pseudomonas'],
+                  porque: 'El hijuelo debe emitir raíces funcionales y adaptarse al nuevo suelo.' },
+                { nom: 'Crecimiento temprano', cepas: ['subtilis', 'pseudomonas'],
+                  porque: 'En los primeros años se establece la raíz y comienza la acumulación de biomasa.' },
+                { nom: 'Crecimiento medio', cepas: ['subtilis', 'trichoderma'],
+                  porque: 'El crecimiento sostenido exige vigilar vigor, heridas, plagas y síntomas de pudrición.' },
+                { nom: 'Maduración', cepas: ['safensis'],
                   porque: 'La acumulación de azúcares define el valor de la piña al momento de la jima.' }
             ]
         }
     };
 
-    /* Lo que la página le dice al productor sobre estas etapas. Va visible
-       junto a la rejilla de meses, no escondido en un pie de página.
-       Ya no se muestran fechas: el texto no puede seguir hablando de ellas. */
-    const AVISO_FENOLOGIA = 'Las aplicaciones son una guía general: cada predio tiene ' +
-        'su propio calendario según región, altitud y variedad, y un especialista ' +
-        'lo ajusta a tu caso.';
-
+    const ETAPAS_GENERICAS = [
+        { nom:'Siembra o establecimiento', cepas:['trichoderma','pseudomonas'], porque:'La raíz inicia su adaptación al suelo y define el establecimiento.' },
+        { nom:'Crecimiento vegetativo', cepas:['subtilis','pseudomonas'], porque:'La planta construye raíces, hojas y tallos para sostener la producción.' },
+        { nom:'Floración o fase reproductiva', cepas:['pumilus','safensis'], porque:'La fase reproductiva suele ser sensible al estrés y a problemas sanitarios.' },
+        { nom:'Producción o cosecha', cepas:['safensis','subtilis'], porque:'El órgano de cosecha concentra la demanda y define la calidad comercial.' }
+    ];
+    const ETAPA_ASESORIA = {
+        nom:'No sé / necesito orientación', cepas:[],
+        porque:'Un asesor puede identificar la etapa y el objetivo antes de recomendar una cepa.',
+        manejo:'Ten a la mano la edad del cultivo, fecha aproximada de siembra y fotos de planta y raíz.'
+    };
     const PROBLEMAS = {
         costo:      { id:'costo',      icon:'fi-rr-sack-dollar',  nom:'Costo de los insumos',
                       sub:'Los biológicos comerciales salen muy caros' },
@@ -1656,7 +1630,7 @@ function diagnostico() {
 
     return {
         paso: 0,
-        etapaAbierta: null,
+        etapasPorCultivo: {},
         estado: '',
         ha: 20,
         practica: null,
@@ -1753,13 +1727,55 @@ function diagnostico() {
             return this.cultivos.map(id => (CULTIVOS.find(c => c.id === id) || {}).nom || id);
         },
 
+        nombreCultivo(id) {
+            return (CULTIVOS.find(c => c.id === id) || {}).nom || id;
+        },
+
         toggleCultivo(id) {
             const i = this.cultivos.indexOf(id);
-            if (i === -1) this.cultivos.push(id);
-            else this.cultivos.splice(i, 1);
+            if (i === -1) {
+                this.cultivos.push(id);
+            } else {
+                this.cultivos.splice(i, 1);
+                const restantes = { ...this.etapasPorCultivo };
+                delete restantes[id];
+                this.etapasPorCultivo = restantes;
+            }
             /* Se conserva el orden del catálogo, no el orden en que fue tocando. */
             const orden = CULTIVOS.map(c => c.id);
             this.cultivos.sort((a, b) => orden.indexOf(a) - orden.indexOf(b));
+        },
+
+        etapasDeCultivo(id) {
+            const guia = FENOLOGIA[id] ? FENOLOGIA[id].etapas : ETAPAS_GENERICAS;
+            return [...guia, ETAPA_ASESORIA];
+        },
+        elegirEtapa(cultivoId, etapaNom) {
+            this.etapasPorCultivo = { ...this.etapasPorCultivo, [cultivoId]: etapaNom };
+        },
+        etapaElegida(cultivoId) {
+            const elegida = this.etapasPorCultivo[cultivoId];
+            return this.etapasDeCultivo(cultivoId).find(e => e.nom === elegida) || null;
+        },
+        get etapasCompletas() {
+            return this.cultivos.length > 0 && this.cultivos.every(id => !!this.etapaElegida(id));
+        },
+        iconoEtapa(i, total) {
+            if (i === total - 1) return 'fi-rr-microscope-bacteria';
+            const iconos = ['fi-rr-seedling','fi-rr-plant-growth','fi-rr-leaf','fi-rr-sack-dollar','fi-rr-land-layers'];
+            return iconos[Math.min(i, iconos.length - 1)];
+        },
+        consejoEtapa(nombre) {
+            if (/siembra|plantación|establecimiento|almácigo|brote|brotación/i.test(nombre)) {
+                return 'Cuida drenaje, humedad uniforme y sanidad del material de establecimiento.';
+            }
+            if (/floración|cuajado|amarre|reproductiva/i.test(nombre)) {
+                return 'Evita estrés de agua y aplicaciones incompatibles con polinizadores durante flor abierta.';
+            }
+            if (/cosecha|postcosecha|poda|zafra|fin de ciclo/i.test(nombre)) {
+                return 'Retira tejido enfermo, limpia herramientas y evalúa la sanidad del suelo para el siguiente ciclo.';
+            }
+            return 'Ajusta riego y nutrición al vigor real, y confirma el problema sanitario antes de aplicar.';
         },
 
         get problemasOrdenados() {
@@ -1786,66 +1802,16 @@ function diagnostico() {
                         const pc = POR_CULTIVO[id] || {};
                         return total + (pc[c.id] || 0);
                     }, 0);
-                    return { ...c, _p: puntosProblema * 2 + puntosCultivo };
+                    const puntosEtapa = this.cultivos.reduce((total, id) => {
+                        const etapa = this.etapaElegida(id);
+                        return total + (etapa && etapa.cepas.includes(c.id) ? 1 : 0);
+                    }, 0);
+                    return { ...c, _p: puntosProblema * 2 + puntosCultivo + puntosEtapa * 3 };
                 })
                 .sort((a, b) => b._p - a._p);
         },
 
-        /* ── Fenologia ─────────────────────────────────────────────────
-           El calendario es del primer cultivo elegido: con dos o mas, los
-           ciclos no coinciden y mezclarlos daria un calendario que no le
-           sirve a ninguno. Se dice cual se esta mostrando. */
-        get fenologia() { return FENOLOGIA[this.cultivo] || null; },
-        get avisoFenologia() { return AVISO_FENOLOGIA; },
-
-        /* En que etapa cae hoy. Para los plurianuales no hay forma de
-           saberlo sin preguntar, asi que se abre la primera. */
-        get etapaDeHoy() {
-            const f = this.fenologia;
-            if (!f) return 0;
-            if (f.unidad !== 'mes') return 0;
-            const m = new Date().getMonth();
-            const i = f.etapas.findIndex(e => e.cuando.includes(m));
-            return i === -1 ? 0 : i;
-        },
-        get etapaVista() {
-            return this.etapaAbierta === null ? this.etapaDeHoy : this.etapaAbierta;
-        },
-        get etapa() {
-            const f = this.fenologia;
-            return f ? f.etapas[this.etapaVista] : null;
-        },
         nombreCepa(id) { return (CEPAS.find(c => c.id === id) || {}).nombre || id; },
-        /* Tocar una etapa marca sus meses: las etapas son mejores preajustes
-           que "ciclo corto" o "medio ano", porque hablan del cultivo del
-           productor y no de un calendario generico. Si ya estaban todos
-           marcados, los quita: el mismo boton sirve para las dos cosas. */
-        toggleEtapa(i) {
-            this.etapaAbierta = i;
-            const f = this.fenologia;
-            if (!f || f.unidad !== 'mes') return;
-            const ids = f.etapas[i].cuando.map(m => this.mesesDisponibles[m].id);
-            const todos = ids.every(id => this.mesesActivos.includes(id));
-            if (todos) {
-                this.mesesActivos = this.mesesActivos.filter(id => !ids.includes(id));
-            } else {
-                ids.forEach(id => { if (!this.mesesActivos.includes(id)) this.mesesActivos.push(id); });
-            }
-            /* Ordenados como el ano, igual que toggleMes: el resumen que se
-               manda a la hoja los lista y deben leerse en orden.
-               Y NO se llama a calcular(): eso avanza al paso 6, y tocar una
-               etapa sacaba al productor de la pantalla en la que esta. */
-            const orden = this.mesesDisponibles.map(m => m.id);
-            this.mesesActivos.sort((a, b) => orden.indexOf(a) - orden.indexOf(b));
-        },
-        /* Una etapa se ve marcada cuando sus meses estan todos activos, no
-           cuando esta abierta: lo que importa es lo que el productor eligio. */
-        etapaMarcada(i) {
-            const f = this.fenologia;
-            if (!f || f.unidad !== 'mes') return false;
-            return f.etapas[i].cuando.every(m => this.mesesActivos.includes(this.mesesDisponibles[m].id));
-        },
-
         get gastoHaAnual() { return this.gasto * this.mesesGasto; },
         /* Expuestos para la plantilla: así el texto que ve el visitante sale
            del catálogo y no de un número escrito a mano que se desincroniza. */
@@ -2142,6 +2108,7 @@ function diagnostico() {
             medir('resultado', {
                 palanca: this.palanca,
                 cultivos: this.cultivos.join(","),
+                etapas: this.cultivos.map(id => this.etapasPorCultivo[id]).join(","),
                 hectareas: this.ha,
                 gasto_ha_mes: this.gasto,
                 total: this.precioConfig
@@ -2163,6 +2130,8 @@ function diagnostico() {
             const partes = [
                 'RUTA: ' + this.palanca,
                 'Cultivos: ' + this.nombresCultivos.join(' / '),
+                'Etapas: ' + this.cultivos.map(id => this.nombreCultivo(id) + ': ' +
+                    ((this.etapaElegida(id) || {}).nom || 'sin elegir')).join(' / '),
                 'Estado: ' + this.estado,
                 'Superficie: ' + this.ha + ' ha',
                 'Practica: ' + nomPractica(this.practica),

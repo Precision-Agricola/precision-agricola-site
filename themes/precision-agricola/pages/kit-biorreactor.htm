@@ -118,14 +118,13 @@ function fetchUrl($url)
     <!-- SEO — Title & Description -->
     <title>Kit Biorreactor Agrícola | Ficha Técnica y Diagnóstico — Precisión Agrícola</title>
     <meta name="description" content="Ficha técnica completa del Kit Biorreactor de Precisión Agrícola: especificaciones del equipo, consorcios microbianos, videos demostrativos y diagnóstico gratuito para tu operación.">
-    <meta name="keywords" content="kit biorreactor, biorreactor agrícola, biofábrica on-farm, microorganismos benéficos, bioinsumos, consorcio microbiano, agricultura regenerativa, México">
     <link rel="canonical" href="https://www.precisionagricola.com/kit-biorreactor">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="product">
     <meta property="og:url" content="https://www.precisionagricola.com/kit-biorreactor">
-    <meta property="og:title" content="Kit Biorreactor Agrícola — Ficha Técnica">
-    <meta property="og:description" content="Especificaciones del equipo, consorcios microbianos y videos demostrativos del sistema de biofábrica on-farm de Precisión Agrícola.">
+    <meta property="og:title" content="{{ this.page.meta_title }}">
+    <meta property="og:description" content="{{ this.page.meta_description }}">
     <meta property="og:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/tunnels_berries_og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -135,8 +134,8 @@ function fetchUrl($url)
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kit Biorreactor Agrícola — Ficha Técnica">
-    <meta name="twitter:description" content="Especificaciones del equipo, consorcios microbianos y videos demostrativos del sistema de biofábrica on-farm.">
+    <meta name="twitter:title" content="{{ this.page.meta_title }}">
+    <meta name="twitter:description" content="{{ this.page.meta_description }}">
     <meta name="twitter:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/tunnels_berries_og.jpg">
 
     <!-- Geo targeting -->
@@ -463,6 +462,19 @@ function fetchUrl($url)
 <!-- ════════════════════════════════════════════════════════
      FICHA TÉCNICA — el diseño de Canva, que es el contenido
 ════════════════════════════════════════════════════════ -->
+<section aria-labelledby="resumen-kit" class="py-12 px-5" style="background:#f0faf3;color:#1a3c2a">
+    <div class="max-w-4xl mx-auto" style="line-height:1.75">
+        <h2 id="resumen-kit" class="font-title font-bold text-2xl mb-4">Kit biorreactor para tu biofábrica agrícola</h2>
+        <p class="mb-4">El kit está orientado a la producción de microorganismos en el rancho. La ficha siguiente reúne componentes, características y demostraciones del equipo. Revisa con el asesor el volumen útil por lote, el suministro eléctrico, el tratamiento de agua y los requisitos de limpieza de la configuración cotizada.</p>
+        <h3 class="font-bold text-lg mb-2">Qué revisar antes de cotizar</h3>
+        <ul class="list-disc pl-6 mb-4">
+            <li>Equipo y accesorios incluidos; monitoreo y sensores seleccionados.</li>
+            <li>Microorganismos, medios de cultivo y consumibles para iniciar.</li>
+            <li>Instalación, capacitación, mantenimiento, garantía y condiciones de entrega.</li>
+        </ul>
+        <p>Para comparar alternativas con los datos de tu operación, usa la <a href="/biofabrica" class="underline font-bold">calculadora de ahorro de la biofábrica</a>. Si todavía estás evaluando el proceso, consulta la <a href="/biofabrica-on-farm" class="underline font-bold">guía de producción de bioinsumos en el rancho</a>.</p>
+    </div>
+</section>
 <section id="ficha" class="ficha-stage px-4 md:px-10 py-16 lg:py-20">
     <div class="max-w-screen-xl mx-auto">
 
@@ -782,6 +794,7 @@ function fetchUrl($url)
 <!-- ════════════════════════════════════════════════════════
      FOOTER
 ════════════════════════════════════════════════════════ -->
+{% partial 'seo/recursos' %}
 <footer style="background:#333333">
     <div class="text-center px-8 md:px-16 lg:px-28 pt-16 pb-10">
         <img src="{{ 'assets/images/bioreactors/pa_letras_logo.png'|theme }}"

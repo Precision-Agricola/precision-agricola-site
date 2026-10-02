@@ -1,7 +1,7 @@
 url = "/biofabrica"
 title = "Diagnóstico — Configura tu biofábrica"
-meta_title = "¿Cuánto ahorras produciendo tus microorganismos? | Precisión Agrícola"
-meta_description = "Responde cuatro preguntas y calcula con tus propios números cuánto ahorras produciendo microorganismos en tu rancho. Configura tu biofábrica y recibe cotización."
+meta_title = "Biofábrica agrícola: calcula tu ahorro | Precisión Agrícola"
+meta_description = "Evalúa una biofábrica en tu rancho: compara comprar microorganismos o producirlos con un biorreactor agrícola. Calcula un ahorro estimado y solicita cotización."
 ==
 <!DOCTYPE html>
 <html lang="es-MX">
@@ -9,15 +9,15 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <title>¿Cuánto ahorras produciendo tus microorganismos? | Precisión Agrícola</title>
-    <meta name="description" content="Responde cuatro preguntas y calcula con tus propios números cuánto ahorras produciendo microorganismos en tu rancho.">
+    <title>{{ this.page.meta_title }}</title>
+    <meta name="description" content="{{ this.page.meta_description }}">
     <link rel="canonical" href="https://www.precisionagricola.com/biofabrica">
-    <meta name="robots" content="noindex, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.precisionagricola.com/biofabrica">
-    <meta property="og:title" content="¿Cuánto ahorras produciendo tus microorganismos?">
-    <meta property="og:description" content="Cuatro preguntas. Tus números. Tu configuración.">
+    <meta property="og:title" content="{{ this.page.meta_title }}">
+    <meta property="og:description" content="{{ this.page.meta_description }}">
     <meta property="og:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/tunnels_berries_og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -28,8 +28,8 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
          miniatura chica aunque el og:image sea grande. Las otras tres paginas
          del tema ya tenian este bloque. -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="¿Cuánto ahorras produciendo tus microorganismos?">
-    <meta name="twitter:description" content="Cuatro preguntas. Tus números. Tu configuración.">
+    <meta name="twitter:title" content="{{ this.page.meta_title }}">
+    <meta name="twitter:description" content="{{ this.page.meta_description }}">
     <meta name="twitter:image" content="https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/tunnels_berries_og.jpg">
 
     <link rel="icon" type="image/x-icon" href="{{ 'assets/images/favicon.ico'|theme }}">
@@ -824,6 +824,17 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
 
 <body>
 
+<header class="bio-intro" style="max-width:32rem;margin:0 auto;padding:1.25rem 1.25rem .5rem;line-height:1.6">
+    <a href="/" style="color:var(--lime)">Precisión Agrícola</a>
+    <h1 style="font-size:clamp(1.35rem,4vw,1.9rem);line-height:1.25;margin:.65rem 0">Biofábrica agrícola: calcula tu ahorro en el rancho</h1>
+    <p style="color:var(--txt-2);margin:0">Compara la compra de microorganismos con su producción en un biorreactor agrícola. Usa tu cultivo, superficie y calendario para explorar una configuración y solicitar cotización.</p>
+    <nav aria-label="Información sobre biofábricas" style="display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin-top:.75rem">
+        <a href="/bioreactores" style="color:var(--lime)">Conoce el biorreactor</a>
+        <a href="/biofabrica-on-farm" style="color:var(--lime)">Cómo funciona una biofábrica</a>
+    </nav>
+</header>
+<noscript><p style="max-width:46rem;margin:1rem auto;padding:1rem">El cálculo interactivo necesita JavaScript. Puedes consultar la <a href="/kit-biorreactor" style="color:#7ed957">ficha del equipo</a> o <a href="/contacto" style="color:#7ed957">contactarnos para una cotización</a>.</p></noscript>
+
 {# Los precios salen de Settings -> Customize theme y viajan por atributos
    data-, porque Twig no procesa el bloque de JavaScript de abajo. Antes
    estaban escritos en el codigo y cada ajuste era un commit y un despliegue. #}
@@ -849,16 +860,13 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
         <template x-if="paso === 0">
             <div>
                 <p class="paso-n surge">Diagnóstico en 1 minuto</p>
-                <h1 class="pregunta surge surge-1" style="font-size:clamp(1.9rem,8vw,2.6rem)">
-                    Microbiología on farm,<br>producida en tu rancho.
-                </h1>
+                <h2 class="pregunta surge surge-1">
+                    ¿Comprar por litro o producir en tu rancho?
+                </h2>
                 <p class="apoyo surge surge-2">
-                    Si ya integras microorganismos o estás por hacerlo, producirlos en tu propia
-                    unidad transforma la relación costo-beneficio. Obtén biomasa viva, cosechada
-                    en su fase de crecimiento exponencial, ideal para colonizar la rizósfera
-                    inmediatamente. Olvídate de semanas de traslado, almacenamiento y anaquel que
-                    destruyen la viabilidad celular (UFC). Ingresa los datos de tu operación para
-                    proyectar tu ahorro.
+                    Compara las dos opciones con los datos de tu operación. El diagnóstico
+                    considera tu cultivo y superficie para orientar una propuesta de equipo
+                    o de microorganismos por litro.
                 </p>
                 <!-- Prueba de que el equipo existe. Va antes del botón porque
                      el visitante viene de un anuncio y no sabe quiénes somos. -->
@@ -1357,6 +1365,14 @@ meta_description = "Responde cuatro preguntas y calcula con tus propios números
 
     </main>
 </div>
+
+<section aria-labelledby="como-estimamos" style="max-width:46rem;margin:0 auto;padding:2rem 1.25rem;line-height:1.7;color:var(--txt-2)">
+    <h2 id="como-estimamos" style="color:var(--txt);font-size:1.3rem">¿Qué necesitas para evaluar tu biofábrica?</h2>
+    <p>Ten a mano tu superficie de cultivo, los meses en que aplicas insumos biológicos y tu gasto aproximado por hectárea. El diagnóstico reúne esos datos y te permite comparar alternativas: comprar microorganismos por litro, adquirir un equipo o mejorar tu producción actual.</p>
+    <h3 style="color:var(--txt)">¿El ahorro calculado es una garantía?</h3>
+    <p>No. Es una estimación basada en los supuestos y precios del configurador. Antes de invertir hay que confirmar dosis, frecuencia de aplicación, costos operativos, calidad del agua y configuración del equipo con el asesor técnico.</p>
+    <p>Consulta la <a href="/kit-biorreactor" style="color:var(--lime)">ficha técnica del kit biorreactor</a> y la <a href="/biofabrica-on-farm" style="color:var(--lime)">guía de biofábricas agrícolas</a> para preparar tu diagnóstico.</p>
+</section>
 
 <script>
 /**

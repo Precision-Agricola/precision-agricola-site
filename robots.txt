@@ -5,5 +5,7 @@ Disallow: /storage/
 Disallow: /vendor/
 Disallow: /modules/
 Disallow: /plugins/
+Allow: /modules/*/assets/
+Allow: /plugins/*/*/assets/
 
 Sitemap: https://www.precisionagricola.com/sitemap.xml

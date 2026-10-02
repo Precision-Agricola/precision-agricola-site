@@ -8,6 +8,10 @@ completo que hay que pegar a mano.
 `.gs` porque clasp usa la extensión para saber qué subir; en el editor de
 Google aparece como `Codigo.gs`.
 
+> **¿Vas a tocar esto?** Lee primero [RELEVO.md](RELEVO.md): tiene el
+> estado actual, un desajuste pendiente entre las claves que manda el
+> sitio y las que busca este script, y las trampas que ya mordieron.
+
 ## Uso
 
     cd tools/apps-script-leads

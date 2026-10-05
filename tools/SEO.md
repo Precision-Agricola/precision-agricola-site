@@ -15,6 +15,11 @@ Las mejoras de código no equivalen a indexación ni garantizan posiciones.
 
 ## Cambios
 
+El 5 de octubre se movió la introducción estática debajo del diagnóstico
+para que la primera pantalla comience con el recorrido. El contenido y sus
+enlaces siguen visibles en HTML. La barra superior incluye contacto directo
+por WhatsApp sin completar el formulario.
+
 - `/biofabrica` deja de enviar `noindex`; tiene un H1 y contenido útil fuera
   de Alpine, disponible aunque no se ejecute JavaScript.
 - Títulos y descripciones diferenciados. Las etiquetas sociales de las
@@ -52,9 +57,9 @@ Revisar en móvil y escritorio el inicio del configurador y su avance.
 
 ## Publicación
 
-El sitio usa cPanel. No se encontró un procedimiento de despliegue automatizado
-en el repositorio. Confirmar el usuario SSH y la rama activa en
-`~/precision-agricola` antes de actualizar; no asumir que producción usa main.
+El usuario confirmó que publica desde cPanel usando `main` y `git pull`.
+En la carpeta del sitio: `git checkout main` y `git pull --ff-only origin main`.
+No se dispone de acceso SSH para ejecutar ese paso desde esta sesión.
 Los archivos del cambio son las cinco páginas, la ruta sitemap, los parciales
 `seo/`, `robots.txt` y `sitemap.xml`. Las herramientas y esta guía no necesitan
 exponerse como archivos públicos.

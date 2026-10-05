@@ -41,7 +41,9 @@ const COLUMNAS_LEADS = [
   'Problema principal', 'Todos los problemas',
   'Ruta', 'Cepas sugeridas', 'Monitoreo', 'Litros pedidos', 'Total cotizado MXN', 'Recuperación (meses)',
   'Forma de pago', 'Interés financiamiento',
-  'Origen', 'Notas', 'ID'
+  'Origen', 'Notas', 'ID',
+  'Recomendación calculada', 'Etapas del cultivo', 'Meses con gasto',
+  'Gasto anual MXN/ha', 'Ahorro anual estimado MXN/ha', 'Ahorro anual total estimado MXN'
 ];
 
 const COLUMNAS_VENTAS = [
@@ -57,9 +59,9 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Biofábrica')
     .addItem('Sincronizar leads', 'sincronizar')
+    .addItem('Actualizar formato y reparar datos', 'mejorarHoja')
     .addItem('Marcar fila como venta', 'marcarVenta')
     .addSeparator()
-    .addItem('Reprocesar todo', 'reprocesar')
     .addItem('Borrar ventas duplicadas', 'limpiarVentasDuplicadas')
     .addSeparator()
     .addItem('Reinstalar estructura', 'instalar')
@@ -83,7 +85,8 @@ function instalar() {
   aplicarLista_(leads, 'Etapa', ['Nuevo', 'Contactado', 'Cotizado', 'Negociación', 'Ganado', 'Perdido']);
   aplicarLista_(ventas, 'Estatus', ['Instalado', 'En operación', 'Requiere servicio', 'Inactivo']);
 
-  formatoNumero_(leads, ['Superficie (ha)', 'Meses activos', 'Recuperación (meses)', 'Puntaje', 'Litros pedidos'], '0');
+  formatoNumero_(leads, ['Meses activos', 'Puntaje'], '0');
+  formatoNumero_(leads, ['Superficie (ha)', 'Recuperación (meses)', 'Litros pedidos'], '0.##');
   formatoNumero_(leads, ['Gasto MXN/ha/mes', 'Gasto anual MXN', 'Total cotizado MXN'], '$#,##0');
   formatoNumero_(ventas, ['Monto MXN'], '$#,##0');
   formatoNumero_(ventas, ['Días desde la venta', 'Días para mantenimiento'], '0');
@@ -102,16 +105,64 @@ function instalar() {
 function prepararHoja_(ss, nombre, columnas) {
   let h = ss.getSheetByName(nombre);
   if (!h) h = ss.insertSheet(nombre);
+  validarEncabezados_(h, columnas);
+  if (nombre === HOJA_LEADS && h.getLastRow()) {
+    const anteriores = h.getRange(1, 1, 1, h.getLastColumn()).getValues()[0];
+    if (anteriores.indexOf('Litros pedidos') === -1) {
+      h.insertColumnsBefore(columnas.indexOf('Litros pedidos') + 1, 1);
+    }
+  }
+  if (h.getMaxColumns() < columnas.length) {
+    h.insertColumnsAfter(h.getMaxColumns(), columnas.length - h.getMaxColumns());
+  }
   h.getRange(1, 1, 1, columnas.length).setValues([columnas]);
   h.getRange(1, 1, 1, columnas.length)
     .setFontWeight('bold').setBackground('#1a3c2a').setFontColor('#ffffff')
     .setVerticalAlignment('middle').setWrap(true);
   h.setFrozenRows(1);
   h.setRowHeight(1, 42);
-  if (h.getMaxColumns() > columnas.length) {
-    h.deleteColumns(columnas.length + 1, h.getMaxColumns() - columnas.length);
-  }
+  formatoLectura_(h, columnas);
   return h;
+}
+
+/** Admite los esquemas históricos de 31/32 columnas y el actual. */
+function validarEncabezados_(hoja, columnas) {
+  if (!hoja.getLastRow()) return;
+  const actuales = hoja.getRange(1, 1, 1, hoja.getLastColumn()).getValues()[0];
+  const permitidos = [columnas];
+  if (hoja.getName() === HOJA_LEADS) {
+    permitidos.push(columnas.slice(0, 32), columnas.slice(0, 32).filter(c => c !== 'Litros pedidos'));
+  }
+  if (!permitidos.some(esquema => actuales.length === esquema.length && actuales.every((c, i) => c === esquema[i]))) {
+    throw new Error('Encabezados inesperados en ' + hoja.getName() + '. No se modificaron sus datos.');
+  }
+}
+
+function formatoLectura_(hoja, columnas) {
+  const n = Math.max(hoja.getMaxRows() - 1, 1);
+  hoja.getRange(2, 1, n, columnas.length).setVerticalAlignment('top').setWrap(true);
+  hoja.setColumnWidths(1, columnas.length, 150);
+  const anchos = { Nombre: 210, Cliente: 210, Correo: 250, WhatsApp: 160,
+    'Rancho o empresa': 220, 'Ubicación': 240, Cultivos: 200,
+    'Problema principal': 260, 'Todos los problemas': 300, 'Cepas sugeridas': 300,
+    'Etapas del cultivo': 280, 'Meses con gasto': 230, Notas: 300,
+    Observaciones: 300, 'Equipo vendido': 280, ID: 260, 'ID lead': 260 };
+  columnas.forEach((nombre, i) => {
+    hoja.setColumnWidth(i + 1, anchos[nombre] || 150);
+    const rango = hoja.getRange(2, i + 1, n, 1);
+    if (/Fecha|contacto|mantenimiento/.test(nombre) && !/Días/.test(nombre)) rango.setNumberFormat('dd/mm/yyyy');
+    if (/MXN/.test(nombre)) rango.setNumberFormat('$#,##0.00');
+    if (/^(WhatsApp|ID|ID lead)$/.test(nombre)) rango.setNumberFormat('@');
+    if (/^(Superficie \(ha\)|Recuperación \(meses\)|Litros pedidos)$/.test(nombre)) rango.setNumberFormat('0.##');
+  });
+  if (hoja.getLastRow() > 1) hoja.autoResizeRows(2, hoja.getLastRow() - 1);
+  const filtro = hoja.getFilter();
+  if (filtro && (filtro.getRange().getNumColumns() !== columnas.length || filtro.getRange().getNumRows() !== hoja.getMaxRows())) {
+    const criterios = columnas.map((c, i) => i < filtro.getRange().getNumColumns() ? filtro.getColumnFilterCriteria(i + 1) : null);
+    filtro.remove();
+    const nuevo = hoja.getRange(1, 1, hoja.getMaxRows(), columnas.length).createFilter();
+    criterios.forEach((c, i) => { if (c) nuevo.setColumnFilterCriteria(i + 1, c); });
+  } else if (!filtro) hoja.getRange(1, 1, hoja.getMaxRows(), columnas.length).createFilter();
 }
 
 function prepararTablero_(ss) {
@@ -223,37 +274,166 @@ function filasComoObjetos_(hoja, columnas) {
 /* ─────────────── Traer y parsear las respuestas ─────────────── */
 
 function sincronizar() {
+  const resultado = actualizarLeads_(false);
+  const mensaje = resultado.nuevos
+    ? 'Se agregaron ' + resultado.nuevos + ' lead(s).'
+    : 'La hoja está al día: no hay respuestas nuevas por importar.';
+  SpreadsheetApp.getUi().alert(mensaje + '\n\nTotal en Leads: ' + resultado.total +
+    '.\nLos registros se ordenan por puntaje, no por fecha. Busca por nombre o correo en la pestaña Leads.');
+}
+
+/** Respalda las pestañas antes de reparar y conserva el seguimiento comercial. */
+function mejorarHoja() {
+  const resultado = actualizarLeads_(true);
+  console.log(JSON.stringify(resultado));
+  return resultado;
+}
+
+/** Diagnóstico sin nombres, teléfonos, correos ni contenido libre de clientes. */
+function diagnosticarHoja() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const leads = ss.getSheetByName(HOJA_LEADS);
-  if (!leads) { SpreadsheetApp.getUi().alert('Falta la hoja Leads. Ejecuta «Reinstalar estructura».'); return; }
+  const datos = leads.getDataRange().getValues();
+  const columnas = datos[0];
+  const origen = hojaDeRespuestas_(SpreadsheetApp.openById(CONFIG.ORIGEN_ID)).getDataRange().getValues();
+  const porOrigen = {};
+  datos.slice(1).forEach(f => { const o = f[columnas.indexOf('Origen')]; porOrigen[o] = (porOrigen[o] || 0) + 1; });
+  const errores = ss.getSheetByName(HOJA_TABLERO).getDataRange().getDisplayValues().flat().filter(v => /^#(REF!|ERROR!|VALUE!|DIV\/0!|NAME\?|N\/A|NUM!)/.test(v));
+  const porId = {};
+  datos.slice(1).forEach(f => { porId[f[columnas.indexOf('ID')]] = f; });
+  let diferenciasCaptura = 0;
+  origen.slice(1).filter(f => f[0]).forEach(f => {
+    const esperado = construirLead_(f, origen[0].map(String), generarId_(f));
+    if (esperado[COLUMNAS_LEADS.indexOf('Origen')] !== 'Embudo /biofabrica') return;
+    const actual = porId[generarId_(f)];
+    COLUMNAS_LEADS.forEach((c, j) => {
+      if (['Etapa', 'Vendedor', 'Próximo contacto', 'Notas'].indexOf(c) !== -1) return;
+      if (!actual || String(actual[columnas.indexOf(c)]) !== String(esperado[j])) diferenciasCaptura++;
+    });
+  });
+  const respaldos = ss.getSheets().filter(h => /^Respaldo Leads /.test(h.getName())).sort((a, b) => b.getName().localeCompare(a.getName()));
+  let diferenciasSeguimiento = null;
+  let ventasConservadas = null;
+  let diferenciasVentas = [];
+  if (respaldos.length) {
+    diferenciasSeguimiento = 0;
+    const antes = respaldos[0].getDataRange().getValues();
+    antes.slice(1).forEach(f => {
+      const actual = porId[f[antes[0].indexOf('ID')]];
+      ['Etapa', 'Vendedor', 'Próximo contacto', 'Notas'].forEach(c => {
+        if (!actual || String(actual[columnas.indexOf(c)]) !== String(f[antes[0].indexOf(c)])) diferenciasSeguimiento++;
+      });
+    });
+    const copiaVentas = ss.getSheetByName(respaldos[0].getName().replace('Respaldo Leads ', 'Respaldo Ventas '));
+    const ventas = ss.getSheetByName(HOJA_VENTAS);
+    if (copiaVentas && ventas) {
+      // TODAY() puede recalcularse al copiar: comparar fórmulas, no su caché.
+      const contenido = hoja => {
+        const rango = hoja.getDataRange();
+        const formulas = rango.getFormulas();
+        return rango.getValues().map((f, i) => f.map((v, j) => formulas[i][j] ||
+          (COLUMNAS_VENTAS[j] === 'WhatsApp' ? String(v) : v)));
+      };
+      const antesVentas = contenido(copiaVentas), despuesVentas = contenido(ventas);
+      ventasConservadas = JSON.stringify(antesVentas) === JSON.stringify(despuesVentas);
+      antesVentas.forEach((fila, i) => fila.forEach((valor, j) => {
+        const actual = (despuesVentas[i] || [])[j];
+        if (JSON.stringify(valor) !== JSON.stringify(actual)) diferenciasVentas.push({ fila: i + 1, columna: COLUMNAS_VENTAS[j],
+          tipoAntes: Object.prototype.toString.call(valor), tipoDespues: Object.prototype.toString.call(actual),
+          formulaAntes: typeof valor === 'string' && valor.startsWith('='), formulaDespues: typeof actual === 'string' && actual.startsWith('=') });
+      }));
+    }
+  }
+  const resultado = { filas: datos.length - 1, columnas: columnas, respuestas: origen.length - 1, porOrigen: porOrigen, erroresTablero: errores.length,
+    diferenciasCaptura: diferenciasCaptura, diferenciasSeguimiento: diferenciasSeguimiento, ventasConservadas: ventasConservadas,
+    idsDuplicados: datos.length - 1 - Object.keys(porId).length, diferenciasVentas: diferenciasVentas };
+  console.log(JSON.stringify(resultado));
+  return resultado;
+}
+
+function actualizarLeads_(reparar) {
+  const lock = LockService.getDocumentLock();
+  lock.waitLock(30000);
+  try {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const leads = ss.getSheetByName(HOJA_LEADS);
+  if (!leads) throw new Error('Falta la hoja Leads.');
+  validarEncabezados_(leads, COLUMNAS_LEADS);
 
   const origen = hojaDeRespuestas_(SpreadsheetApp.openById(CONFIG.ORIGEN_ID));
-  if (!origen) { SpreadsheetApp.getUi().alert('No encontré la pestaña de respuestas en el archivo de origen.'); return; }
+  if (!origen) throw new Error('No encontré la pestaña de respuestas.');
   const datos = origen.getDataRange().getValues();
-  if (datos.length < 2) { SpreadsheetApp.getUi().alert('La hoja de respuestas está vacía.'); return; }
+  if (datos.length < 2) throw new Error('La hoja de respuestas está vacía.');
 
   const encabezados = datos[0].map(h => String(h).trim());
+  const fuente = {};
+  datos.slice(1).filter(f => f[0]).forEach(f => { fuente[generarId_(f)] = construirLead_(f, encabezados, generarId_(f)); });
+  const respaldos = [];
+  if (reparar) {
+    const sello = Utilities.formatDate(new Date(), ss.getSpreadsheetTimeZone(), 'yyyyMMdd-HHmmss');
+    [HOJA_LEADS, HOJA_VENTAS, HOJA_TABLERO].forEach(nombre => {
+      const hoja = ss.getSheetByName(nombre);
+      if (hoja) {
+        const copia = hoja.copyTo(ss).setName('Respaldo ' + nombre + ' ' + sello);
+        respaldos.push(copia.getName());
+      }
+    });
+  }
+  prepararHoja_(ss, HOJA_LEADS, COLUMNAS_LEADS);
   const idsExistentes = leadsExistentes_(leads);
+  let reparados = 0;
+  if (reparar && leads.getLastRow() > 1) {
+    const rango = leads.getRange(2, 1, leads.getLastRow() - 1, COLUMNAS_LEADS.length);
+    const actuales = rango.getValues();
+    const formulas = rango.getFormulas();
+    const manuales = ['Etapa', 'Vendedor', 'Próximo contacto', 'Notas'];
+    actuales.forEach((fila, i) => {
+      const original = fuente[fila[COLUMNAS_LEADS.indexOf('ID')]];
+      if (!original) return;
+      // Solo reparar respuestas del embudo; no reinterpretar contactos antiguos.
+      if (original[COLUMNAS_LEADS.indexOf('Origen')] !== 'Embudo /biofabrica') return;
+      COLUMNAS_LEADS.forEach((c, j) => {
+        if (manuales.indexOf(c) !== -1) return;
+        fila[j] = original[j];
+      });
+      reparados++;
+    });
+    // Mantener fórmulas existentes; texto capturado nunca se ejecuta como fórmula.
+    rango.setValues(actuales.map((f, i) => f.map((v, j) => formulas[i][j] || textoSeguro_(v))));
+  }
 
   const nuevas = [];
   for (let i = 1; i < datos.length; i++) {
     const fila = datos[i];
+    if (!fila[0]) continue;
     const id = generarId_(fila);
     if (idsExistentes[id]) continue;      // ya está: no se duplica
     nuevas.push(construirLead_(fila, encabezados, id));
+    idsExistentes[id] = true;
   }
 
   if (nuevas.length) {
-    leads.getRange(leads.getLastRow() + 1, 1, nuevas.length, COLUMNAS_LEADS.length).setValues(nuevas);
-    ordenarPorPuntaje_(leads);
+    const faltan = leads.getLastRow() + nuevas.length - leads.getMaxRows();
+    if (faltan > 0) leads.insertRowsAfter(leads.getMaxRows(), faltan);
+    leads.getRange(leads.getLastRow() + 1, 1, nuevas.length, COLUMNAS_LEADS.length).setValues(nuevas.map(f => f.map(textoSeguro_)));
   }
+  ordenarPorPuntaje_(leads);
+  formatoLectura_(leads, COLUMNAS_LEADS);
+  aplicarLista_(leads, 'Etapa', ['Nuevo', 'Contactado', 'Cotizado', 'Negociación', 'Ganado', 'Perdido']);
+  colorearPrioridad_(leads);
+  const ventas = ss.getSheetByName(HOJA_VENTAS);
+  if (reparar && ventas) formatoLectura_(ventas, COLUMNAS_VENTAS);
 
   prepararTablero_(ss);
   ss.getSheetByName(HOJA_TABLERO).getRange(12, 2).setValue(new Date());
 
-  SpreadsheetApp.getUi().alert(
-    nuevas.length ? ('Se agregaron ' + nuevas.length + ' lead(s).') : 'No hay leads nuevos.'
-  );
+  SpreadsheetApp.flush();
+  return { nuevos: nuevas.length, reparados: reparados, total: leads.getLastRow() - 1, columnas: COLUMNAS_LEADS.length, respaldos: respaldos };
+  } finally { lock.releaseLock(); }
+}
+
+function textoSeguro_(valor) {
+  return typeof valor === 'string' && valor.charAt(0) === '=' ? "'" + valor : valor;
 }
 
 /** Busca la pestaña que trae las respuestas, en vez de asumir que es la primera:
@@ -296,7 +476,7 @@ function construirLead_(fila, encabezados, id) {
   let resumen = '';
   for (let i = 0; i < fila.length; i++) {
     const v = String(fila[i] || '');
-    if (v.indexOf('RUTA:') !== -1) { resumen = v; break; }
+    if (/(?:^|\|)\s*RUTA(?: SOLICITADA)?\s*:/i.test(v)) { resumen = v; break; }
   }
   const r = parsearResumen_(resumen);
   const delEmbudo = !!resumen;
@@ -312,7 +492,7 @@ function construirLead_(fila, encabezados, id) {
   const recup = mesesDesdeTexto_(r['Recuperacion'] || r['Recuperación']);
 
   const puntaje = calcularPuntaje_({
-    ruta: r['RUTA'] || '',
+    ruta: r['RECOMENDACION CALCULADA'] || r['RUTA'] || '',
     practica: r['Practica'] || r['Práctica'] || '',
     superficie: superficie,
     recuperacion: recup,
@@ -342,8 +522,14 @@ function construirLead_(fila, encabezados, id) {
       ? numero_(r['Gasto anual por ha']) * superficie : '';
   registro['Problema principal'] = etiquetaProblema_(r['Problema principal']) || col('principal problema');
   registro['Todos los problemas'] = r['Problemas seleccionados'] || '';
-  registro['Ruta'] = etiquetaRuta_(r['RUTA']);
-  registro['Cepas sugeridas'] = r['Cepas'] || '';
+  registro['Ruta'] = etiquetaRuta_(r['RUTA SOLICITADA'] || r['RUTA']);
+  registro['Recomendación calculada'] = etiquetaRuta_(r['RECOMENDACION CALCULADA'] || r['RUTA']);
+  registro['Etapas del cultivo'] = r['Etapas'] || '';
+  registro['Meses con gasto'] = r['Meses con gasto'] || '';
+  registro['Gasto anual MXN/ha'] = numero_(r['Gasto anual por ha']);
+  registro['Ahorro anual estimado MXN/ha'] = numero_(r['Ahorro anual por ha estimado']);
+  registro['Ahorro anual total estimado MXN'] = numero_(r['Ahorro anual total estimado']);
+  registro['Cepas sugeridas'] = r['Microorganismos seleccionados'] || r['Cepas'] || '';
   registro['Monitoreo'] = r['Monitoreo'] ? (/^s[ií]$/i.test(r['Monitoreo']) ? 'Sí' : 'No') : '';
   /* Solo lo trae quien entro por el camino de compra directa de litros. */
   registro['Litros pedidos'] = numero_(r['Litros pedidos']);
@@ -625,7 +811,7 @@ function estadoDesde_(texto) {
 }
 
 function etiquetaRuta_(r) {
-  const m = { completa:'Biofábrica completa', gradual:'Entrada gradual', litros:'Litros terminados',
+  const m = { equipo:'Equipo', completa:'Biofábrica completa', gradual:'Entrada gradual', litros:'Litros terminados',
               mejoras:'Mejoras a equipo propio', campo:'Diagnóstico en campo' };
   return m[String(r).toLowerCase()] || r || '';
 }
@@ -688,20 +874,20 @@ function ordenarPorPuntaje_(leads) {
 function aplicarLista_(hoja, columna, opciones) {
   const c = COLUMNAS_LEADS.indexOf(columna) + 1 || COLUMNAS_VENTAS.indexOf(columna) + 1;
   const regla = SpreadsheetApp.newDataValidation().requireValueInList(opciones, true).build();
-  hoja.getRange(2, c, 500, 1).setDataValidation(regla);
+  hoja.getRange(2, c, hoja.getMaxRows() - 1, 1).setDataValidation(regla);
 }
 
 function formatoNumero_(hoja, columnas, formato) {
   const lista = hoja.getName() === HOJA_LEADS ? COLUMNAS_LEADS : COLUMNAS_VENTAS;
   columnas.forEach(n => {
     const c = lista.indexOf(n) + 1;
-    if (c > 0) hoja.getRange(2, c, 500, 1).setNumberFormat(formato);
+    if (c > 0) hoja.getRange(2, c, hoja.getMaxRows() - 1, 1).setNumberFormat(formato);
   });
 }
 
 function colorearPrioridad_(hoja) {
   const c = columnaLetra_(COLUMNAS_LEADS.indexOf('Prioridad') + 1);
-  const rango = hoja.getRange(2, COLUMNAS_LEADS.indexOf('Prioridad') + 1, 500, 1);
+  const rango = hoja.getRange(2, COLUMNAS_LEADS.indexOf('Prioridad') + 1, hoja.getMaxRows() - 1, 1);
   hoja.setConditionalFormatRules([
     reglaTexto_(rango, 'Alta',  '#d9ead3', '#274e13'),
     reglaTexto_(rango, 'Media', '#fff2cc', '#7f6000'),
@@ -710,7 +896,7 @@ function colorearPrioridad_(hoja) {
 }
 
 function colorearSemaforo_(hoja) {
-  const rango = hoja.getRange(2, COLUMNAS_VENTAS.indexOf('Semáforo') + 1, 500, 1);
+  const rango = hoja.getRange(2, COLUMNAS_VENTAS.indexOf('Semáforo') + 1, hoja.getMaxRows() - 1, 1);
   hoja.setConditionalFormatRules([
     reglaTexto_(rango, 'Vencido',    '#f4cccc', '#990000'),
     reglaTexto_(rango, 'Por vencer', '#fff2cc', '#7f6000'),

@@ -92,6 +92,11 @@ meta_description = "Evalúa una biofábrica en tu rancho: compara comprar microo
         }
         .barra img { width: 1.6rem; height: 1.6rem; }
         .barra .marca { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--txt-3); }
+        .contacto-whatsapp { display: inline-flex; align-items: center; gap: .35rem; min-height: 44px; padding: .35rem .65rem; border: 1px solid var(--lime); border-radius: 2rem; color: var(--lime); font-size: .78rem; font-weight: 700; white-space: nowrap; text-decoration: none; }
+        .contacto-whatsapp:hover { background: rgba(126,217,87,.12); }
+        .contacto-whatsapp:focus-visible { outline: 2px solid var(--txt); outline-offset: 3px; }
+        .contacto-whatsapp svg { width: 1rem; height: 1rem; }
+        @media (max-width: 360px) { .barra { gap: .45rem; } .barra .marca { font-size: .6rem; letter-spacing: .03em; } }
 
         .progreso { flex: 1; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
         .progreso i { display: block; height: 100%; background: var(--lime); border-radius: 2px; transition: width .45s cubic-bezier(.22,.7,.3,1); }
@@ -824,15 +829,6 @@ meta_description = "Evalúa una biofábrica en tu rancho: compara comprar microo
 
 <body>
 
-<header class="bio-intro" style="max-width:32rem;margin:0 auto;padding:1.25rem 1.25rem .5rem;line-height:1.6">
-    <a href="/" style="color:var(--lime)">Precisión Agrícola</a>
-    <h1 style="font-size:clamp(1.35rem,4vw,1.9rem);line-height:1.25;margin:.65rem 0">Biofábrica agrícola: calcula tu ahorro en el rancho</h1>
-    <p style="color:var(--txt-2);margin:0">Compara la compra de microorganismos con su producción en un biorreactor agrícola. Usa tu cultivo, superficie y calendario para explorar una configuración y solicitar cotización.</p>
-    <nav aria-label="Información sobre biofábricas" style="display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin-top:.75rem">
-        <a href="/bioreactores" style="color:var(--lime)">Conoce el biorreactor</a>
-        <a href="/biofabrica-on-farm" style="color:var(--lime)">Cómo funciona una biofábrica</a>
-    </nav>
-</header>
 <noscript><p style="max-width:46rem;margin:1rem auto;padding:1rem">El cálculo interactivo necesita JavaScript. Puedes consultar la <a href="/kit-biorreactor" style="color:#7ed957">ficha del equipo</a> o <a href="/contacto" style="color:#7ed957">contactarnos para una cotización</a>.</p></noscript>
 
 {# Los precios salen de Settings -> Customize theme y viajan por atributos
@@ -852,6 +848,10 @@ meta_description = "Evalúa una biofábrica en tu rancho: compara comprar microo
         <img src="{{ 'assets/images/logo-pa.png'|theme }}" alt="Precisión Agrícola">
         <span class="marca">Precisión Agrícola</span>
         <span class="progreso"><i :style="'width:' + avance + '%'"></i></span>
+        <a class="contacto-whatsapp" href="https://wa.me/523311174441" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp (abre en otra pestaña)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.7-4.6A9 9 0 1 1 21 11.5Z"/><path d="M8 7c0 5 4 9 9 9l1-3-3-1-1 2-4-4 2-1-1-3Z"/></svg>
+            WhatsApp
+        </a>
     </header>
 
     <main class="escena">
@@ -1367,6 +1367,13 @@ meta_description = "Evalúa una biofábrica en tu rancho: compara comprar microo
 </div>
 
 <section aria-labelledby="como-estimamos" style="max-width:46rem;margin:0 auto;padding:2rem 1.25rem;line-height:1.7;color:var(--txt-2)">
+    <h1 style="color:var(--txt);font-size:1.4rem;line-height:1.3">Biofábrica agrícola: calcula tu ahorro en el rancho</h1>
+    <p>Compara la compra de microorganismos con su producción en un biorreactor agrícola. Usa tu cultivo, superficie y calendario para explorar una configuración y solicitar cotización.</p>
+    <nav aria-label="Información sobre biofábricas" style="display:flex;flex-wrap:wrap;gap:.5rem 1.25rem">
+        <a href="/bioreactores" style="color:var(--lime)">Conoce el biorreactor</a>
+        <a href="/biofabrica-on-farm" style="color:var(--lime)">Cómo funciona una biofábrica</a>
+        <a href="/" style="color:var(--lime)">Precisión Agrícola</a>
+    </nav>
     <h2 id="como-estimamos" style="color:var(--txt);font-size:1.3rem">¿Qué necesitas para evaluar tu biofábrica?</h2>
     <p>Ten a mano tu superficie de cultivo, los meses en que aplicas insumos biológicos y tu gasto aproximado por hectárea. El diagnóstico reúne esos datos y te permite comparar alternativas: comprar microorganismos por litro, adquirir un equipo o mejorar tu producción actual.</p>
     <h3 style="color:var(--txt)">¿El ahorro calculado es una garantía?</h3>

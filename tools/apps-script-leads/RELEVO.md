@@ -1,5 +1,67 @@
 # Relevo — hoja de leads y Apps Script
 
+## Verificación del 5 de octubre de 2026
+
+- Hay 12 respuestas y 12 leads; el diagnóstico encontró 0 diferencias de
+  captura, 0 IDs duplicados y 0 errores del tablero. Los leads se ordenan por
+  puntaje; un registro nuevo no necesariamente aparece al final.
+- El mensaje de sincronización ahora distingue una hoja al día y muestra el
+  total de leads y cómo encontrarlos.
+- El aviso «no coincide con el tipo de columna fecha» estaba en la tabla de
+  respuestas original. Se cambió su columna Marca temporal de **Fecha** a
+  **Fecha hora** desde Google Sheets, conservando los valores. El script sigue
+  leyendo el origen sin escribir en él. No convertir fechas a texto para
+  silenciar esta advertencia: los IDs dependen de la marca temporal.
+
+
+## Actualización del 1 de octubre de 2026
+
+El texto bajo esta actualización documenta el diagnóstico anterior. El código
+actual ya admite `RUTA SOLICITADA`, `RECOMENDACION CALCULADA` y
+`Microorganismos seleccionados`, además de las claves históricas.
+
+- `Ruta` indica lo solicitado; `Recomendación calculada` conserva el resultado
+  del embudo y alimenta el puntaje. No deben intercambiarse.
+- Se añaden etapas del cultivo, meses con gasto, gasto anual por hectárea y
+  los dos ahorros estimados. `Litros pedidos` permanece para los datos antiguos.
+- La hoja real tenía 31 columnas, no 32: faltaba `Litros pedidos`.
+  `mejorarHoja()` admite ambas estructuras, inserta esa columna si falta y
+  amplía a 38. Rechaza encabezados desconocidos antes de escribir.
+- La reparación respalda las tres pestañas, conserva el seguimiento comercial
+  y nunca modifica las respuestas de origen. La sincronización normal solo
+  agrega registros nuevos y aplica formato. Ambas usan un bloqueo documental.
+- Se ajustan anchos, salto de línea, altura de filas, fechas, moneda, teléfonos
+  como texto y filtros. Las validaciones abarcan todas las filas disponibles.
+- `clasp pull` descargaba archivos a `src/src` porque el remoto ya incluía el
+  prefijo `src/`. La raíz ahora es `.` y `.claspignore` limita la subida a los
+  dos archivos de producción. No renombrar `Código.js` ni subir las pruebas.
+- Pruebas locales: `node --test test-leads.cjs`. Usan únicamente datos ficticios.
+- `diagnosticarHoja()` devuelve conteos, encabezados y errores del tablero;
+  no registra nombres, teléfonos ni correos. `clasp run` falló con `NOT_FOUND`;
+  la ejecución se realiza en el editor web autenticado.
+- Las skills citadas en la sección histórica no están todas disponibles en
+  Codex. Usar las herramientas presentes; no asumir que existe el conector Drive.
+
+Las columnas de configurador pueden quedar vacías cuando el visitante no lo
+abrió. Ese vacío es válido: contrastar con los campos realmente enviados.
+
+### Resultado aplicado
+
+El 1 de octubre se ejecutó `mejorarHoja()` en Google: agregó 2 leads,
+reprocesó 3 y dejó 11 registros en 38 columnas. Se conservaron respaldos de
+Leads, Ventas y Tablero con sufijo `20261001-222435`. La comprobación encontró
+0 diferencias entre los campos del embudo y el origen, 0 diferencias en el
+seguimiento comercial, 0 IDs duplicados y 0 errores en el tablero.
+WhatsApp de Ventas pasó de número a texto conservando sus dígitos, para
+tratarlo como identificador. El diagnóstico normaliza ese tipo al comparar
+contra el respaldo. No se creó un activador automático.
+
+El manifiesto vive ahora en `appsscript.json` junto a `.clasp.json`, porque
+Google siempre descarga ese archivo en la raíz. Se verificó el ciclo
+`push → pull`: solo vuelve el manifiesto y `src/Código.js`, sin carpetas anidadas.
+
+---
+
 Para el agente que retome este trabajo. Lo verificado aquí se midió el
 **1 de octubre de 2026** contra el código en `main` (`822eec5`) y contra la
 hoja real. Si han pasado semanas, vuelve a comprobar antes de confiar.
@@ -163,7 +225,7 @@ Todas han mordido antes en este repositorio.
 - **Nunca escribas un `.claspignore` sin probarlo.** Uno mal puesto dejó a
   clasp rastreando **cero** archivos, y `clasp push` seguía diciendo
   «Script is already up to date», que no prueba nada. Comprueba siempre con
-  `clasp status`: debe listar `src/appsscript.json` y `src/Código.js`.
+  `clasp status`: debe listar `appsscript.json` y `src/Código.js`.
 
 - **Las etiquetas del sitio son contrato con el script.** `idPractica_()`
   clasifica por palabra clave sobre el **texto visible** del botón

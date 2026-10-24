@@ -1,0 +1,35 @@
+---
+// Imagen responsiva en AVIF y WebP con srcset, a partir de un archivo en src/assets.
+//   import campo from '../assets/…/campo.jpg';
+//   <Picture src={campo} alt="Huerto visto desde el dron" sizes="100vw" priority />
+// priority: para la imagen principal (LCP); carga ansiosa y fetchpriority alta.
+import { Picture as AstroPicture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  sizes?: string;
+  widths?: number[];
+  priority?: boolean;
+  class?: string;
+  pictureClass?: string;
+}
+
+const { src, alt, sizes = '100vw', widths, priority = false, class: className, pictureClass } = Astro.props;
+const steps = (widths ?? [480, 800, 1200, 1600, 2400]).filter((w) => w <= src.width);
+if (steps.length === 0) steps.push(src.width);
+---
+<AstroPicture
+  src={src}
+  alt={alt}
+  widths={steps}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  fallbackFormat="jpg"
+  loading={priority ? 'eager' : 'lazy'}
+  decoding={priority ? 'sync' : 'async'}
+  fetchpriority={priority ? 'high' : undefined}
+  class={className}
+  pictureAttributes={{ class: pictureClass }}
+/>

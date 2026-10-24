@@ -1,0 +1,40 @@
+---
+// Bloque de página con fondo, ancho y espaciado del sistema.
+//   <Section id="proceso" tone="brote" eyebrow="Cómo funciona" title="Del laboratorio a tu parcela">…</Section>
+// Con title pinta un <h2>; para el <h1> de la página, ponlo tú dentro del slot.
+interface Props {
+  id?: string;
+  tone?: 'white' | 'brote' | 'bosque' | 'noche';
+  width?: 'narrow' | 'default' | 'wide';
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  /** Alinear el encabezado al centro. */
+  center?: boolean;
+  reveal?: boolean;
+  class?: string;
+}
+
+const { id, tone = 'white', width = 'default', eyebrow, title, lead, center = false, reveal = true, class: className } = Astro.props;
+
+const tones = {
+  white: 'bg-white text-bosque',
+  brote: 'bg-brote text-bosque',
+  bosque: 'bg-bosque text-white',
+  noche: 'bg-noche text-white',
+};
+const widths = { narrow: 'max-w-3xl', default: 'max-w-6xl', wide: 'max-w-7xl' };
+const dark = tone === 'bosque' || tone === 'noche';
+---
+<section id={id} class:list={[tones[tone], 'px-5 py-20 md:py-28', className]}>
+  <div class:list={['mx-auto', widths[width]]}>
+    {(eyebrow || title || lead) && (
+      <header class:list={['mb-12 max-w-3xl', { 'mx-auto text-center': center }]} data-reveal={reveal ? '' : undefined}>
+        {eyebrow && <p class:list={['pa-eyebrow', { 'text-lima!': dark }]}>{eyebrow}</p>}
+        {title && <h2 class="pa-h2 mt-3">{title}</h2>}
+        {lead && <p class:list={['mt-5 text-lg leading-relaxed', dark ? 'text-white/75' : 'text-bosque/75']}>{lead}</p>}
+      </header>
+    )}
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,101 @@
+---
+// Catálogo de los componentes compartidos. No es una página pública (noindex).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Picture from '../components/ui/Picture.astro';
+import campo from '../assets/kit/campo.jpg';
+
+const colors = [
+  { name: 'Bosque', token: 'bosque', hex: '#1a3c2a', dark: true },
+  { name: 'Hoja', token: 'hoja', hex: '#2d6a4f', dark: true },
+  { name: 'Medio', token: 'medio', hex: '#3d8c5f', dark: true },
+  { name: 'Lima', token: 'lima', hex: '#6abf45' },
+  { name: 'Brote', token: 'brote', hex: '#f0faf3' },
+  { name: 'Noche', token: 'noche', hex: '#0f2419', dark: true },
+];
+const cards = [
+  { title: 'Diagnóstico', text: 'Medimos tu parcela con drones multiespectrales y mapas de fertilidad.' },
+  { title: 'Biofábrica', text: 'Instalamos el biorreactor y capacitamos a tu equipo en la operación.' },
+  { title: 'Seguimiento', text: 'Monitoreo IoT de cada lote y acompañamiento agronómico en campo.' },
+];
+---
+<BaseLayout
+  title="Kit de componentes | Precisión Agrícola"
+  description="Catálogo interno de tokens y componentes del sitio de Precisión Agrícola: colores, tipografía, botones, secciones, imágenes y animaciones."
+  noindex
+>
+  <section class="relative flex min-h-[78vh] items-end overflow-hidden bg-noche px-5 pt-40 pb-20 text-white">
+    <Picture src={campo} alt="" priority pictureClass="absolute inset-0" class="h-full w-full object-cover opacity-60" />
+    <div class="absolute inset-0 bg-gradient-to-t from-noche via-noche/40 to-transparent"></div>
+    <div class="relative mx-auto w-full max-w-6xl" data-reveal>
+      <p class="pa-eyebrow text-lima!">Fundación Astro</p>
+      <h1 class="pa-h1 mt-4 max-w-3xl">Kit de componentes del sitio</h1>
+      <p class="mt-5 max-w-xl text-lg text-white/80">Tokens, barra, pie, botones, secciones, imágenes y animaciones que comparten todas las páginas.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <Button href="#colores" size="lg">Ver tokens</Button>
+        <Button href="#botones" variant="ghost-light" size="lg">Ver botones</Button>
+      </div>
+    </div>
+  </section>
+
+  <Section id="colores" eyebrow="Tokens" title="Colores" lead="Clases de Tailwind: bg-bosque, text-hoja, border-lima/40…">
+    <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6" data-reveal-stagger>
+      {colors.map((c) => (
+        <li class="overflow-hidden rounded-[var(--radius-card)] border border-bosque/10">
+          <div class="h-28" style={`background:${c.hex}`}></div>
+          <div class="p-4 text-sm">
+            <p class="font-bold">{c.name}</p>
+            <p class="text-bosque/60"><code>{c.token}</code> · {c.hex}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section tone="brote" eyebrow="Tokens" title="Tipografía">
+    <div class="grid gap-10 md:grid-cols-2" data-reveal-stagger>
+      <div>
+        <p class="text-sm text-bosque/60">font-display · Montserrat 700 a 900</p>
+        <p class="pa-h1 mt-2">Agricultura de precisión</p>
+        <p class="pa-h2 mt-4">Título de sección</p>
+      </div>
+      <div>
+        <p class="text-sm text-bosque/60">font-sans · DM Sans 400 a 700</p>
+        <p class="mt-2 text-lg leading-relaxed">Producimos bioinsumos en tu propio rancho con biorreactores IoT. El texto corrido usa DM Sans a 17 o 18 px con interlineado amplio.</p>
+        <p class="pa-eyebrow mt-6">Ceja de sección (pa-eyebrow)</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="botones" eyebrow="Componentes" title="Botones" lead="Button con variant primary, dark, outline y ghost-light; size md o lg.">
+    <div class="flex flex-wrap items-center gap-3" data-reveal>
+      <Button href="/biofabrica">Calcula tu ahorro</Button>
+      <Button variant="dark" href="/contacto">Contáctanos</Button>
+      <Button variant="outline" href="/bioreactores">Ver biorreactores</Button>
+      <Button size="lg">Botón grande</Button>
+    </div>
+    <div class="mt-8 flex flex-wrap gap-3 rounded-[var(--radius-card)] bg-noche p-8" data-reveal>
+      <Button variant="ghost-light" href="/drones">Sobre fondo oscuro</Button>
+      <Button href="/biofabrica">Primario sobre oscuro</Button>
+    </div>
+  </Section>
+
+  <Section tone="bosque" eyebrow="Componentes" title="Secciones y aparición escalonada" lead="Section admite los tonos white, brote, bosque y noche. Las tarjetas usan data-reveal-stagger.">
+    <ul class="grid gap-5 md:grid-cols-3" data-reveal-stagger>
+      {cards.map((card, i) => (
+        <li class="rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-7 backdrop-blur">
+          <p class="font-display text-4xl font-black text-lima">0{i + 1}</p>
+          <h3 class="mt-4 text-xl font-extrabold">{card.title}</h3>
+          <p class="mt-2 text-white/75">{card.text}</p>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section eyebrow="Componentes" title="Imagen responsiva" lead="Picture genera AVIF y WebP en varios anchos con srcset y deja JPG de respaldo.">
+    <div data-reveal>
+      <Picture src={campo} alt="Huerto de aguacate visto desde el dron" sizes="(min-width: 1152px) 1152px, 100vw" class="aspect-[16/7] w-full rounded-[var(--radius-card)] object-cover shadow-[var(--shadow-card)]" />
+    </div>
+  </Section>
+</BaseLayout>

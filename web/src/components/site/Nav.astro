@@ -1,0 +1,129 @@
+---
+// Barra acrílica compartida, portada de partials/site/nav.htm (#39): el logo va
+// suelto a la izquierda y la barra de enlaces, aparte, a la derecha. Sobre un
+// hero oscuro empieza transparente; al bajar (o con solid) pasa a la versión clara.
+import { Image } from 'astro:assets';
+import logoClaro from '../../assets/brand/logo-claro.png';
+import logoOscuro from '../../assets/brand/logo-oscuro.png';
+
+interface Props {
+  solid?: boolean;
+}
+
+const { solid = false } = Astro.props;
+const current = Astro.url.pathname.replace(/\.html$/, '').replace(/(.)\/$/, '$1');
+
+const links = [
+  { href: '/', label: 'Inicio' },
+  { href: '/acerca-de', label: 'Acerca de' },
+  { href: '/drones', label: 'Drones' },
+  { href: '/bioreactores', label: 'Biorreactores', badge: 'NUEVO' },
+  { href: '/contacto', label: 'Contacto' },
+];
+---
+<header class:list={['pa-nav', { 'is-solid': solid }]} id="pa-nav" data-solid={solid ? '1' : '0'}>
+  <div class="pa-nav__inner">
+    <a class:list={['pa-nav__brand', { 'pa-nav__glass': solid }]} href="/">
+      <Image src={logoClaro} alt="" width={40} height={43} densities={[1, 2]} class="pa-nav__logo-light" hidden={solid} loading="eager" />
+      <Image src={logoOscuro} alt="" width={40} height={43} densities={[1, 2]} class="pa-nav__logo-dark" hidden={!solid} loading="eager" />
+      Precisión Agrícola
+    </a>
+    <button type="button" class="pa-nav__toggle pa-nav__glass" aria-expanded="false" aria-controls="pa-nav-menu" aria-label="Abrir menú">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+    </button>
+    <nav class="pa-nav__bar pa-nav__glass" id="pa-nav-menu" aria-label="Principal">
+      <ul class="pa-nav__links">
+        {links.map((link) => (
+          <li>
+            <a class="pa-nav__link" href={link.href} aria-current={current === link.href ? 'page' : undefined}>
+              {link.label}
+              {link.badge && <span class="pa-nav__new">{link.badge}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="pa-nav__cta" href="/biofabrica">Calcula tu ahorro</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const nav = document.getElementById('pa-nav');
+  if (nav) {
+    const alwaysSolid = nav.dataset.solid === '1';
+    const toggle = nav.querySelector<HTMLButtonElement>('.pa-nav__toggle')!;
+    const brand = nav.querySelector<HTMLElement>('.pa-nav__brand')!;
+    const light = nav.querySelector<HTMLElement>('.pa-nav__logo-light')!;
+    const dark = nav.querySelector<HTMLElement>('.pa-nav__logo-dark')!;
+    let lastY = window.scrollY;
+
+    const paint = () => {
+      const solid = alwaysSolid || window.scrollY > 40 || nav.classList.contains('is-open');
+      nav.classList.toggle('is-solid', solid);
+      brand.classList.toggle('pa-nav__glass', solid);
+      light.hidden = solid;
+      dark.hidden = !solid;
+    };
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      // Se esconde al bajar y vuelve al subir, salvo con el menú abierto.
+      nav.classList.toggle('is-hidden', y > lastY && y > 160 && !nav.classList.contains('is-open'));
+      lastY = y;
+      paint();
+    }, { passive: true });
+
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      paint();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && nav.classList.contains('is-open')) toggle.click();
+    });
+
+    paint();
+  }
+</script>
+
+<style>
+  .pa-nav { position: fixed; top: 14px; left: 0; right: 0; z-index: 60; padding: 0 16px; transition: transform .35s ease; pointer-events: none; view-transition-name: pa-nav; }
+  .pa-nav.is-hidden { transform: translateY(-140%); }
+  .pa-nav__inner { position: relative; max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .pa-nav__brand, .pa-nav__bar, .pa-nav__toggle { pointer-events: auto; }
+  .pa-nav__glass { color: #fff; background: rgb(15 36 25 / .55); border: 1px solid rgb(255 255 255 / .22); box-shadow: 0 10px 30px rgb(0 0 0 / .18); transition: background .3s, color .3s, border-color .3s, box-shadow .3s; }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .pa-nav__glass { background: rgb(255 255 255 / .12); -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); }
+    .pa-nav.is-solid .pa-nav__glass { background: rgb(255 255 255 / .72); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%); }
+  }
+  .pa-nav.is-solid .pa-nav__glass { color: var(--color-bosque); background: rgb(255 255 255 / .96); border-color: rgb(26 60 42 / .08); box-shadow: var(--shadow-card); }
+  .pa-nav__brand { display: flex; align-items: center; gap: 12px; padding: 6px 14px 6px 6px; border-radius: 999px; color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: 17px; letter-spacing: -.01em; white-space: nowrap; text-shadow: 0 2px 12px rgb(0 0 0 / .35); border: 1px solid transparent; transition: background .3s, color .3s, border-color .3s, box-shadow .3s; }
+  .pa-nav__brand img { width: 40px; height: 43px; filter: drop-shadow(0 4px 10px rgb(0 0 0 / .3)); }
+  .pa-nav__brand img[hidden] { display: none; }
+  .pa-nav.is-solid .pa-nav__brand { text-shadow: none; }
+  .pa-nav.is-solid .pa-nav__brand img { width: 32px; height: 34px; filter: none; }
+  .pa-nav__bar { display: flex; align-items: center; gap: 2px; padding: 6px; border-radius: 999px; }
+  .pa-nav__links { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+  .pa-nav__link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; color: inherit; text-decoration: none; font-size: 15px; font-weight: 500; transition: background .2s; }
+  .pa-nav__link:hover, .pa-nav__link[aria-current="page"] { background: rgb(255 255 255 / .18); }
+  .pa-nav.is-solid .pa-nav__link:hover, .pa-nav.is-solid .pa-nav__link[aria-current="page"] { background: rgb(45 106 79 / .1); }
+  .pa-nav__new { font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 3px 7px; border-radius: 999px; background: var(--color-lima); color: var(--color-tinta); }
+  .pa-nav__cta { margin-left: 6px; padding: 11px 18px; border-radius: 999px; background: var(--color-lima); color: var(--color-tinta); font-weight: 700; font-size: 15px; text-decoration: none; white-space: nowrap; transition: background .2s, color .2s; }
+  .pa-nav__cta:hover { background: var(--color-lima-claro); }
+  .pa-nav.is-solid .pa-nav__cta { background: var(--color-bosque); color: #fff; }
+  .pa-nav.is-solid .pa-nav__cta:hover { background: var(--color-hoja); }
+  .pa-nav__toggle { display: none; width: 48px; height: 48px; border-radius: 50%; align-items: center; justify-content: center; cursor: pointer; }
+  @media (max-width: 960px) {
+    .pa-nav__toggle { display: inline-flex; }
+    .pa-nav__bar { display: none; position: absolute; top: calc(100% + 10px); left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 4px; padding: 10px; border-radius: 24px; }
+    .pa-nav.is-open .pa-nav__bar { display: flex; color: var(--color-bosque); background: rgb(255 255 255 / .96); }
+    .pa-nav__links { flex-direction: column; align-items: stretch; }
+    .pa-nav__link { display: flex; padding: 13px 12px; border-radius: 14px; }
+    .pa-nav.is-open .pa-nav__link:hover, .pa-nav.is-open .pa-nav__link[aria-current="page"] { background: rgb(45 106 79 / .1); }
+    .pa-nav__cta { margin: 6px 0 0; text-align: center; padding: 14px; }
+    .pa-nav.is-open .pa-nav__cta { background: var(--color-bosque); color: #fff; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pa-nav, .pa-nav__glass, .pa-nav__brand { transition: none; } }
+</style>

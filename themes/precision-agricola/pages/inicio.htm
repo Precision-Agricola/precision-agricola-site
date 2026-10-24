@@ -94,6 +94,34 @@ meta_description = "Biorreactores agrícolas IoT y biofábricas on-farm para pro
         .pa-hero__hint { display: none; position: absolute; left: 50%; bottom: 28px; z-index: 2; transform: translateX(-50%); align-items: center; gap: 10px; margin: 0; padding: 10px 16px; border-radius: 999px; color: #fff; font-size: 14px; white-space: nowrap; pointer-events: none; background: rgba(15,36,25,.55); border: 1px solid rgba(255,255,255,.28); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
         .pa-hero.has-lens { cursor: crosshair; }
         .pa-hero.has-lens .pa-hero__hint { display: flex; }
+/* Secciones de contenido: misma paleta que /bioreactores y /biofabrica. */
+        .pa-eyebrow { margin: 0 0 14px; font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #3d8c5f; }
+        .pa-h2 { margin: 0 0 20px; font-family: 'Montserrat', system-ui, sans-serif; font-weight: 900; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.06; letter-spacing: -.025em; color: #1a3c2a; }
+        .pa-h2--light { color: #fff; }
+        .pa-body { margin: 0 0 26px; font-size: 18px; line-height: 1.7; color: #3f5a4b; }
+        .pa-chips, .pa-bio__tags { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+        .pa-chips li { padding: 9px 14px; border-radius: 999px; background: #f0faf3; border: 1px solid #d6efdc; font-size: 14px; font-weight: 500; color: #1a3c2a; }
+        .pa-intro { max-width: 1200px; margin: 0 auto; padding: 112px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 56px; align-items: center; font-family: 'DM Sans', system-ui, sans-serif; }
+        .pa-intro__img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 28px; box-shadow: 0 30px 60px rgba(26,60,42,.18); }
+        .pa-bio-wrap { padding: 0 20px 112px; font-family: 'DM Sans', system-ui, sans-serif; }
+        .pa-bio { max-width: 1200px; margin: 0 auto; border-radius: 32px; overflow: hidden; background: radial-gradient(circle at 78% 50%, rgba(106,191,69,.22) 0%, rgba(106,191,69,0) 45%), linear-gradient(145deg, #132e20 0%, #1f4d37 55%, #132e20 100%); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); align-items: center; }
+        .pa-bio__text { padding: clamp(36px, 5vw, 64px); color: #fff; }
+        .pa-bio__badge { display: inline-block; margin-bottom: 18px; padding: 6px 12px; border-radius: 999px; background: rgba(106,191,69,.18); border: 1px solid rgba(106,191,69,.4); color: #b9f09a; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+        .pa-bio__body { margin: 0 0 24px; font-size: 17px; line-height: 1.7; color: #cfe5d6; }
+        .pa-bio__body strong { color: #fff; }
+        .pa-bio__body a { color: #9eff5a; text-decoration: underline; text-underline-offset: 3px; }
+        .pa-bio__tags { gap: 8px; margin-bottom: 32px; }
+        .pa-bio__tags li { padding: 7px 12px; border-radius: 10px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); font-size: 13px; }
+        .pa-bio__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+        .pa-btn--outline { color: #fff; border: 1px solid rgba(255,255,255,.35); }
+        .pa-btn--outline:hover { background: rgba(255,255,255,.08); color: #fff; }
+        .pa-bio__visual { position: relative; padding: 32px 32px 48px; display: flex; justify-content: center; }
+        .pa-bio__visual img { width: 100%; max-width: 580px; height: auto; filter: drop-shadow(0 30px 40px rgba(0,0,0,.35)); }
+        .pa-bio__status { position: absolute; right: 32px; bottom: 32px; display: flex; align-items: center; gap: 10px; margin: 0; padding: 12px 16px; border-radius: 16px; color: #e6f4ea; font-size: 14px; background: rgba(15,36,25,.6); border: 1px solid rgba(255,255,255,.2); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+        .pa-bio__status strong { display: block; color: #fff; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+        .pa-bio__dot { width: 8px; height: 8px; border-radius: 50%; background: #6abf45; box-shadow: 0 0 0 4px rgba(106,191,69,.25); animation: bioDotBlink 1.5s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .pa-bio__dot { animation: none; } }
+        @media (max-width: 700px) { .pa-bio__visual { flex-direction: column; align-items: center; gap: 16px; padding: 0 24px 36px; } .pa-bio__status { position: static; } }
         .pa-btn { display: inline-block; padding: 15px 26px; border-radius: 999px; font-weight: 700; font-size: 16px; text-decoration: none; transition: background .2s, transform .2s; }
         .pa-btn:hover { transform: translateY(-1px); }
         .pa-btn--lime { background: #6abf45; color: #0f2a1b; }
@@ -184,85 +212,50 @@ meta_description = "Biorreactores agrícolas IoT y biofábricas on-farm para pro
         </p>
     </section>
 
-    <section>
-        <div class="container flex flex-col items-center px-8 pt-16 mx-auto md:flex-row lg:px-28">
-            <div class="flex flex-col items-start text-left lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 md:mb-0">
-                <h2 class="mb-8 text-xs font-semibold tracking-widest text-black uppercase title-font"> La nueva era de
-                    la agricultura
-                </h2>
-                <h2 class="mb-8 text-2xl font-black tracking-tighter text-black md:text-5xl title-font"> Agricultura
-                    impulsada por datos</h2>
-                <p class="mb-8 text-base leading-relaxed text-justify text-blueGray-600 "> Trabajamos con los
-                    productores para llevar la agricultura al siguiente nivel, implementando los conocimientos de la
-                    quimica agricola combinada con la aplicacion de la ultima tecnologia redes remotas y sistemas de
-                    monitoreo por medio de drones y sensores, que te ayudará a administrar de manera mas eficiente tus
-                    cultivos</p>
-            </div>
-            <div class="w-full lg:w-5/6 lg:max-w-lg md:w-1/2 overflow-x-hidden">
-                <img class="rounded-lg my-4" alt="hero" src="{{ 'assets/images/agriculture.webp'|theme }}">
-            </div>
+    <section class="pa-intro">
+        <div class="pa-intro__text">
+            <p class="pa-eyebrow">La nueva era de la agricultura</p>
+            <h2 class="pa-h2">Agricultura impulsada por datos</h2>
+            <p class="pa-body">Trabajamos con los productores para llevar la agricultura al siguiente nivel, implementando los conocimientos de la química agrícola combinada con la aplicación de la última tecnología, redes remotas y sistemas de monitoreo por medio de drones y sensores, que te ayudará a administrar de manera más eficiente tus cultivos.</p>
+            <ul class="pa-chips">
+                <li>Drones multiespectrales</li>
+                <li>Sensores en campo</li>
+                <li>Análisis con inteligencia artificial</li>
+            </ul>
         </div>
+        <img class="pa-intro__img" loading="lazy" width="900" height="675" alt="Vista satelital de parcelas agrícolas junto a un cuerpo de agua"
+             src="{{ 'assets/images/agriculture.webp'|theme }}"
+             srcset="{{ 'assets/images/agriculture.webp'|theme }} 900w, {{ 'assets/images/agriculture-1800.webp'|theme }} 1800w"
+             sizes="(min-width: 960px) 560px, 100vw">
     </section>
 
-    <!-- Bioreactores - Nuevo Feature -->
-    <section class="py-16 px-5 lg:px-24" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);">
-      <div class="max-w-6xl mx-auto">
-        <div class="relative overflow-hidden rounded-2xl shadow-2xl" style="background: linear-gradient(145deg, #1a3c2a 0%, #2d6a4f 60%, #1a3c2a 100%);">
-
-          <!-- Badge Nuevo -->
-          <div class="absolute top-6 right-6 z-10">
-            <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold tracking-wider text-white uppercase bio-badge-pulse" style="background: linear-gradient(135deg, #6abf45, #2d6a4f); box-shadow: 0 0 20px rgba(106, 191, 69, 0.4);">
-              Nuevo
-            </span>
-          </div>
-
-          <div class="flex flex-col md:flex-row items-center">
-            <!-- Contenido -->
-            <div class="w-full md:w-3/5 p-8 lg:p-14">
-              <p class="text-sm font-semibold tracking-widest uppercase mb-3" style="color: #6abf45;">Biofábrica On-Farm — Tecnología IoT</p>
-              <h2 class="text-3xl lg:text-4xl font-black text-white mb-5 leading-tight">
-                Biorreactores Agrícolas<br>para tu Biofábrica
-              </h2>
-              <p class="text-gray-300 mb-8 leading-relaxed text-base">
-                Produce tus propios <strong class="text-white">bioinsumos</strong>, <strong class="text-white">biofertilizantes</strong> y consorcios microbianos directamente en tu rancho con biorreactores agrícolas y monitoreo opcional. <a href="/biofabrica-on-farm" class="underline" style="color:#9eff5a; text-underline-offset:3px;">Biofábrica on-farm</a> con monitoreo en tiempo real (pH, O₂ disuelto, temperatura) desde cualquier dispositivo.
-              </p>
-              <div class="flex flex-wrap gap-3 mb-8">
-                <span class="px-3 py-1.5 rounded-lg text-xs font-medium text-white" style="background: rgba(106, 191, 69, 0.2); border: 1px solid rgba(106, 191, 69, 0.3);">Bioinsumos on-farm</span>
-                <span class="px-3 py-1.5 rounded-lg text-xs font-medium text-white" style="background: rgba(106, 191, 69, 0.2); border: 1px solid rgba(106, 191, 69, 0.3);">Biofertilizantes</span>
-                <span class="px-3 py-1.5 rounded-lg text-xs font-medium text-white" style="background: rgba(106, 191, 69, 0.2); border: 1px solid rgba(106, 191, 69, 0.3);">Consorcios microbianos</span>
-                <span class="px-3 py-1.5 rounded-lg text-xs font-medium text-white" style="background: rgba(106, 191, 69, 0.2); border: 1px solid rgba(106, 191, 69, 0.3);">Sensores IoT</span>
-                <span class="px-3 py-1.5 rounded-lg text-xs font-medium text-white" style="background: rgba(106, 191, 69, 0.2); border: 1px solid rgba(106, 191, 69, 0.3);">Producción en el rancho</span>
-              </div>
-              <a href="/bioreactores" class="inline-flex items-center px-8 py-3.5 rounded-lg text-sm font-bold text-white transition-all duration-300 transform hover:translate-x-2" style="background: linear-gradient(135deg, #6abf45, #2d6a4f); box-shadow: 0 4px 15px rgba(106, 191, 69, 0.3);">
-                Conocer Biorreactores y Biofábrica
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                </svg>
-              </a>
-            </div>
-
-            <!-- Visual lado derecho -->
-            <div class="w-full md:w-2/5 p-8 lg:p-14 flex items-center justify-center">
-              <div class="relative bio-float">
-                <!-- Circulos decorativos animados -->
-                <div class="absolute inset-0 rounded-full bio-ring-pulse" style="border: 2px solid rgba(106, 191, 69, 0.2); transform: scale(1.5);"></div>
-                <div class="absolute inset-0 rounded-full bio-ring-pulse-delay" style="border: 2px solid rgba(106, 191, 69, 0.15); transform: scale(2);"></div>
-                <!-- Circulo principal con datos -->
-                <div class="relative w-48 h-48 lg:w-56 lg:h-56 rounded-full flex flex-col items-center justify-center" style="background: linear-gradient(145deg, rgba(106, 191, 69, 0.15), rgba(45, 106, 79, 0.3)); border: 2px solid rgba(106, 191, 69, 0.3); backdrop-filter: blur(10px);">
-                  <div class="text-center">
-                    <div class="text-5xl lg:text-6xl font-black mb-1" style="color: #6abf45;">IoT</div>
-                    <div class="text-xs font-semibold tracking-widest uppercase text-gray-300">Smart Farming</div>
-                    <div class="mt-3 flex items-center gap-2">
-                      <span class="w-2 h-2 rounded-full bio-dot-blink" style="background: #6abf45;"></span>
-                      <span class="text-xs text-gray-400">En linea</span>
-                    </div>
-                  </div>
+    <!-- Biorreactores -->
+    <section class="pa-bio-wrap">
+        <div class="pa-bio">
+            <div class="pa-bio__text">
+                <span class="pa-bio__badge">Nuevo · Biofábrica on-farm con IoT</span>
+                <h2 class="pa-h2 pa-h2--light">Biorreactores agrícolas para tu biofábrica</h2>
+                <p class="pa-bio__body">Produce tus propios <strong>bioinsumos</strong>, <strong>biofertilizantes</strong> y consorcios microbianos directamente en tu rancho con biorreactores agrícolas y monitoreo opcional. <a href="/biofabrica-on-farm">Biofábrica on-farm</a> con monitoreo en tiempo real (pH, O₂ disuelto, temperatura) desde cualquier dispositivo.</p>
+                <ul class="pa-bio__tags">
+                    <li>Bioinsumos on-farm</li>
+                    <li>Biofertilizantes</li>
+                    <li>Consorcios microbianos</li>
+                    <li>Sensores IoT</li>
+                    <li>Producción en el rancho</li>
+                </ul>
+                <div class="pa-bio__actions">
+                    <a href="/bioreactores" class="pa-btn pa-btn--lime">Conocer biorreactores y biofábrica</a>
+                    <a href="/biofabrica" class="pa-btn pa-btn--outline">Calcula tu ahorro</a>
                 </div>
-              </div>
             </div>
-          </div>
+            <div class="pa-bio__visual">
+                <img loading="lazy" width="800" height="600" alt="Biorreactores agrícolas de acero inoxidable con tablero de control de Precisión Agrícola"
+                     src="{{ 'assets/images/bioreactors/bioreactores.png'|theme }}"
+                     srcset="{{ 'assets/images/bioreactors/bioreactores.png'|theme }} 800w, {{ 'assets/images/bioreactors/bioreactores-1600.webp'|theme }} 1600w"
+                     sizes="(min-width: 960px) 580px, 90vw">
+                <p class="pa-bio__status"><span class="pa-bio__dot" aria-hidden="true"></span><span><strong>En línea</strong>pH · O₂ disuelto · Temperatura</span></p>
+            </div>
         </div>
-      </div>
     </section>
 
     <section>

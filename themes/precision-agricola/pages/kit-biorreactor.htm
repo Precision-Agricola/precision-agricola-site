@@ -46,25 +46,42 @@ function onStart()
  */
 function canvaRatio($view)
 {
-    return Cache::remember('kit_biorreactor.canva_ratio', now()->addHours(6), function () use ($view) {
-        $json = $this->fetchUrl('https://www.canva.com/_oembed?url=' . urlencode($view));
-        $data = $json ? json_decode($json, true) : null;
+    $guardado = Cache::get('kit_biorreactor.canva_ratio');
+    if ($guardado) {
+        return $guardado;
+    }
 
-        $width  = isset($data['thumbnail_width'])  ? (float) $data['thumbnail_width']  : 0;
-        $height = isset($data['thumbnail_height']) ? (float) $data['thumbnail_height'] : 0;
+    /* Una lectura buena dura 6 h; el respaldo solo 10 min. Antes el respaldo
+       también quedaba 6 h, así que un tropiezo pasajero de Canva fijaba la
+       proporción vieja durante media jornada. */
+    $ratio = $this->leerRatioDeCanva($view);
+    $ttl = $ratio ? now()->addHours(6) : now()->addMinutes(10);
+    $ratio = $ratio ?: self::CANVA_RATIO_FALLBACK;
+    Cache::put('kit_biorreactor.canva_ratio', $ratio, $ttl);
 
-        // Una ficha larga va de "casi cuadrada" a "muy larga". Fuera de ese
-        // rango asumimos lectura mala y preferimos el respaldo.
-        $ratio = ($width >= 1 && $height >= 1) ? round(($height / $width) * 100, 4) : 0;
+    return $ratio;
+}
 
-        if ($ratio < 50 || $ratio > 3000) {
-            Log::warning('kit-biorreactor: no se pudo leer la proporción del diseño en Canva; se usa el respaldo de ' . self::CANVA_RATIO_FALLBACK . '%.');
+/** La proporción leída del oEmbed, o null si la respuesta no sirve. */
+function leerRatioDeCanva($view)
+{
+    $json = $this->fetchUrl('https://www.canva.com/_oembed?url=' . urlencode($view));
+    $data = $json ? json_decode($json, true) : null;
 
-            return self::CANVA_RATIO_FALLBACK;
-        }
+    $width  = isset($data['thumbnail_width'])  ? (float) $data['thumbnail_width']  : 0;
+    $height = isset($data['thumbnail_height']) ? (float) $data['thumbnail_height'] : 0;
 
-        return $ratio;
-    });
+    // Una ficha larga va de "casi cuadrada" a "muy larga". Fuera de ese
+    // rango asumimos lectura mala y preferimos el respaldo.
+    $ratio = ($width >= 1 && $height >= 1) ? round(($height / $width) * 100, 4) : 0;
+
+    if ($ratio < 50 || $ratio > 3000) {
+        Log::warning('kit-biorreactor: no se pudo leer la proporción del diseño en Canva; se usa el respaldo de ' . self::CANVA_RATIO_FALLBACK . '%.');
+
+        return null;
+    }
+
+    return $ratio;
 }
 
 /**
@@ -79,8 +96,8 @@ function fetchUrl($url)
             curl_setopt_array($ch, [
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_CONNECTTIMEOUT => 3,
-                CURLOPT_TIMEOUT        => 6,
+                CURLOPT_CONNECTTIMEOUT => 2,
+                CURLOPT_TIMEOUT        => 4,
                 CURLOPT_USERAGENT      => 'PrecisionAgricola/1.0 (+https://www.precisionagricola.com)',
             ]);
             $body = curl_exec($ch);
@@ -91,7 +108,7 @@ function fetchUrl($url)
 
         if (ini_get('allow_url_fopen')) {
             $ctx = stream_context_create(['http' => [
-                'timeout' => 6,
+                'timeout' => 4,
                 'header'  => "User-Agent: PrecisionAgricola/1.0 (+https://www.precisionagricola.com)\r\n",
             ]]);
 
@@ -170,6 +187,7 @@ function fetchUrl($url)
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js"></script>
+    {% partial 'site/enviar-lead' %}
 
     <style>
         :root {
@@ -541,7 +559,6 @@ function fetchUrl($url)
             submitError: false,
             tooFast: false,
             _t0: Date.now(),
-            _ep: atob('aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZm9ybXMvZC9lLzFGQUlwUUxTZHVGVUxzSElVdmhQN1NBdGZPb1Y0MjJWTzVIUTVBNnZnQjVKMXQxV3k1ekZtcWV3L2Zvcm1SZXNwb25zZQ=='),
             submitForm(e) {
                 e.preventDefault();
                 const hp = e.target.querySelector('[name=company_url]');
@@ -551,6 +568,7 @@ function fetchUrl($url)
                     this.submitting = false;
                     return;
                 }
+                this.tooFast = false;
                 this.submitting = true;
                 this.submitError = false;
                 const form = e.target;
@@ -561,12 +579,8 @@ function fetchUrl($url)
                     if (key.includes('.other_option_response') && !val.trim()) continue;
                     params.append(key, val);
                 }
-                fetch(this._ep, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params.toString()
-                })
+                /* Envío compartido: partials/site/enviar-lead.htm */
+                window.paEnviarLead(params)
                 .then(() => {
                     this.submitting = false;
                     window.location.href = '/gracias-diagnostico';

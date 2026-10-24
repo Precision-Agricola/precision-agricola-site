@@ -94,6 +94,7 @@ meta_description = "Biorreactores agrícolas desarrollados en México para produ
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js"></script>
+    {% partial 'site/enviar-lead' %}
 
     <!-- Meta Pixel -->
     <script>
@@ -358,8 +359,6 @@ meta_description = "Biorreactores agrícolas desarrollados en México para produ
                         submitError: false,
                         tooFast: false,
                         _t0: Date.now(),
-                        /* ── Anti-spam: URL ofuscada (base64) ── */
-                        _ep: atob('aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZm9ybXMvZC9lLzFGQUlwUUxTZHVGVUxzSElVdmhQN1NBdGZPb1Y0MjJWTzVIUTVBNnZnQjVKMXQxV3k1ekZtcWV3L2Zvcm1SZXNwb25zZQ=='),
                         submitForm(e) {
                             e.preventDefault();
                             /* ── Anti-spam: honeypot ── */
@@ -371,6 +370,7 @@ meta_description = "Biorreactores agrícolas desarrollados en México para produ
                                 this.submitting = false;
                                 return;
                             }
+                            this.tooFast = false;
                             this.submitting = true;
                             this.submitError = false;
                             const form = e.target;
@@ -381,12 +381,8 @@ meta_description = "Biorreactores agrícolas desarrollados en México para produ
                                 if (key.includes('.other_option_response') && !val.trim()) continue;
                                 params.append(key, val);
                             }
-                            fetch(this._ep, {
-                                method: 'POST',
-                                mode: 'no-cors',
-                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                body: params.toString()
-                            })
+                            /* Envío compartido: partials/site/enviar-lead.htm */
+                            window.paEnviarLead(params)
                             .then(() => {
                                 this.submitting = false;
                                 /* ── Disparar Lead solo al enviar (1 vez por usuario) ── */

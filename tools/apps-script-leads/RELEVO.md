@@ -15,6 +15,10 @@
   monitoreo guardado como «Sí»; el ID busca el correo por encabezado.
 - Falta confirmar en la hoja real el encabezado de la pregunta de gasto
   (issue #34). El script acepta «Cuánto inviertes» y «Cuánto gastas».
+- Los tres formularios (`/bioreactores`, `/kit-biorreactor`, `/biofabrica`)
+  envían con `partials/site/enviar-lead.htm`: primero a `/api/lead`, que
+  reenvía al Form desde el servidor y lee si Google lo aceptó; si esa ruta
+  falla, se envía directo como antes (issue #35). Los `entry.*` no cambian.
 
 ## Verificación del 5 de octubre de 2026
 

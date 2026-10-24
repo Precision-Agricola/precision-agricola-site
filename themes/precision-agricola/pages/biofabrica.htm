@@ -39,7 +39,8 @@ meta_description = "Evalúa una biofábrica en tu rancho: compara comprar microo
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js"></script>
+    {% partial 'site/enviar-lead' %}
 
     <style>
         :root {
@@ -2277,12 +2278,8 @@ function diagnostico() {
             p.append('entry.1366426429', '__other_option__');
             p.append('entry.1366426429.other_option_response', 'Ruta ' + this.rutaSolicitada);
 
-            fetch(atob('aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZm9ybXMvZC9lLzFGQUlwUUxTZHVGVUxzSElVdmhQN1NBdGZPb1Y0MjJWTzVIUTVBNnZnQjVKMXQxV3k1ekZtcWV3L2Zvcm1SZXNwb25zZQ=='), {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: p.toString()
-            })
+            /* Envío compartido: partials/site/enviar-lead.htm */
+            window.paEnviarLead(p)
             .then(() => {
                 medir('lead', { palanca: this.palanca, ruta: this.rutaSolicitada, total: this.precioConfig,
                                 financiamiento: this.quiereFinanciamiento ? 1 : 0 });

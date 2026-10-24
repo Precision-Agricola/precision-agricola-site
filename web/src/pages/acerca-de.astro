@@ -1,0 +1,216 @@
+---
+// Acerca de: quiénes somos, qué hacemos y el equipo. Contenido de
+// pages/acerca-de.htm con el H1 de #37 y los datos de #40.
+import { getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Picture from '../components/ui/Picture.astro';
+import { equipo } from '../components/acerca/equipo';
+import { organizacion, whatsapp } from '../components/contacto/datos';
+import huerto from '../assets/acerca/huerto-dron.jpg';
+import satelite from '../assets/acerca/satelite.jpg';
+
+const og = await getImage({ src: huerto, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+
+const sellos = [
+  'Pioneros en México y Latinoamérica',
+  'Empresa RENIECyT',
+  'Tecnologías 4.0 para el campo',
+  'Con universidades y gobierno',
+];
+
+const servicios = [
+  {
+    titulo: 'Fumigación con drones',
+    texto: 'Aplicación precisa por hectárea, con menos producto y sin compactar el suelo.',
+    href: '/drones',
+    icono: 'M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M5 5l5 5M19 5l-5 5M5 19l5-5M19 19l-5-5M5 5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0M19 5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0M5 19m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0M19 19m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0',
+  },
+  {
+    titulo: 'Mapas de fertilidad',
+    texto: 'Imágenes multiespectrales y análisis de datos para decidir lote por lote.',
+    href: '/contacto',
+    icono: 'M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2ZM9 4v14M15 6v14',
+  },
+  {
+    titulo: 'Biorreactores agrícolas',
+    texto: 'Producción de bioinsumos en tu propio rancho, con monitoreo IoT de cada lote.',
+    href: '/bioreactores',
+    icono: 'M9 3h6M10 3v6L5 18a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3M7.5 14h9',
+  },
+];
+---
+<BaseLayout
+  title="Acerca de Precisión Agrícola | Empresa RENIECyT de Agricultura de Precisión"
+  description="Somos una empresa RENIECyT que realiza investigaciones en agricultura de precisión. Fumigación con drones, mapas de fertilidad y biorreactores agrícolas en Jalisco y Michoacán."
+  ogTitle="Acerca de Precisión Agrícola | Empresa RENIECyT"
+  ogDescription="Empresa RENIECyT de agricultura de precisión en Jalisco y Michoacán. Investigación, drones y biorreactores agrícolas."
+  image={og.src}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'Acerca de Precisión Agrícola',
+    url: 'https://www.precisionagricola.com/acerca-de',
+    inLanguage: 'es-MX',
+    about: organizacion,
+  }}
+>
+  <Fragment slot="head">
+    <meta name="geo.region" content="MX-JAL" />
+    <meta name="geo.placename" content="Jalisco, México" />
+  </Fragment>
+
+  <!-- Hero: huerto visto desde el dron, con zoom lento y una retícula que lo barre. -->
+  <section class="ac-hero relative isolate flex min-h-[88svh] items-end overflow-hidden bg-noche px-5 pt-36 pb-20 text-white md:pb-28">
+    <Picture src={huerto} alt="Huerto de cítricos en hileras visto desde un dron" priority sizes="100vw" widths={[640, 960, 1280, 1600, 1920]} pictureClass="ac-hero__img absolute inset-0 -z-20" class="h-full w-full object-cover" />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-noche via-noche/70 to-noche/25"></div>
+    <div class="ac-hero__scan absolute inset-0 -z-10" aria-hidden="true"></div>
+
+    <div class="relative mx-auto w-full max-w-6xl">
+      <p class="pa-eyebrow text-lima!" data-reveal>Inteligencia y Monitoreo Agrícola</p>
+      <h1 class="pa-h1 mt-4 max-w-3xl" data-reveal>¿Quiénes somos?</h1>
+      <p class="mt-5 max-w-xl text-lg text-white/85 md:text-xl" data-reveal>La nueva era de la agricultura está aquí.</p>
+      <ul class="mt-10 flex flex-wrap gap-2.5" data-reveal-stagger>
+        {sellos.map((s) => (
+          <li class="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">{s}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Quiénes somos: el texto del sitio actual junto a la imagen satelital. -->
+  <Section width="wide">
+    <div class="grid items-center gap-14 lg:grid-cols-[1.1fr_1fr]">
+      <div data-reveal>
+        <p class="pa-eyebrow">Nuestra historia</p>
+        <h2 class="pa-h2 mt-3 max-w-xl">Ciencia mexicana aplicada al campo</h2>
+        <p class="mt-7 text-lg leading-relaxed text-bosque/80">
+          Precisión Agrícola, pionera en su ramo en México y Latinoamérica, se conforma por un equipo multidisciplinario de profesionales mexicanos especializados en investigación, desarrollo e implementación de tecnologías de la agricultura de precisión, para eficientar la producción primaria y la cadena de valor agregado.
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-bosque/80">
+          Somos una empresa RENIECyT, que realiza investigaciones científicas orientadas a las tecnologías 4.0 aplicadas para mejorar las prácticas del campo mexicano, en cooperación con Instituciones de Educación Superior y dependencias de gobierno.
+        </p>
+      </div>
+      <figure class="ac-sat relative" data-reveal>
+        <div class="relative overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
+          <Picture src={satelite} alt="Imagen satelital de una zona agrícola y costera en falso color" sizes="(min-width: 1024px) 560px, 100vw" class="aspect-[3/2] w-full object-cover" />
+          <span class="ac-sat__beam" aria-hidden="true"></span>
+        </div>
+        <figcaption class="absolute -bottom-6 left-6 rounded-2xl bg-bosque px-5 py-4 text-white shadow-[var(--shadow-card)]">
+          <span class="block font-display text-2xl font-black text-lima">4.0</span>
+          <span class="text-sm text-white/80">Satélite, dron y sensores en campo</span>
+        </figcaption>
+      </figure>
+    </div>
+  </Section>
+
+  <!-- Qué hacemos: los tres servicios de la descripción de la página. -->
+  <Section tone="brote" eyebrow="Qué hacemos" title="Del dato a la decisión en tu parcela" center>
+    <ul class="grid gap-5 md:grid-cols-3" data-reveal-stagger>
+      {servicios.map((s) => (
+        <li>
+          <a href={s.href} class="ac-card group flex h-full flex-col rounded-[var(--radius-card)] border border-bosque/10 bg-white p-8">
+            <span class="grid size-14 place-items-center rounded-2xl bg-hoja/10 text-hoja transition-colors duration-300 group-hover:bg-lima group-hover:text-tinta">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={s.icono} /></svg>
+            </span>
+            <h3 class="mt-6 text-xl font-extrabold">{s.titulo}</h3>
+            <p class="mt-2 leading-relaxed text-bosque/70">{s.texto}</p>
+            <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-bold text-hoja">
+              Conocer más
+              <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <!-- Equipo: tarjetas en cuadrícula en lugar del carrusel de Swiper. -->
+  <Section
+    id="equipo"
+    eyebrow="Las personas"
+    title="Nuestro equipo"
+    lead="Somos un equipo de profesionistas dedicados a dar servicios de agricultura de precisión y desarrollar soluciones tecnológicas para el campo basadas en inteligencia artificial y ciencia de datos."
+    width="wide"
+    center
+  >
+    <ul class="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 lg:grid-cols-5" data-reveal-stagger>
+      {equipo.map((p) => (
+        <li class="ac-member group text-center">
+          <div class="ac-member__photo relative mx-auto aspect-square w-full max-w-[200px] overflow-hidden rounded-full">
+            <Picture src={p.foto} alt={`Retrato de ${p.nombre}`} widths={[240, 400]} sizes="200px" class="h-full w-full object-cover" />
+          </div>
+          <h3 class="mt-5 font-display text-base font-extrabold leading-tight md:text-lg">{p.nombre}</h3>
+          <p class="mt-1.5 text-sm leading-snug text-bosque/65">{p.rol}</p>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <!-- Llamada final a Contacto. -->
+  <section class="px-5 pb-24">
+    <div class="ac-cta relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-bosque px-8 py-16 text-white md:px-16 md:py-20" data-reveal>
+      <div class="relative max-w-2xl">
+        <p class="pa-eyebrow text-lima!">Trabajemos juntos</p>
+        <h2 class="pa-h2 mt-3">Lleva la agricultura de precisión a tu rancho</h2>
+        <p class="mt-5 text-lg text-white/75">Cuéntanos de tu cultivo y te respondemos en 24 horas con una propuesta.</p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <Button href="/contacto" size="lg">Contáctanos</Button>
+          <Button href={whatsapp()} variant="ghost-light" size="lg" target="_blank" rel="noopener">Escríbenos por WhatsApp</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Zoom lento de la foto del hero y retícula que barre de arriba abajo. */
+  .ac-hero :global(.ac-hero__img img) { animation: ac-kenburns 22s var(--ease-out-soft) both; transform-origin: 60% 40%; }
+  @keyframes ac-kenburns { from { transform: scale(1.14); } to { transform: scale(1); } }
+
+  .ac-hero__scan {
+    background-image:
+      linear-gradient(rgb(106 191 69 / .09) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(106 191 69 / .09) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+  }
+  .ac-hero__scan::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 30%;
+    background: linear-gradient(to bottom, transparent, rgb(106 191 69 / .16), transparent);
+    animation: ac-scan 6s ease-in-out infinite;
+  }
+  @keyframes ac-scan { from { top: -30%; } to { top: 100%; } }
+
+  /* Haz de escaneo sobre la imagen satelital. */
+  .ac-sat__beam {
+    position: absolute; top: 0; bottom: 0; width: 22%; left: -22%;
+    background: linear-gradient(90deg, transparent, rgb(106 191 69 / .35), transparent);
+    mix-blend-mode: screen;
+    animation: ac-beam 5s ease-in-out 1s infinite;
+  }
+  @keyframes ac-beam { 0% { left: -22%; } 60%, 100% { left: 100%; } }
+
+  .ac-card { transition: transform .35s var(--ease-out-soft), box-shadow .35s, border-color .35s; }
+  .ac-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-card); border-color: rgb(106 191 69 / .5); }
+
+  /* Retrato: aro lima que crece y foto que se acerca al pasar el cursor. */
+  .ac-member__photo { box-shadow: 0 0 0 0 var(--color-lima); transition: box-shadow .35s var(--ease-out-soft), transform .35s var(--ease-out-soft); }
+  .ac-member__photo :global(img) { transition: transform .6s var(--ease-out-soft); }
+  .ac-member:hover .ac-member__photo { box-shadow: 0 0 0 5px var(--color-lima), 0 18px 40px rgb(26 60 42 / .22); transform: translateY(-4px); }
+  .ac-member:hover .ac-member__photo :global(img) { transform: scale(1.07); }
+
+  .ac-cta::before {
+    content: ''; position: absolute; width: 520px; height: 520px; right: -160px; top: -200px; border-radius: 50%;
+    background: radial-gradient(circle, rgb(106 191 69 / .45), transparent 65%);
+    animation: ac-glow 9s ease-in-out infinite alternate;
+  }
+  @keyframes ac-glow { to { transform: translate(-120px, 140px) scale(1.15); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ac-hero :global(.ac-hero__img img), .ac-hero__scan::after, .ac-sat__beam, .ac-cta::before { animation: none; }
+    .ac-sat__beam { display: none; }
+    .ac-card, .ac-member__photo, .ac-member__photo :global(img) { transition: none; }
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+// Sección 2 de Inicio (#39): tarjeta oscura de biorreactores con estado en línea.
+import { Picture } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import biorreactores from '../../assets/inicio/biorreactores.png';
+
+const tags = ['Bioinsumos on-farm', 'Biofertilizantes', 'Consorcios microbianos', 'Sensores IoT', 'Producción en el rancho'];
+---
+<section class="px-5 pb-24 md:pb-32">
+  <div class="bio" data-reveal>
+    <div class="bio__text">
+      <span class="bio__badge">Nuevo · Biofábrica on-farm con IoT</span>
+      <h2 class="pa-h2 mt-5 text-white">Biorreactores agrícolas para tu biofábrica</h2>
+      <p class="bio__body">Produce tus propios <strong>bioinsumos</strong>, <strong>biofertilizantes</strong> y consorcios microbianos directamente en tu rancho con biorreactores agrícolas y monitoreo opcional. <a href="/biofabrica-on-farm">Biofábrica on-farm</a> con monitoreo en tiempo real (pH, O₂ disuelto, temperatura) desde cualquier dispositivo.</p>
+      <ul class="bio__tags">
+        {tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+      <div class="flex flex-wrap gap-3">
+        <Button href="/bioreactores" size="lg" class="max-sm:whitespace-normal max-sm:text-center">Conocer biorreactores y biofábrica</Button>
+        <Button href="/biofabrica" variant="ghost-light" size="lg">Calcula tu ahorro</Button>
+      </div>
+    </div>
+    <div class="bio__visual">
+      <span class="bio__ring" aria-hidden="true"></span>
+      <Picture src={biorreactores} alt="Biorreactores agrícolas de acero inoxidable con tablero de control de Precisión Agrícola"
+        widths={[480, 800, 1160]} sizes="(min-width: 1024px) 580px, 90vw" formats={['avif', 'webp']} fallbackFormat="png"
+        loading="lazy" decoding="async" class="bio__img" />
+      <p class="bio__status"><span class="bio__dot" aria-hidden="true"></span><span><strong>En línea</strong>pH · O₂ disuelto · Temperatura</span></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bio { max-width: 72rem; margin: 0 auto; border-radius: 32px; overflow: hidden; display: grid; align-items: center; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); background: radial-gradient(circle at 78% 50%, rgb(106 191 69 / .22) 0%, rgb(106 191 69 / 0) 45%), linear-gradient(145deg, #132e20 0%, #1f4d37 55%, #132e20 100%); color: #fff; }
+  .bio__text { padding: clamp(36px, 5vw, 64px); }
+  .bio__badge { display: inline-block; padding: 6px 12px; border-radius: 999px; background: rgb(106 191 69 / .18); border: 1px solid rgb(106 191 69 / .4); color: #b9f09a; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .bio__body { margin: 20px 0 24px; font-size: 17px; line-height: 1.7; color: #cfe5d6; }
+  .bio__body strong { color: #fff; }
+  .bio__body a { color: #9eff5a; text-decoration: underline; text-underline-offset: 3px; }
+  .bio__tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 32px; padding: 0; list-style: none; }
+  .bio__tags li { padding: 7px 12px; border-radius: 10px; background: rgb(255 255 255 / .07); border: 1px solid rgb(255 255 255 / .14); font-size: 13px; }
+  .bio__visual { position: relative; display: flex; justify-content: center; padding: 32px 32px 48px; }
+  .bio__ring { position: absolute; left: 50%; top: 50%; width: 62%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; border: 1px solid rgb(106 191 69 / .35); box-shadow: 0 0 0 40px rgb(106 191 69 / .05), 0 0 0 80px rgb(106 191 69 / .03); animation: bio-ring 4s ease-in-out infinite; }
+  .bio__img { position: relative; width: 100%; max-width: 580px; height: auto; filter: drop-shadow(0 30px 40px rgb(0 0 0 / .35)); animation: bio-float 6s ease-in-out infinite; }
+  .bio__status { position: absolute; right: 32px; bottom: 32px; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 16px; color: #e6f4ea; font-size: 14px; background: rgb(15 36 25 / .6); border: 1px solid rgb(255 255 255 / .2); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+  .bio__status strong { display: block; color: #fff; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+  .bio__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-lima); box-shadow: 0 0 0 4px rgb(106 191 69 / .25); animation: bio-dot 1.5s ease-in-out infinite; }
+  @keyframes bio-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes bio-ring { 0%, 100% { opacity: .5; scale: 1; } 50% { opacity: 1; scale: 1.05; } }
+  @keyframes bio-dot { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+  @media (max-width: 700px) {
+    .bio__visual { flex-direction: column; align-items: center; gap: 16px; padding: 0 24px 36px; }
+    .bio__status { position: static; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bio__ring, .bio__img, .bio__dot { animation: none; } }
+</style>

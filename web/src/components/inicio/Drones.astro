@@ -1,0 +1,60 @@
+---
+// Sección 3 de Inicio: banda de drones. La foto se desplaza más lento que la
+// página (parallax con animation-timeline de CSS, sin JS) y el texto va en una
+// tarjeta de vidrio. Donde no hay scroll-driven animations, la foto queda fija.
+import Picture from '../ui/Picture.astro';
+import Button from '../ui/Button.astro';
+import campo from '../../assets/inicio/drones-campo.jpg';
+
+const services = ['Mapas de fertilidad', 'Muestreo georreferenciado', 'Mapeo nutricional de hojas', 'Aspersión con drones'];
+---
+<section class="drones" aria-labelledby="drones-titulo">
+  <div class="drones__bg" aria-hidden="true">
+    <Picture src={campo} alt="" sizes="100vw" widths={[640, 1024, 1600, 2400]} class="h-full w-full object-cover" />
+  </div>
+  <div class="drones__shade" aria-hidden="true"></div>
+  <svg class="drones__path" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M-20 520 C 200 520, 220 120, 420 120 S 640 480, 820 470 S 1060 90, 1220 80" />
+  </svg>
+
+  <div class="drones__inner">
+    <div class="drones__card" data-reveal>
+      <p class="pa-eyebrow text-lima!">Drones agrícolas</p>
+      <h2 id="drones-titulo" class="pa-h2 mt-3">Fumigación de campos agrícolas con drones</h2>
+      <p class="mt-5 text-lg leading-relaxed text-white/85">Ofrecemos mapas de fertilidad basados en el análisis del terreno, partiendo de puntos georreferenciados. Mediante este sistema estudiamos la disponibilidad nutricional del suelo y su composición en el total del área observada, analizando todos los elementos que nos interesen. Igualmente, el mapeo georreferenciado de hojas nos permite interpretar la situación nutricional del cultivo en cualquier estado fenológico.</p>
+      <ul class="mt-7 grid gap-2 sm:grid-cols-2" data-reveal-stagger>
+        {services.map((s) => (
+          <li class="flex items-center gap-2.5 text-[15px] font-medium">
+            <svg class="flex-none text-lima" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            {s}
+          </li>
+        ))}
+      </ul>
+      <div class="mt-8">
+        <Button href="/drones" size="lg">Conocer el servicio de drones</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .drones { position: relative; overflow: hidden; isolation: isolate; color: #fff; background: var(--color-noche); }
+  .drones__bg { position: absolute; inset: -12% 0; z-index: -2; }
+  .drones__bg :global(picture) { display: block; height: 100%; }
+  .drones__shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, rgb(15 36 25 / .85) 0%, rgb(15 36 25 / .55) 45%, rgb(15 36 25 / .15) 100%); }
+  .drones__path { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  .drones__path path { fill: none; stroke: var(--color-lima); stroke-width: 2; stroke-dasharray: 2 10; stroke-linecap: round; opacity: .7; vector-effect: non-scaling-stroke; }
+  .drones__inner { max-width: 72rem; margin: 0 auto; padding: clamp(96px, 14vw, 180px) 20px; }
+  .drones__card { max-width: 40rem; padding: clamp(28px, 4vw, 48px); border-radius: 28px; background: rgb(15 36 25 / .55); border: 1px solid rgb(255 255 255 / .18); box-shadow: 0 30px 60px rgb(0 0 0 / .25); }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .drones__card { background: rgb(255 255 255 / .1); -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%); }
+  }
+
+  @supports (animation-timeline: view()) {
+    .drones__bg { animation: drones-parallax linear both; animation-timeline: view(); }
+    @keyframes drones-parallax { from { transform: translateY(-8%); } to { transform: translateY(8%); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .drones__bg { animation: none; }
+  }
+</style>

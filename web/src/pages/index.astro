@@ -1,0 +1,48 @@
+---
+// Inicio (/). Mismos title, description, Open Graph y JSON-LD que pages/inicio.htm.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/inicio/Hero.astro';
+import Datos from '../components/inicio/Datos.astro';
+import Biorreactores from '../components/inicio/Biorreactores.astro';
+import Proceso from '../components/inicio/Proceso.astro';
+import Drones from '../components/inicio/Drones.astro';
+import Alianzas from '../components/inicio/Alianzas.astro';
+import Explora from '../components/inicio/Explora.astro';
+import ogImage from '../assets/inicio/proceso-resultados.jpg';
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Precisión Agrícola',
+  url: 'https://www.precisionagricola.com',
+  logo: 'https://www.precisionagricola.com/favicon-32x32.png',
+  description: 'Empresa RENIECyT de agricultura de precisión. Fumigación con drones, mapas de fertilidad y biorreactores agrícolas IoT.',
+  telephone: '+52-33-1117-4441',
+  areaServed: [
+    { '@type': 'State', name: 'Jalisco', containedInPlace: { '@type': 'Country', name: 'México' } },
+    { '@type': 'State', name: 'Michoacán', containedInPlace: { '@type': 'Country', name: 'México' } },
+  ],
+  sameAs: ['https://www.facebook.com/precisionagricolamx'],
+};
+---
+<BaseLayout
+  title="Precisión Agrícola | Biorreactores, Biofábricas y Drones para Bioinsumos en México"
+  description="Biorreactores agrícolas IoT y biofábricas on-farm para producir bioinsumos, biofertilizantes y consorcios microbianos. Fumigación con drones en Jalisco y Michoacán. Empresa RENIECyT."
+  ogTitle="Precisión Agrícola | Fumigación con Drones y Biorreactores Agrícolas"
+  ogDescription="Empresa RENIECyT de agricultura de precisión. Fumigación con drones, mapas de fertilidad y biorreactores agrícolas IoT en Jalisco y Michoacán."
+  image={ogImage.src}
+  jsonLd={organization}
+>
+  <Fragment slot="head">
+    <meta name="google-site-verification" content="O8srsw-3qj5BRM_7WwB9hATdBRFQkwU68sk_YoiG3yE" />
+    <meta name="geo.region" content="MX-JAL" />
+    <meta name="geo.placename" content="Jalisco, México" />
+  </Fragment>
+  <Hero />
+  <Datos />
+  <Biorreactores />
+  <Proceso />
+  <Drones />
+  <Alianzas />
+  <Explora />
+</BaseLayout>

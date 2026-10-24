@@ -1,0 +1,54 @@
+---
+// Sección 3 de Inicio: alianzas en un carrusel continuo de CSS (sin Swiper).
+// La lista se repite una vez, oculta para lectores de pantalla, para que el giro
+// no tenga corte. Se detiene al pasar el cursor; con movimiento reducido queda fija.
+import { Image } from 'astro:assets';
+import micasense from '../../assets/inicio/aliados/micasense.png';
+import udg from '../../assets/inicio/aliados/udg.png';
+import tec from '../../assets/inicio/aliados/tec.png';
+import iteso from '../../assets/inicio/aliados/iteso.png';
+import wingtra from '../../assets/inicio/aliados/wingtra.png';
+import cna from '../../assets/inicio/aliados/cna.png';
+
+const allies = [
+  { src: micasense, alt: 'MicaSense', height: 34 },
+  { src: udg, alt: 'Universidad de Guadalajara', height: 72 },
+  { src: tec, alt: 'Tecnológico de Monterrey', height: 64 },
+  { src: iteso, alt: 'ITESO', height: 72 },
+  { src: wingtra, alt: 'Wingtra', height: 60 },
+  { src: cna, alt: 'Consejo Nacional Agropecuario', height: 48 },
+];
+---
+<section class="alianzas bg-white py-20 md:py-24" aria-labelledby="alianzas-titulo">
+  <h2 id="alianzas-titulo" class="pa-eyebrow px-5 text-center" data-reveal>Nuestras alianzas estratégicas</h2>
+  <div class="alianzas__viewport">
+    <div class="alianzas__track">
+      {[0, 1].map((copy) => (
+        <ul class="alianzas__list" aria-hidden={copy ? 'true' : undefined}>
+          {allies.map((ally) => (
+            <li>
+              <Image src={ally.src} alt={copy ? '' : ally.alt} height={ally.height} densities={[1, 2]} loading="lazy" class="alianzas__logo" />
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .alianzas__viewport { margin-top: 40px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+  .alianzas__track { display: flex; width: max-content; animation: alianzas-marquee 32s linear infinite; }
+  .alianzas__viewport:hover .alianzas__track { animation-play-state: paused; }
+  .alianzas__list { display: flex; align-items: center; gap: clamp(48px, 7vw, 96px); margin: 0; padding: 0 clamp(24px, 3.5vw, 48px); list-style: none; }
+  .alianzas__list li { flex: none; display: grid; place-items: center; height: 88px; }
+  .alianzas__logo { width: auto; filter: grayscale(1); opacity: .7; transition: filter .3s, opacity .3s; }
+  .alianzas__logo:hover { filter: none; opacity: 1; }
+  @keyframes alianzas-marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .alianzas__track { animation: none; width: auto; justify-content: center; }
+    .alianzas__list { flex-wrap: wrap; justify-content: center; row-gap: 24px; }
+    .alianzas__list[aria-hidden] { display: none; }
+    .alianzas__viewport { -webkit-mask-image: none; mask-image: none; }
+  }
+</style>

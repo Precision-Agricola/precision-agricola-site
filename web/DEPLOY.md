@@ -33,8 +33,10 @@ en `beta.precisionagricola.com` (cPanel le antepone `/home/rj2x20jprqmf/`).
 ## 2. Preparar la carpeta (una sola vez, por SSH)
 
 ```bash
+mkdir -p ~/beta.precisionagricola.com
 G="git --git-dir=$HOME/.beta-dist.git --work-tree=$HOME/beta.precisionagricola.com"
 $G init -q
+$G config core.bare false
 $G remote add origin "$(git -C ~/precision-agricola remote get-url origin)"
 $G fetch -q --depth 1 origin beta-dist && $G reset -q --hard FETCH_HEAD
 cat ~/beta.precisionagricola.com/version.txt

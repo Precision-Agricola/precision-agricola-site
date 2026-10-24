@@ -303,9 +303,10 @@ function diagnosticarHoja() {
   datos.slice(1).forEach(f => { porId[f[columnas.indexOf('ID')]] = f; });
   let diferenciasCaptura = 0;
   origen.slice(1).filter(f => f[0]).forEach(f => {
-    const esperado = construirLead_(f, origen[0].map(String), generarId_(f));
+    const id = generarId_(f, origen[0].map(String));
+    const esperado = construirLead_(f, origen[0].map(String), id);
     if (esperado[COLUMNAS_LEADS.indexOf('Origen')] !== 'Embudo /biofabrica') return;
-    const actual = porId[generarId_(f)];
+    const actual = porId[id];
     COLUMNAS_LEADS.forEach((c, j) => {
       if (['Etapa', 'Vendedor', 'Próximo contacto', 'Notas'].indexOf(c) !== -1) return;
       if (!actual || String(actual[columnas.indexOf(c)]) !== String(esperado[j])) diferenciasCaptura++;
@@ -367,7 +368,7 @@ function actualizarLeads_(reparar) {
 
   const encabezados = datos[0].map(h => String(h).trim());
   const fuente = {};
-  datos.slice(1).filter(f => f[0]).forEach(f => { fuente[generarId_(f)] = construirLead_(f, encabezados, generarId_(f)); });
+  datos.slice(1).filter(f => f[0]).forEach(f => { const id = generarId_(f, encabezados); fuente[id] = construirLead_(f, encabezados, id); });
   const respaldos = [];
   if (reparar) {
     const sello = Utilities.formatDate(new Date(), ss.getSpreadsheetTimeZone(), 'yyyyMMdd-HHmmss');
@@ -406,7 +407,7 @@ function actualizarLeads_(reparar) {
   for (let i = 1; i < datos.length; i++) {
     const fila = datos[i];
     if (!fila[0]) continue;
-    const id = generarId_(fila);
+    const id = generarId_(fila, encabezados);
     if (idsExistentes[id]) continue;      // ya está: no se duplica
     nuevas.push(construirLead_(fila, encabezados, id));
     idsExistentes[id] = true;
@@ -458,16 +459,25 @@ function leadsExistentes_(leads) {
   return mapa;
 }
 
-/** Huella de la fila: marca temporal más correo. Evita duplicar al re-sincronizar. */
-function generarId_(fila) {
+/** Huella de la fila: marca temporal más correo. Evita duplicar al re-sincronizar.
+    El correo se busca por encabezado, como el resto de columnas; la posición 2
+    queda de respaldo, y en ese caso la huella sale igual que antes. */
+function generarId_(fila, encabezados) {
   const marca = fila[0] instanceof Date ? fila[0].toISOString() : String(fila[0]);
-  return (marca + '|' + String(fila[2] || '')).replace(/\s+/g, '').toLowerCase();
+  const i = (encabezados || []).findIndex(h => /correo|e-?mail/.test(normalizar_(h)));
+  const correo = fila[i === -1 ? 2 : i];
+  return (marca + '|' + String(correo || '')).replace(/\s+/g, '').toLowerCase();
 }
 
 function construirLead_(fila, encabezados, id) {
-  const col = (frag) => {
-    const i = encabezados.findIndex(h => h.toLowerCase().indexOf(frag.toLowerCase()) !== -1);
-    return i === -1 ? '' : fila[i];
+  /* Acepta varios textos: el encabezado del Form no siempre dice lo mismo que
+     la pregunta del sitio. Se compara sin acentos ni mayúsculas. */
+  const col = (...frags) => {
+    for (const frag of frags) {
+      const i = encabezados.findIndex(h => normalizar_(h).indexOf(normalizar_(frag)) !== -1);
+      if (i !== -1) return fila[i];
+    }
+    return '';
   };
 
   /* El resumen del embudo viaja en alguna celda con formato
@@ -486,14 +496,19 @@ function construirLead_(fila, encabezados, id) {
   const pais = detectarPais_(ubicacion, String(col('WhatsApp') || ''));
 
   const superficie = numero_(r['Superficie'] !== undefined ? r['Superficie'] : col('Superficie total'));
-  const gasto = numero_(r['Gasto'] !== undefined ? r['Gasto'] : col('Cuánto inviertes'));
+  const gasto = numero_(r['Gasto'] !== undefined ? r['Gasto'] : col('Cuánto inviertes', 'Cuánto gastas'));
   const meses = numero_((r['Meses con gasto'] || '').split(',').filter(String).length) || '';
   const total = numero_(r['Total']);
   const recup = mesesDesdeTexto_(r['Recuperacion'] || r['Recuperación']);
 
+  /* Los formularios de /bioreactores y /kit-biorreactor no traen resumen,
+     pero sí preguntan qué quiere hacer y si ya usa microorganismos. */
+  const rutaPedida = delEmbudo ? (r['RUTA SOLICITADA'] || r['RUTA']) : rutaDesdeIntencion_(col('deseas hacer'));
+  const practica = delEmbudo ? (r['Practica'] || r['Práctica'] || '') : practicaDesdeRespuesta_(col('utilizas microorganismos'));
+
   const puntaje = calcularPuntaje_({
-    ruta: r['RECOMENDACION CALCULADA'] || r['RUTA'] || '',
-    practica: r['Practica'] || r['Práctica'] || '',
+    ruta: r['RECOMENDACION CALCULADA'] || r['RUTA'] || rutaPedida || '',
+    practica: practica,
     superficie: superficie,
     recuperacion: recup,
     financiamiento: /INTERESADO/i.test(r['Financiamiento'] || '')
@@ -515,14 +530,14 @@ function construirLead_(fila, encabezados, id) {
   registro['País'] = pais;
   registro['Cultivos'] = etiquetaCultivos_(r['Cultivos'] || r['Cultivo'] || col('Cultivo Principal'));
   registro['Superficie (ha)'] = superficie;
-  registro['Práctica actual'] = etiquetaPractica_(r['Practica'] || r['Práctica']);
+  registro['Práctica actual'] = etiquetaPractica_(practica);
   registro['Gasto MXN/ha/mes'] = gasto;
   registro['Meses activos'] = meses;
   registro['Gasto anual MXN'] = numero_(r['Gasto anual por ha']) && superficie
       ? numero_(r['Gasto anual por ha']) * superficie : '';
   registro['Problema principal'] = etiquetaProblema_(r['Problema principal']) || col('principal problema');
   registro['Todos los problemas'] = r['Problemas seleccionados'] || '';
-  registro['Ruta'] = etiquetaRuta_(r['RUTA SOLICITADA'] || r['RUTA']);
+  registro['Ruta'] = etiquetaRuta_(rutaPedida);
   registro['Recomendación calculada'] = etiquetaRuta_(r['RECOMENDACION CALCULADA'] || r['RUTA']);
   registro['Etapas del cultivo'] = r['Etapas'] || '';
   registro['Meses con gasto'] = r['Meses con gasto'] || '';
@@ -545,7 +560,9 @@ function construirLead_(fila, encabezados, id) {
   if (!delEmbudo && /\d\s*(a|-|–|hasta)\s*\d|menos de|m[aá]s de/i.test(superficieCruda)) {
     avisos.push('Superficie estimada del tramo «' + superficieCruda.trim() + '»: confirmar');
   }
-  if (pais !== 'México' && gasto) {
+  if (pais === 'Por confirmar') {
+    avisos.push('País por confirmar' + (gasto ? ': revisar la moneda del gasto' : ''));
+  } else if (pais !== 'México' && gasto) {
     avisos.push('El gasto viene en moneda de ' + pais + ', no en MXN: convertir');
   }
   registro['Notas'] = avisos.join(' · ');
@@ -643,7 +660,7 @@ function marcarVenta() {
   registro['Estado'] = v('Estado');
   registro['Cultivos'] = v('Cultivos');
   registro['Equipo vendido'] = v('Cepas sugeridas')
-      ? ('Biorreactor' + (v('Monitoreo') === 'si' ? ' + monitoreo' : '') + ' · ' + v('Cepas sugeridas'))
+      ? ('Biorreactor' + (/^s[ií]$/i.test(String(v('Monitoreo'))) ? ' + monitoreo' : '') + ' · ' + v('Cepas sugeridas'))
       : '';
   registro['Monto MXN'] = v('Total cotizado MXN');
   registro['Forma de pago'] = v('Forma de pago');
@@ -751,8 +768,13 @@ function numero_(v) {
     }
   }
 
+  /* "$-12,345": el embudo manda ahorros negativos cuando comprar sale mas
+     barato que producir. El signo solo cuenta pegado al numero, para no
+     confundirlo con un guion suelto del texto libre. */
   const m = s.match(/\d[\d.,]*/);
-  return m ? limpiarNumero_(m[0]) : '';
+  if (!m) return '';
+  const n = limpiarNumero_(m[0]);
+  return n !== '' && /(?:^|[\s$:(])-\$?$/.test(s.slice(0, m.index)) ? -n : n;
 }
 
 /**
@@ -786,14 +808,35 @@ function mesesDesdeTexto_(t) {
   return /año/i.test(s) ? Math.round(n * 12) : Math.round(n);
 }
 
+/**
+ * México solo cuando hay evidencia: lada +52, un número de 10 dígitos o un
+ * estado reconocido. Antes todo lo desconocido caía en México y el aviso de
+ * moneda nunca salía para España o Estados Unidos.
+ */
 function detectarPais_(ubicacion, telefono) {
-  const u = String(ubicacion).toLowerCase();
-  const t = String(telefono);
-  if (/guatemala|\+502/.test(u + t)) return 'Guatemala';
-  if (/colombia|neiva|bogot|medell/.test(u) || /^\+?57\d{10}/.test(t)) return 'Colombia';
-  if (/per[uú]|\+51/.test(u + t)) return 'Perú';
-  if (/chile|\+56/.test(u + t)) return 'Chile';
-  return 'México';
+  const u = normalizar_(ubicacion);
+  const t = String(telefono).trim();
+  const digitos = t.replace(/\D/g, '');
+  const conLada = (lada) => new RegExp('^\\+\\s*' + lada).test(t);
+  const paises = [
+    ['Guatemala',      /guatemala/,                                 '502'],
+    ['El Salvador',    /el salvador/,                               '503'],
+    ['Honduras',       /honduras/,                                  '504'],
+    ['Costa Rica',     /costa rica/,                                '506'],
+    ['Ecuador',        /ecuador/,                                   '593'],
+    ['Colombia',       /colombia|neiva|bogot|medell/,               '57'],
+    ['Perú',           /\bperu\b/,                                 '51'],
+    ['Chile',          /\bchile\b/,                                '56'],
+    ['Argentina',      /argentina/,                                 '54'],
+    ['España',         /espana|madrid|almeria|huelva|murcia/,       '34'],
+    ['Estados Unidos', /estados unidos|\busa\b|ee\.? ?uu|texas|arizona|florida/, '1']
+  ];
+  for (const [pais, lugar] of paises) if (lugar.test(u)) return pais;
+  if (estadoDesde_(ubicacion) || /mexico/.test(u)) return 'México';
+  if (conLada('52') || /^52\d{10,11}$/.test(digitos) || digitos.length === 10) return 'México';
+  for (const [pais, , lada] of paises) if (conLada(lada)) return pais;
+  if (/^57\d{10}$/.test(digitos)) return 'Colombia';
+  return 'Por confirmar';
 }
 
 const ESTADOS_MX = ['Aguascalientes','Baja California','Baja California Sur','Campeche','Chiapas',
@@ -802,11 +845,56 @@ const ESTADOS_MX = ['Aguascalientes','Baja California','Baja California Sur','Ca
   'Querétaro','Quintana Roo','San Luis Potosí','Sinaloa','Sonora','Tabasco','Tamaulipas','Tlaxcala',
   'Veracruz','Yucatán','Zacatecas'];
 
+/** Abreviaturas que la gente escribe en vez del nombre completo. */
+const ALIAS_ESTADOS = {
+  'cdmx': 'Ciudad de México', 'edomex': 'Estado de México', 'edo mex': 'Estado de México',
+  'ags': 'Aguascalientes', 'bcs': 'Baja California Sur', 'chih': 'Chihuahua', 'coah': 'Coahuila',
+  'gto': 'Guanajuato', 'jal': 'Jalisco', 'mich': 'Michoacán', 'n l': 'Nuevo León', 'nl': 'Nuevo León',
+  'qro': 'Querétaro', 'q roo': 'Quintana Roo', 'slp': 'San Luis Potosí', 'tamps': 'Tamaulipas',
+  'zac': 'Zacatecas', 'dgo': 'Durango', 'nay': 'Nayarit'
+};
+
+/**
+ * La ubicación se escribe «Municipio, Estado», y muchos municipios se llaman
+ * como un estado (Ciudad Hidalgo, Michoacán). Por eso gana la coincidencia
+ * que termina más a la derecha y, a la par, la más larga (Baja California Sur).
+ */
 function estadoDesde_(texto) {
-  const t = String(texto).toLowerCase();
-  for (let i = 0; i < ESTADOS_MX.length; i++) {
-    if (t.indexOf(ESTADOS_MX[i].toLowerCase()) !== -1) return ESTADOS_MX[i];
-  }
+  const t = ' ' + normalizar_(texto).replace(/[^a-z0-9]+/g, ' ') + ' ';
+  const candidatos = ESTADOS_MX.map(e => [normalizar_(e), e])
+    .concat(Object.keys(ALIAS_ESTADOS).map(a => [a, ALIAS_ESTADOS[a]]));
+  let mejor = null;
+  candidatos.forEach(([patron, estado]) => {
+    const fin = t.lastIndexOf(' ' + patron + ' ');
+    if (fin === -1) return;
+    const cierre = fin + patron.length;
+    if (!mejor || cierre > mejor.cierre || (cierre === mejor.cierre && patron.length > mejor.largo)) {
+      mejor = { cierre: cierre, largo: patron.length, estado: estado };
+    }
+  });
+  return mejor ? mejor.estado : '';
+}
+
+/** Minúsculas y sin acentos, para comparar texto escrito a mano. */
+function normalizar_(s) {
+  return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+/** «¿Qué deseas hacer?» de los formularios viejos, como ruta del embudo. */
+function rutaDesdeIntencion_(texto) {
+  const s = normalizar_(texto);
+  if (/biofabrica|biorreactor|equipo/.test(s)) return 'completa';
+  if (/litros/.test(s)) return 'litros';
+  if (/visita/.test(s)) return 'campo';
+  return '';
+}
+
+/** «¿Utilizas microorganismos?»: un no es manejo convencional; un sí no dice
+    si compra o propaga, así que se guarda sin puntaje. */
+function practicaDesdeRespuesta_(texto) {
+  const s = normalizar_(texto);
+  if (s === 'no') return 'quimicos';
+  if (s === 'si') return 'Usa microorganismos (sin detalle)';
   return '';
 }
 

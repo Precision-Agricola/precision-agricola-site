@@ -1,5 +1,21 @@
 # Relevo — hoja de leads y Apps Script
 
+## Actualización del 24 de octubre de 2026
+
+- `estadoDesde_()` compara sin acentos, reconoce abreviaturas (CDMX, Edomex,
+  Mich., Qro., N.L.…) y elige el estado que termina más a la derecha:
+  «Ciudad Hidalgo, Michoacán» es Michoacán, no Hidalgo.
+- `detectarPais_()` ya no supone México por defecto: sin lada, estado ni
+  país reconocible devuelve «Por confirmar» y deja un aviso en Notas.
+- Los formularios de `/bioreactores` y `/kit-biorreactor` alimentan Ruta y
+  Práctica desde «¿Qué deseas hacer?» y «¿Utilizas microorganismos?».
+  `mejorarHoja()` sigue sin reinterpretar leads antiguos: solo cambian los
+  nuevos.
+- Los ahorros negativos conservan el signo; `marcarVenta` reconoce el
+  monitoreo guardado como «Sí»; el ID busca el correo por encabezado.
+- Falta confirmar en la hoja real el encabezado de la pregunta de gasto
+  (issue #34). El script acepta «Cuánto inviertes» y «Cuánto gastas».
+
 ## Verificación del 5 de octubre de 2026
 
 - Hay 12 respuestas y 12 leads; el diagnóstico encontró 0 diferencias de

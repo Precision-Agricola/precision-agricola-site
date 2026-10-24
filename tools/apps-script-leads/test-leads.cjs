@@ -53,3 +53,68 @@ test('la ampliación conserva las 32 posiciones anteriores y rechaza encabezados
   assert.throws(() => ctx.validarEncabezados_(sheet(['Nombre', 'Fecha']), columnas), /Encabezados inesperados/);
   assert.equal(ctx.textoSeguro_('=IMPORTXML("x")'), '\'=IMPORTXML("x")');
 });
+test('el estado sale del final de la ubicación, sin depender de acentos', () => {
+  const casos = {
+    'La Paz, Baja California Sur': 'Baja California Sur',
+    'Ensenada, Baja California': 'Baja California',
+    'Ciudad Hidalgo, Michoacán': 'Michoacán',
+    'Morelos, Zacatecas': 'Zacatecas',
+    'Uruapan, Michoacan': 'Michoacán',
+    'Monterrey, Nuevo Leon': 'Nuevo León',
+    'Queretaro, Qro.': 'Querétaro',
+    'CDMX': 'Ciudad de México',
+    'Toluca, Edomex': 'Estado de México',
+    'Zamora, Mich.': 'Michoacán',
+    'Hidalgo del Parral, Chihuahua': 'Chihuahua',
+    'Pachuca, Hidalgo': 'Hidalgo',
+    'Sin dato': ''
+  };
+  for (const [texto, esperado] of Object.entries(casos)) assert.equal(ctx.estadoDesde_(texto), esperado, texto);
+});
+test('los ahorros negativos conservan el signo y los rangos no', () => {
+  const r = lead('RUTA SOLICITADA: litros | RECOMENDACION CALCULADA: litros | Ahorro anual por ha estimado: $-12,345 | Ahorro anual total estimado: $-1,234,500');
+  assert.equal(r['Ahorro anual estimado MXN/ha'], -12345);
+  assert.equal(r['Ahorro anual total estimado MXN'], -1234500);
+  assert.equal(ctx.numero_('11 a 50 ha'), 31);
+  assert.equal(ctx.numero_('5-15'), 10);
+  assert.equal(ctx.numero_('inversión - 500'), 500);
+});
+test('el formulario anterior aprovecha intención y práctica', () => {
+  const h = headers.slice(0, 10).concat(['¿Utilizas microorganismos actualmente?', '¿Qué deseas hacer?']);
+  const fila = ['2026-10-01', 'Ejemplo ficticio', 'ejemplo@example.invalid', '3300000000', 'Prueba', 'Zapopan, Jalisco', 'Berries', 'Más de 50 ha', '$500', 'Suelo', 'No', 'Adquirir una biofábrica'];
+  const r = Object.fromEntries(ctx.construirLead_(fila, h, 'x').map((v, i) => [columnas[i], v]));
+  assert.equal(r.Origen, 'Formulario anterior');
+  assert.equal(r.Ruta, 'Biofábrica completa');
+  assert.equal(r['Recomendación calculada'], '');
+  assert.equal(r['Práctica actual'], 'Convencional');
+  assert.equal(r.Puntaje, 35 + 8 + 10);
+  const si = ctx.construirLead_(fila.slice(0, 10).concat(['Sí', 'Programar una visita']), h, 'x');
+  assert.equal(si[columnas.indexOf('Práctica actual')], 'Usa microorganismos (sin detalle)');
+  assert.equal(si[columnas.indexOf('Ruta')], 'Diagnóstico en campo');
+});
+test('el gasto se lee aunque el encabezado diga «gastas»', () => {
+  const h = headers.slice(); h[8] = '¿Cuánto gastas aproximadamente al mes en microorganismos / bioinsumos por hectárea?';
+  const fila = ['2026-10-01', 'n', 'c', '+520000000000', 'r', 'Jalisco', 'Berries', '11 a 50 ha', '$800', 'Suelo', ''];
+  assert.equal(ctx.construirLead_(fila, h, 'x')[columnas.indexOf('Gasto MXN/ha/mes')], 800);
+});
+test('el país solo es México con evidencia', () => {
+  assert.equal(ctx.detectarPais_('Zapopan, Jalisco', ''), 'México');
+  assert.equal(ctx.detectarPais_('Rancho X', '33 1234 5678'), 'México');
+  assert.equal(ctx.detectarPais_('Rancho X', '+52 1 33 1234 5678'), 'México');
+  assert.equal(ctx.detectarPais_('Madrid, España', '+34 600 000 000'), 'España');
+  assert.equal(ctx.detectarPais_('McAllen', '+1 956 000 0000'), 'Estados Unidos');
+  assert.equal(ctx.detectarPais_('Lima, Perú', ''), 'Perú');
+  assert.equal(ctx.detectarPais_('Neiva', ''), 'Colombia');
+  assert.equal(ctx.detectarPais_('Finca', '+502 5555 5555'), 'Guatemala');
+  assert.equal(ctx.detectarPais_('Finca', ''), 'Por confirmar');
+});
+test('el ID busca el correo por encabezado y conserva el formato anterior', () => {
+  const fila = ['2026-10-01', 'n', 'A@B.com', 'w'];
+  const antes = ctx.generarId_(fila);
+  assert.equal(ctx.generarId_(fila, ['Marca temporal', 'Nombre', 'Correo electrónico', 'WhatsApp']), antes);
+  assert.equal(ctx.generarId_(['2026-10-01', 'A@B.com', 'n', 'w'], ['Marca temporal', 'Correo', 'Nombre', 'WhatsApp']), antes);
+});
+test('marcarVenta reconoce el monitoreo guardado como «Sí»', () => {
+  const src = fs.readFileSync(`${__dirname}/src/Código.js`, 'utf8');
+  assert.match(src, /\/\^s\[ií\]\$\/i\.test\(String\(v\('Monitoreo'\)\)\)/);
+});

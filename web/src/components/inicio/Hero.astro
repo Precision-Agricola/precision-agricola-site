@@ -1,0 +1,209 @@
+---
+// Portada de Inicio (#39): foto aérea a pantalla completa y lente multiespectral.
+// La capa NDVI tiene el mismo encuadre que la foto (mismo object-fit), así que la
+// lente coincide árbol por árbol. La lente es un círculo pequeño con overflow
+// hidden que se mueve con transform y lleva dentro la capa completa desplazada al
+// revés; así todo corre en el compositor y la capa no cuenta como LCP. Con ratón
+// sigue al cursor; en pantallas táctiles recorre la huerta sola. En pantallas verticales se sirve un recorte
+// cuadrado de las dos fotos, que pesa la mitad y se ve igual con object-fit: cover.
+import { getImage, Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Button from '../ui/Button.astro';
+import logo from '../../assets/brand/logo-claro.png';
+import campo from '../../assets/inicio/hero-campo.jpg';
+import campoCuadrada from '../../assets/inicio/hero-campo-cuadrada.jpg';
+import ndvi from '../../assets/inicio/hero-ndvi.jpg';
+import ndviCuadrada from '../../assets/inicio/hero-ndvi-cuadrada.jpg';
+
+// La foto es 2560 × 1143 (2.24:1); con la altura de la pantalla, su ancho es 224vh.
+const WIDE = '(max-aspect-ratio: 224/100) 224vh, 100vw';
+const SQUARE = '100vh';
+const PORTRAIT = '(max-aspect-ratio: 1/1)';
+
+async function srcset(src: ImageMetadata, format: 'avif' | 'webp' | 'jpg', widths: number[]) {
+  const steps = widths.filter((w) => w <= src.width);
+  const images = await Promise.all(steps.map((width) => getImage({ src, width, format, quality: format === 'avif' ? 55 : 72 })));
+  return images.map((img, i) => `${img.src} ${steps[i]}w`).join(', ');
+}
+
+async function sources(wide: ImageMetadata, square: ImageMetadata) {
+  const wideWidths = [960, 1280, 1600, 2048, 2560];
+  const squareWidths = [640, 900, 1143];
+  return {
+    squareAvif: await srcset(square, 'avif', squareWidths),
+    squareWebp: await srcset(square, 'webp', squareWidths),
+    wideAvif: await srcset(wide, 'avif', wideWidths),
+    wideWebp: await srcset(wide, 'webp', wideWidths),
+    fallback: await getImage({ src: wide, width: 1600, format: 'jpg', quality: 72 }),
+  };
+}
+
+const foto = await sources(campo, campoCuadrada);
+const capa = await sources(ndvi, ndviCuadrada);
+---
+<section class="pa-hero" aria-label="Portada" data-hero>
+  <picture>
+    <source media={PORTRAIT} type="image/avif" srcset={foto.squareAvif} sizes={SQUARE} />
+    <source media={PORTRAIT} type="image/webp" srcset={foto.squareWebp} sizes={SQUARE} />
+    <source type="image/avif" srcset={foto.wideAvif} sizes={WIDE} />
+    <source type="image/webp" srcset={foto.wideWebp} sizes={WIDE} />
+    <img class="pa-hero__img" src={foto.fallback.src} width={campo.width} height={campo.height}
+         alt="Vista aérea de huertas en hileras tomada con dron" fetchpriority="high" decoding="async" />
+  </picture>
+
+  <div class="pa-hero__lens" aria-hidden="true" data-lens>
+    <div class="pa-hero__lens-clip">
+      <div class="pa-hero__lens-view" data-lens-view>
+        <!-- La capa NDVI se clona al terminar de cargar la página para no competir con la foto. -->
+        <template data-ndvi>
+          <picture>
+            <source media={PORTRAIT} type="image/avif" srcset={capa.squareAvif} sizes={SQUARE} />
+            <source media={PORTRAIT} type="image/webp" srcset={capa.squareWebp} sizes={SQUARE} />
+            <source type="image/avif" srcset={capa.wideAvif} sizes={WIDE} />
+            <source type="image/webp" srcset={capa.wideWebp} sizes={WIDE} />
+            <img class="pa-hero__ndvi" src={capa.fallback.src} width={ndvi.width} height={ndvi.height} alt="" decoding="async" />
+          </picture>
+        </template>
+      </div>
+    </div>
+    <span class="pa-hero__lens-tag">NDVI</span>
+  </div>
+  <div class="pa-hero__shade" aria-hidden="true"></div>
+
+  <div class="pa-hero__content">
+    <Image src={logo} alt="Logotipo de Precisión Agrícola" width={96} height={103} densities={[1, 2]} loading="eager" class="pa-hero__logo pa-hero__in" style="--i: 0" />
+    <h1 class="pa-h1 pa-hero__title pa-hero__in" style="--i: 1">Precisión Agrícola</h1>
+    <p class="pa-hero__lead pa-hero__in" style="--i: 2">Agroecología, tecnología y asesoría para la seguridad alimentaria</p>
+    <div class="pa-hero__actions pa-hero__in" style="--i: 3">
+      <Button href="/bioreactores" size="lg">Conocer biorreactores</Button>
+      <Button href="/drones" variant="ghost-light" size="lg">Fumigación con drones</Button>
+    </div>
+  </div>
+
+  <p class="pa-hero__hint" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+    <span class="pa-hero__hint-mouse">Mueve el cursor: la lente muestra el índice multiespectral y revela zonas con estrés</span>
+    <span class="pa-hero__hint-touch">La lente muestra el índice multiespectral de la huerta</span>
+  </p>
+  <a class="pa-hero__scroll" href="#datos" aria-label="Bajar a la siguiente sección">
+    <span aria-hidden="true"></span>
+  </a>
+</section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const template = hero?.querySelector<HTMLTemplateElement>('template[data-ndvi]');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  function mountLens() {
+    if (!hero || !template) return;
+    const lens = hero.querySelector<HTMLElement>('[data-lens]')!;
+    const view = hero.querySelector<HTMLElement>('[data-lens-view]')!;
+    const layer = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
+    template.replaceWith(layer);
+
+    // La capa interior mide lo mismo que la portada para coincidir con la foto.
+    const fit = () => {
+      hero.style.setProperty('--hw', `${hero.clientWidth}px`);
+      hero.style.setProperty('--hh', `${hero.clientHeight}px`);
+    };
+    fit();
+    addEventListener('resize', fit, { passive: true });
+
+    const img = layer.querySelector('img')!;
+    const ready = () => hero.classList.add('has-lens', mouse ? 'is-mouse' : 'is-auto');
+    if (img.complete) ready(); else img.addEventListener('load', ready, { once: true });
+
+    if (!mouse) return;
+    // La lente persigue al cursor con un poco de inercia.
+    let x = 0, y = 0, tx = 0, ty = 0, frame = 0;
+    const place = () => {
+      lens.style.transform = `translate(${x}px, ${y}px)`;
+      view.style.transform = `translate(${-x}px, ${-y}px)`;
+    };
+    const step = () => {
+      x += (tx - x) * 0.22;
+      y += (ty - y) * 0.22;
+      place();
+      frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(step) : 0;
+    };
+    hero.addEventListener('pointermove', (event) => {
+      const box = hero.getBoundingClientRect();
+      tx = event.clientX - box.left;
+      ty = event.clientY - box.top;
+      if (!hero.classList.contains('is-lensing')) { x = tx; y = ty; place(); }
+      hero.classList.add('is-lensing');
+      if (!frame) frame = requestAnimationFrame(step);
+    });
+    hero.addEventListener('pointerleave', () => hero.classList.remove('is-lensing'));
+  }
+
+  // En táctil sin animación la lente quieta no aporta; se omite.
+  if (hero && (mouse || !reduced)) {
+    if (document.readyState === 'complete') mountLens();
+    else addEventListener('load', mountLens, { once: true });
+  }
+</script>
+
+<style>
+  .pa-hero { --r: 88px; position: relative; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; background: var(--color-noche); color: #fff; isolation: isolate; }
+  .pa-hero picture { position: absolute; inset: 0; }
+  .pa-hero__img, .pa-hero__ndvi { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .pa-hero__img { animation: pa-hero-zoom 2.4s var(--ease-out-soft) both; }
+  .pa-hero__lens { position: absolute; left: 0; top: 0; z-index: 1; width: calc(var(--r) * 2); height: calc(var(--r) * 2); margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1); opacity: 0; pointer-events: none; transition: opacity .3s; will-change: transform; }
+  .pa-hero__lens-clip { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; border: 2px solid rgb(255 255 255 / .9); box-shadow: 0 0 0 6px rgb(255 255 255 / .12), 0 20px 50px rgb(0 0 0 / .35); }
+  .pa-hero__lens-view { position: absolute; left: calc(var(--r) - 2px); top: calc(var(--r) - 2px); width: var(--hw, 100vw); height: var(--hh, 100svh); will-change: transform; }
+  .pa-hero__lens-tag { position: absolute; left: 50%; bottom: -12px; translate: -50% 0; padding: 3px 9px; border-radius: 999px; background: var(--color-lima); color: var(--color-tinta); font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+  .pa-hero__shade { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at center, rgb(0 0 0 / .1) 0%, rgb(0 0 0 / .45) 100%), linear-gradient(to bottom, rgb(15 36 25 / .35), transparent 30%, transparent 70%, rgb(15 36 25 / .55)); }
+  .pa-hero__content { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 96px 20px 96px; text-align: center; pointer-events: none; }
+  .pa-hero__logo { width: 96px; height: auto; filter: drop-shadow(0 8px 24px rgb(0 0 0 / .35)); }
+  .pa-hero__title { margin: 20px 0 12px; text-shadow: 0 4px 30px rgb(0 0 0 / .35); }
+  .pa-hero__lead { max-width: 38rem; font-size: clamp(1.05rem, 1.8vw, 1.35rem); line-height: 1.45; color: rgb(255 255 255 / .92); text-shadow: 0 2px 16px rgb(0 0 0 / .4); }
+  .pa-hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; pointer-events: auto; }
+  .pa-hero__in { animation: pa-hero-in .9s var(--ease-out-soft) both; animation-delay: calc(.25s + var(--i) * .12s); }
+
+  .pa-hero__hint { position: absolute; left: 50%; bottom: 92px; z-index: 2; display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); translate: -50% 0; padding: 10px 16px; border-radius: 999px; font-size: 14px; pointer-events: none; background: rgb(15 36 25 / .55); border: 1px solid rgb(255 255 255 / .28); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); opacity: 0; transition: opacity .5s; }
+  .pa-hero__hint svg { flex: none; }
+  .pa-hero__hint-touch { display: none; }
+  .pa-hero.has-lens .pa-hero__hint { opacity: 1; }
+  .pa-hero.is-auto .pa-hero__hint-mouse { display: none; }
+  .pa-hero.is-auto .pa-hero__hint-touch { display: inline; }
+
+  .pa-hero__scroll { position: absolute; left: 50%; bottom: 28px; z-index: 2; translate: -50% 0; display: grid; place-items: center; width: 32px; height: 50px; border-radius: 999px; border: 2px solid rgb(255 255 255 / .6); }
+  .pa-hero__scroll span { width: 4px; height: 9px; border-radius: 4px; background: #fff; animation: pa-hero-wheel 1.8s ease-in-out infinite; }
+
+  /* Con ratón: la lente aparece al entrar y sigue al cursor. */
+  .pa-hero.is-mouse { cursor: crosshair; }
+  .pa-hero.is-mouse.is-lensing .pa-hero__lens { opacity: 1; }
+
+  /* En táctil: la lente recorre la huerta sola. La capa interior hace el mismo
+     recorrido al revés para quedarse quieta respecto a la foto. */
+  .pa-hero.is-auto { --r: 72px; }
+  .pa-hero.is-auto .pa-hero__lens { opacity: 1; animation: pa-hero-lens 14s ease-in-out infinite; }
+  .pa-hero.is-auto .pa-hero__lens-view { animation: pa-hero-lens-view 14s ease-in-out infinite; }
+
+  @keyframes pa-hero-zoom { from { transform: scale(1.08); } to { transform: none; } }
+  @keyframes pa-hero-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @keyframes pa-hero-wheel { 0% { transform: translateY(-6px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(8px); opacity: 0; } }
+  @keyframes pa-hero-lens {
+    0%, 100% { transform: translate(22vw, 70svh); }
+    25% { transform: translate(74vw, 76svh); }
+    50% { transform: translate(78vw, 24svh); }
+    75% { transform: translate(24vw, 20svh); }
+  }
+  @keyframes pa-hero-lens-view {
+    0%, 100% { transform: translate(-22vw, -70svh); }
+    25% { transform: translate(-74vw, -76svh); }
+    50% { transform: translate(-78vw, -24svh); }
+    75% { transform: translate(-24vw, -20svh); }
+  }
+
+  @media (max-width: 640px) {
+    .pa-hero__hint { font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pa-hero__img, .pa-hero__in, .pa-hero__scroll span { animation: none; }
+    .pa-hero__lens { transition: none; }
+  }
+</style>

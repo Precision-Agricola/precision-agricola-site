@@ -1,0 +1,40 @@
+{#
+    Envío de leads compartido por /bioreactores, /kit-biorreactor y /biofabrica.
+
+    Primero pasa por /api/lead, que reenvía al Google Form desde el servidor y
+    sí puede leer si Google aceptó la respuesta. Con fetch no-cors directo la
+    respuesta es opaca: el navegador mostraba "gracias" aunque Google la
+    rechazara (issue #35).
+
+    Si /api/lead no responde o no está disponible, se envía directo como antes,
+    así que en el peor caso el comportamiento es el de siempre. Solo un rechazo
+    explícito de Google (422) se muestra como error al visitante.
+#}
+<script>
+window.paEnviarLead = async function (params) {
+    const body = params.toString();
+    const tipo = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    let r = null;
+    try {
+        r = await fetch('/api/lead', {
+            method: 'POST',
+            headers: Object.assign({ 'Accept': 'application/json' }, tipo),
+            body: body
+        });
+    } catch (e) { r = null; }
+
+    if (r) {
+        const datos = await r.json().catch(() => null);
+        if (r.ok && datos && datos.ok) return;
+        if (r.status === 422 && datos && datos.motivo === 'rechazado') throw new Error('rechazado');
+    }
+
+    /* Respaldo: la URL va ofuscada en base64 a propósito (ver RELEVO.md). */
+    await fetch(atob('aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZm9ybXMvZC9lLzFGQUlwUUxTZHVGVUxzSElVdmhQN1NBdGZPb1Y0MjJWTzVIUTVBNnZnQjVKMXQxV3k1ekZtcWV3L2Zvcm1SZXNwb25zZQ=='), {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: tipo,
+        body: body
+    });
+};
+</script>

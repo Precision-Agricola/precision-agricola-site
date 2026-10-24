@@ -9,6 +9,8 @@ const { createHash } = require('node:crypto');
 const base = process.argv[2] || 'http://127.0.0.1:8877';
 const canonical = 'https://www.precisionagricola.com';
 const routes = ['/', '/bioreactores', '/biofabrica-on-farm', '/kit-biorreactor', '/biofabrica'];
+// Pages outside the biofactory funnel: same checks except the calculator link.
+const otherRoutes = ['/drones', '/acerca-de', '/contacto'];
 const titles = new Set();
 async function get(route) {
   const response = await fetch(base + route, { signal: AbortSignal.timeout(45000) });
@@ -17,7 +19,7 @@ async function get(route) {
   return response;
 }
 async function main() {
-  for (const route of routes) {
+  for (const route of [...routes, ...otherRoutes]) {
     const html = await (await get(route)).text();
     const document = new JSDOM(html).window.document;
     assert.equal(document.querySelectorAll('title').length, 1, route + ': title');
@@ -28,7 +30,7 @@ async function main() {
     assert(document.querySelector('meta[name="description"]')?.content.length > 60, route + ': description');
     assert(!/noindex/i.test(document.querySelector('meta[name="robots"]')?.content || ''), route + ': noindex');
     assert.equal(document.querySelector('link[rel="canonical"]')?.href, canonical + route, route + ': canonical');
-    assert(document.querySelector('a[href="/biofabrica"]') || route === '/biofabrica', route + ': calculator link');
+    assert(document.querySelector('a[href="/biofabrica"]') || route === '/biofabrica' || otherRoutes.includes(route), route + ': calculator link');
     for (const element of document.querySelectorAll('script')) {
       if (element.type === 'application/ld+json') JSON.parse(element.textContent);
       else if (!element.src && (!element.type || element.type === 'text/javascript')) new Script(element.textContent);
@@ -43,7 +45,7 @@ async function main() {
   const sitemap = new JSDOM(xml, {contentType: 'application/xml'}).window.document;
   const urls = [...sitemap.querySelectorAll('loc')].map(e => e.textContent);
   assert.equal(new Set(urls).size, urls.length, 'Sitemap: duplicate URLs');
-  for (const route of routes) assert(urls.includes(canonical + route), 'Sitemap missing ' + route);
+  for (const route of [...routes, ...otherRoutes]) assert(urls.includes(canonical + route), 'Sitemap missing ' + route);
   const thankYou = new JSDOM(await (await get('/gracias-diagnostico')).text()).window.document;
   assert(/noindex/.test(thankYou.querySelector('meta[name="robots"]')?.content), 'Thank-you page must remain noindex');
   console.log('PASS sitemap and thank-you exclusion');

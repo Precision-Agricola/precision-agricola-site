@@ -1,0 +1,104 @@
+---
+// Dron de aspersión de perfil, dibujado en SVG y animado solo con CSS: flota,
+// las hélices giran y el tanque rocía. Es decorativo (aria-hidden): el texto
+// de la página ya describe el servicio. Sin animación con prefers-reduced-motion.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const rotors = [90, 210, 390, 510];
+const nozzles = [150, 450];
+const drops = Array.from({ length: 9 }, (_, i) => i);
+---
+<div class:list={['drone', className]} aria-hidden="true">
+  <svg viewBox="0 0 600 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="drone-body" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2b3a33" />
+        <stop offset="1" stop-color="#121a16" />
+      </linearGradient>
+      <linearGradient id="drone-tank" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#e8f5ec" stop-opacity=".9" />
+        <stop offset="1" stop-color="#b9dcc5" stop-opacity=".9" />
+      </linearGradient>
+      <linearGradient id="drone-spray" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7fd158" stop-opacity=".55" />
+        <stop offset="1" stop-color="#7fd158" stop-opacity="0" />
+      </linearGradient>
+      <clipPath id="drone-tank-clip"><rect x="262" y="150" width="76" height="62" rx="12" /></clipPath>
+    </defs>
+
+    <g class="drone__spray">
+      {nozzles.map((x) => <path d={`M${x - 4} 128 L${x - 46} 330 L${x + 46} 330 L${x + 4} 128 Z`} fill="url(#drone-spray)" />)}
+      {nozzles.map((x) => drops.map((i) => (
+        <circle class="drone__drop" cx={x + (i - 4) * 9} cy="132" r={i % 2 ? 2.2 : 3} fill="#a8e38a" style={`--d:${(i * 0.17).toFixed(2)}s; --x:${(i - 4) * 4}px`} />
+      )))}
+    </g>
+
+    <g class="drone__craft">
+      <rect x="40" y="108" width="520" height="10" rx="5" fill="#1d2823" />
+      {rotors.map((x) => (
+        <g>
+          <rect x={x - 3} y="90" width="6" height="22" rx="2" fill="#3a4a42" />
+          <rect x={x - 12} y="98" width="24" height="14" rx="5" fill="#26332d" />
+          <g class="drone__rotor" style={`transform-origin:${x}px 88px`}>
+            <ellipse cx={x} cy="88" rx="78" ry="5" fill="#ffffff" fill-opacity=".22" />
+            <rect x={x - 70} y="86" width="140" height="4" rx="2" fill="#dfe8e3" fill-opacity=".85" />
+          </g>
+          <circle cx={x} cy="88" r="5" fill="#6abf45" />
+        </g>
+      ))}
+      {nozzles.map((x) => <rect x={x - 4} y="118" width="8" height="12" rx="2" fill="#6abf45" />)}
+
+      <path d="M236 104 Q300 70 364 104 L372 150 Q300 162 228 150 Z" fill="url(#drone-body)" />
+      <rect x="280" y="98" width="40" height="6" rx="3" fill="#6abf45" />
+      <circle cx="350" cy="128" r="4" fill="#6abf45" class="drone__led" />
+
+      <rect x="262" y="150" width="76" height="62" rx="12" fill="url(#drone-tank)" />
+      <g clip-path="url(#drone-tank-clip)">
+        <rect class="drone__liquid" x="262" y="172" width="76" height="60" fill="#6abf45" fill-opacity=".75" />
+      </g>
+      <rect x="262" y="150" width="76" height="62" rx="12" stroke="#1d2823" stroke-width="3" />
+
+      <path d="M250 150 L222 246 M350 150 L378 246" stroke="#1d2823" stroke-width="7" stroke-linecap="round" />
+      <path d="M196 246 H248 M352 246 H404" stroke="#1d2823" stroke-width="7" stroke-linecap="round" />
+    </g>
+  </svg>
+</div>
+
+<style>
+  .drone svg { width: 100%; height: auto; overflow: visible; }
+  .drone__craft { animation: drone-hover 4.8s ease-in-out infinite; }
+  .drone__spray { animation: drone-hover 4.8s ease-in-out infinite; }
+  .drone__rotor { animation: drone-rotor 0.16s linear infinite; }
+  .drone__led { animation: drone-led 1.6s steps(2, jump-none) infinite; }
+  .drone__liquid { animation: drone-liquid 6s ease-in-out infinite alternate; }
+  .drone__drop {
+    opacity: 0;
+    animation: drone-drop 1.5s cubic-bezier(.45, 0, .8, .4) infinite;
+    animation-delay: var(--d);
+  }
+
+  @keyframes drone-hover {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes drone-rotor {
+    0% { transform: scaleX(1); }
+    50% { transform: scaleX(-0.35); }
+    100% { transform: scaleX(1); }
+  }
+  @keyframes drone-led { 50% { opacity: .2; } }
+  @keyframes drone-liquid { to { transform: translateY(22px); } }
+  @keyframes drone-drop {
+    0% { opacity: 0; transform: translate(0, 0); }
+    15% { opacity: .9; }
+    100% { opacity: 0; transform: translate(var(--x), 190px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drone__craft, .drone__spray, .drone__rotor, .drone__led, .drone__liquid, .drone__drop { animation: none; }
+    .drone__drop { opacity: .6; }
+  }
+</style>

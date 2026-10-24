@@ -1,0 +1,32 @@
+---
+// Botón en píldora. Con href es un enlace; sin href, un <button>.
+//   <Button href="/biofabrica">Calcula tu ahorro</Button>
+//   <Button variant="dark" size="lg" href="/contacto">Contáctanos</Button>
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'primary' | 'dark' | 'outline' | 'ghost-light';
+type Props = {
+  variant?: Variant;
+  size?: 'md' | 'lg';
+  href?: string;
+  class?: string;
+} & Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'class'>;
+
+const { variant = 'primary', size = 'md', href, class: className, ...rest } = Astro.props;
+
+const variants: Record<Variant, string> = {
+  primary: 'bg-lima text-tinta hover:bg-lima-claro',
+  dark: 'bg-bosque text-white hover:bg-hoja',
+  outline: 'border border-bosque/20 text-bosque hover:border-hoja hover:bg-hoja/5',
+  'ghost-light': 'border border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white/20',
+};
+const sizes = { md: 'px-5 py-3 text-[15px]', lg: 'px-7 py-4 text-base' };
+const classes = [
+  'inline-flex items-center justify-center gap-2 rounded-full font-bold whitespace-nowrap transition-colors duration-200',
+  variants[variant],
+  sizes[size],
+  className,
+];
+const Tag = href ? 'a' : 'button';
+---
+<Tag href={href} type={href ? undefined : (rest.type ?? 'button')} class:list={classes} {...rest}><slot /></Tag>

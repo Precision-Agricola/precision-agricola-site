@@ -1,0 +1,61 @@
+---
+// Pie compartido. Datos de contacto unificados en #40: Jalisco y (52) 33 1117 4441.
+import { Image } from 'astro:assets';
+import logoClaro from '../../assets/brand/logo-claro.png';
+import micasense from '../../assets/brand/micasense.png';
+
+const year = new Date().getFullYear();
+
+const sitemap = [
+  { href: '/', label: 'Inicio' },
+  { href: '/acerca-de', label: 'Acerca de' },
+  { href: '/drones', label: 'Drones' },
+  { href: '/contacto', label: 'Contacto' },
+];
+const products = [
+  { href: '/bioreactores', label: 'Biorreactores' },
+  { href: '/kit-biorreactor', label: 'Kit biorreactor' },
+  { href: '/biofabrica-on-farm', label: 'Biofábrica on-farm' },
+  { href: '/biofabrica', label: 'Calcula tu ahorro' },
+];
+---
+<footer class="bg-bosque text-white/80">
+  <div class="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+    <div>
+      <a href="/" class="inline-flex items-center gap-3 font-display text-lg font-extrabold text-white">
+        <Image src={logoClaro} alt="" width={40} height={43} densities={[1, 2]} />
+        Precisión Agrícola
+      </a>
+      <p class="mt-4 max-w-xs text-sm leading-relaxed">Precisión Agrícola, la nueva era de la agricultura. Drones, biorreactores y bioinsumos on-farm.</p>
+      <p class="mt-6 text-xs font-bold tracking-[.14em] text-lima uppercase">Distribuidor autorizado</p>
+      <Image src={micasense} alt="MicaSense, distribuidor autorizado" width={150} densities={[1, 2]} class="mt-3 brightness-0 invert opacity-80" loading="lazy" />
+    </div>
+
+    <nav aria-label="Sitio">
+      <h2 class="font-sans text-xs font-bold tracking-[.14em] text-lima uppercase">Sitio</h2>
+      <ul class="mt-4 space-y-3 text-sm">
+        {sitemap.map((l) => <li><a class="hover:text-white" href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-label="Productos">
+      <h2 class="font-sans text-xs font-bold tracking-[.14em] text-lima uppercase">Biofábricas</h2>
+      <ul class="mt-4 space-y-3 text-sm">
+        {products.map((l) => <li><a class="hover:text-white" href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="font-sans text-xs font-bold tracking-[.14em] text-lima uppercase">Contacto</h2>
+      <address class="mt-4 space-y-3 text-sm not-italic">
+        <p>Jalisco, México</p>
+        <p>Lunes a domingo<br />8 a.m. a 5 p.m.</p>
+        <p><a class="hover:text-white" href="tel:+523311174441">(52) 33 1117 4441</a></p>
+        <p><a class="break-all hover:text-white" href="mailto:precisionagricolamx@gmail.com">precisionagricolamx@gmail.com</a></p>
+      </address>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <p class="mx-auto max-w-7xl px-5 py-5 text-xs text-white/60">© 2021 - {year} Precisión Agrícola</p>
+  </div>
+</footer>

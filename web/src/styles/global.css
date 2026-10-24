@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Tokens de la propuesta A. Úsalos como clases de Tailwind: bg-bosque,
+   text-hoja, border-lima/40, font-display, etc. */
+@theme {
+  --color-bosque: #1a3c2a;
+  --color-hoja: #2d6a4f;
+  --color-medio: #3d8c5f;
+  --color-lima: #6abf45;
+  --color-lima-claro: #7fd158;
+  --color-brote: #f0faf3;
+  --color-noche: #0f2419;
+  --color-tinta: #0f2a1b;
+
+  --font-display: "Montserrat Variable", system-ui, sans-serif;
+  --font-sans: "DM Sans Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: 1.5rem;
+  --shadow-card: 0 10px 30px rgb(26 60 42 / 0.12);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html { color: var(--color-bosque); background: #fff; -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.025em; line-height: 1.06; }
+  :focus-visible { outline: 2px solid var(--color-lima); outline-offset: 2px; }
+}
+
+/* Títulos de sección con la escala de Inicio (#38, #39). */
+@utility pa-h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.4rem, 6vw, 4.25rem); line-height: 1.02; letter-spacing: -0.025em; }
+@utility pa-h2 { font-family: var(--font-display); font-weight: 900; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.06; letter-spacing: -0.025em; }
+@utility pa-eyebrow { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-medio); }
+
+/* Aparición al hacer scroll. Sin JS (no hay clase .js en <html>) todo queda
+   visible; con JS, Reveal marca .is-visible al entrar en pantalla.
+   data-reveal-stagger escalona a los hijos directos. */
+.js [data-reveal],
+.js [data-reveal-stagger] > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s var(--ease-out-soft), transform 0.7s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js [data-reveal].is-visible,
+.js [data-reveal-stagger].is-visible > * { opacity: 1; transform: none; }
+
+/* Transición entre páginas sin JS (View Transitions entre documentos). */
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  .js [data-reveal],
+  .js [data-reveal-stagger] > * { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}

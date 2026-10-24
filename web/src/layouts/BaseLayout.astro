@@ -1,0 +1,100 @@
+---
+// Layout base de todas las páginas: SEO, fuentes, barra, pie y animaciones.
+// Uso:
+//   <BaseLayout title="…" description="…" jsonLd={{ '@context': 'https://schema.org', … }}>
+//     …contenido con un solo <h1>…
+//   </BaseLayout>
+import '@fontsource-variable/montserrat/wght.css';
+import '@fontsource-variable/dm-sans/wght.css';
+import '../styles/global.css';
+import montserratLatin from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
+import dmSansLatin from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
+import Nav from '../components/site/Nav.astro';
+import Footer from '../components/site/Footer.astro';
+import Reveal from '../components/ui/Reveal.astro';
+
+interface Props {
+  /** Título completo, igual al del sitio actual. */
+  title: string;
+  /** Meta description, más de 60 caracteres. */
+  description: string;
+  /** Ruta canónica si difiere de la URL de la página (por ejemplo, un alias). */
+  canonicalPath?: string;
+  /** Imagen para Open Graph, URL absoluta o ruta desde la raíz. */
+  image?: string;
+  /** Título y descripción para redes, si difieren de los de la página. */
+  ogTitle?: string;
+  ogDescription?: string;
+  noindex?: boolean;
+  /** Uno o varios objetos schema.org; se serializan como JSON-LD. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Barra en versión clara desde el inicio, para páginas sin hero oscuro. */
+  navSolid?: boolean;
+  /** Ocultar barra y pie (embudos de una sola página). */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  image,
+  ogTitle = title,
+  ogDescription = description,
+  noindex = false,
+  jsonLd,
+  navSolid = false,
+  bare = false,
+} = Astro.props;
+
+const site = Astro.site!;
+const path = (canonicalPath ?? Astro.url.pathname).replace(/\.html$/, '').replace(/(.)\/$/, '$1');
+const canonical = new URL(path, site).href;
+const ogImage = image ? new URL(image, site).href : undefined;
+const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="author" content="Precisión Agrícola" />
+    <meta name="theme-color" content="#1a3c2a" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:site_name" content="Precisión Agrícola" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="preload" href={montserratLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={dmSansLatin} as="font" type="font/woff2" crossorigin />
+
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-white text-bosque antialiased">
+    <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-lima focus:px-4 focus:py-2 focus:font-bold focus:text-tinta">Saltar al contenido</a>
+    {!bare && <Nav solid={navSolid} />}
+    <main id="contenido">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+    <Reveal />
+  </body>
+</html>

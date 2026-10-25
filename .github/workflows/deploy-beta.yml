@@ -1,11 +1,8 @@
-# Construye el sitio de Astro (web/) y lo publica en el subdominio de pruebas.
+# Construye el sitio de Astro (web/) y deja el build en la rama beta-dist.
 #
-# Dos formas de publicar, se pueden usar las dos:
-#  1. rsync por SSH directo a la carpeta del subdominio en cPanel. Solo corre
-#     si existen los secretos BETA_SSH_HOST, BETA_SSH_USER, BETA_SSH_KEY y
-#     BETA_SSH_KNOWN_HOSTS y la variable BETA_PATH.
-#  2. Rama beta-dist con el build listo, para hacer pull desde la terminal de
-#     cPanel como hoy. No necesita secretos.
+# GoDaddy no acepta conexiones SSH desde GitHub (el rsync daba timeout), así
+# que el servidor jala los cambios: un cron de cPanel hace fetch de beta-dist
+# cada 5 minutos y actualiza la carpeta del subdominio. Ver web/DEPLOY.md.
 #
 # El beta lleva noindex para que Google no lo indexe junto al sitio real.
 
@@ -56,39 +53,6 @@ jobs:
           } >> dist/.htaccess
           printf 'User-agent: *\nDisallow: /\n' > dist/robots.txt
           echo "${GITHUB_SHA}" > dist/version.txt
-
-      - name: Subir por rsync a cPanel
-        env:
-          SSH_HOST: ${{ secrets.BETA_SSH_HOST }}
-          SSH_USER: ${{ secrets.BETA_SSH_USER }}
-          SSH_KEY: ${{ secrets.BETA_SSH_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.BETA_SSH_KNOWN_HOSTS }}
-          SSH_PORT: ${{ vars.BETA_SSH_PORT || '22' }}
-          BETA_PATH: ${{ vars.BETA_PATH }}
-        run: |
-          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_KEY" ] || [ -z "$SSH_KNOWN_HOSTS" ] || [ -z "$BETA_PATH" ]; then
-            echo "::notice::Faltan secretos o la variable BETA_PATH; se omite rsync. El build queda en la rama beta-dist."
-            exit 0
-          fi
-          # Candado: rsync --delete borra lo que no esté en el build, así que
-          # solo se permite una carpeta con "beta" en el nombre y fuera de ~/precision-agricola.
-          case "$BETA_PATH" in
-            */precision-agricola|*/precision-agricola/*) ok=no ;;
-            */beta*) ok=yes ;;
-            *) ok=no ;;
-          esac
-          if [ "$ok" != yes ]; then
-            echo "::error::BETA_PATH debe ser la carpeta del subdominio beta, fuera del sitio actual: $BETA_PATH"
-            exit 1
-          fi
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
-          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          rsync -rlz --delete --checksum \
-            --exclude '.well-known/' --exclude 'cgi-bin/' \
-            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT -o StrictHostKeyChecking=yes" \
-            dist/ "$SSH_USER@$SSH_HOST:${BETA_PATH%/}/"
-          rm -f ~/.ssh/deploy_key
 
       - name: Publicar el build en la rama beta-dist
         run: |

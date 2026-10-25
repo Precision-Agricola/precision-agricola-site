@@ -9,6 +9,9 @@ ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Archivos ocultos (.git, .env...) nunca se sirven, salvo .well-known
+    RewriteRule (^|/)\.(?!well-known/) - [R=404,L]
+
     # /ruta.html -> /ruta (una sola URL por página)
     RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.html[\s?] [NC]
     RewriteRule ^ /%1 [R=301,L,NE]

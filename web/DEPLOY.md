@@ -58,3 +58,21 @@ G="git --git-dir=$HOME/.beta-dist.git --work-tree=$HOME/beta.precisionagricola.c
 `https://beta.precisionagricola.com/version.txt` muestra el commit de `main`
 publicado; debe coincidir con el último run de "Desplegar beta" en Actions.
 Para publicar al instante sin esperar al cron, corre el mismo comando por SSH.
+
+## DNS y HTTPS
+
+- El DNS de `precisionagricola.com` vive en GoDaddy (`ns39`/`ns40.domaincontrol.com`)
+  desde el 25 de octubre de 2026; antes estaba en Wix. Registros: A `@`, `beta` y
+  `mail` → `173.201.181.184`, CNAME `www` → `@`, los 5 MX de Google Workspace y
+  el TXT `google-site-verification`.
+- El plan de hosting no admite dominios adicionales (addon = 0) y no tiene
+  AutoSSL. El certificado del beta es de Let's Encrypt, emitido con `acme.sh`
+  en el servidor (`~/.acme.sh`), que lo renueva solo con su propio cron:
+
+```bash
+~/.acme.sh/acme.sh --issue --server letsencrypt -d beta.precisionagricola.com -w ~/beta.precisionagricola.com
+~/.acme.sh/acme.sh --deploy -d beta.precisionagricola.com --deploy-hook cpanel_uapi
+```
+
+- El certificado del dominio principal vence el 27 de enero de 2027 y no se
+  renueva solo; se puede emitir igual con `acme.sh`, con `-w ~/public_html`.

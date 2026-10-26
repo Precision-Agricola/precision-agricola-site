@@ -33,7 +33,12 @@ HOOK = ('"$(command -v python || command -v python3)" '
 # Lo comun: igual en todos los repos, se puede reemplazar con --actualizar.
 # Lo demas de COPIAS es propio de cada proyecto y nunca se pisa.
 COMUNES = {"delegar.py", "sincronizar-skills.py", "exportar.py", "README.md", "plantillas"}
-IGNORAR = [".claude/worktrees/", ".claude/delegaciones/", ".claude/settings.local.json", "__pycache__/"]
+IGNORAR = [
+    ".claude/worktrees/",
+    ".claude/delegaciones/",
+    ".claude/settings.local.json",
+    "__pycache__/",
+]
 
 # origen -> destino, relativos a AQUI y a la raiz del repo destino.
 COPIAS = {
@@ -116,14 +121,16 @@ class Instalador:
     def gitignore(self) -> None:
         final = self.destino / ".gitignore"
         actual = final.read_text(encoding="utf-8") if final.exists() else ""
-        faltan = [l for l in IGNORAR if l not in actual.splitlines()]
+        faltan = [ruta for ruta in IGNORAR if ruta not in actual.splitlines()]
         if not faltan:
             self.log("=", ".gitignore ya ignora worktrees y delegaciones")
             return
         self.log("~", f".gitignore: {', '.join(faltan)}")
         if not self.simular:
-            bloque = "\n# Delegaciones a Codex/agy (tools/agentes/delegar.py)\n" + "\n".join(faltan) + "\n"
-            final.write_text(actual.rstrip("\n") + ("\n" if actual else "") + bloque, encoding="utf-8")
+            titulo = "\n# Delegaciones a Codex/agy (tools/agentes/delegar.py)\n"
+            bloque = titulo + "\n".join(faltan) + "\n"
+            previo = actual.rstrip("\n") + ("\n" if actual else "")
+            final.write_text(previo + bloque, encoding="utf-8")
 
     def skills(self) -> None:
         # Las skills que solo existian para Claude pasan a la fuente comun.
@@ -142,7 +149,8 @@ class Instalador:
 
     def marcadores(self) -> list[str]:
         pendientes = []
-        for relativo in ("AGENTS.md", "tools/agentes/preambulo.md", ".agents/skills/delegar/SKILL.md"):
+        plantillas = ("AGENTS.md", "tools/agentes/preambulo.md", ".agents/skills/delegar/SKILL.md")
+        for relativo in plantillas:
             final = self.destino / relativo
             if final.exists() and "{{" in final.read_text(encoding="utf-8"):
                 pendientes.append(relativo)

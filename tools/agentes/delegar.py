@@ -135,7 +135,8 @@ def delegar(agente: str, tarea: str, base: str, modo: str, limite: int) -> int:
     # confirmar sin terminal), asi que solo lee y edita; Claude corre las pruebas.
     prompt = preambulo() + tarea
     if agente == "agy":
-        prompt = preambulo() + "No corras comandos de terminal: solo lee y edita archivos.\n" + tarea
+        aviso = "No corras comandos de terminal: solo lee y edita archivos.\n"
+        prompt = preambulo() + aviso + tarea
     comando = comando_agente(agente, worktree, registro, modo)
 
     print(f"[delegar] {agente} trabaja en {worktree} (rama {rama})", flush=True)
@@ -302,7 +303,8 @@ def limpiar() -> int:
     """Quita los worktrees y ramas que dejo este script. No toca otras ramas."""
     quitados = 0
     for bloque in git("worktree", "list", "--porcelain").split("\n\n"):
-        ruta = next((l[9:] for l in bloque.splitlines() if l.startswith("worktree ")), "")
+        lineas = bloque.splitlines()
+        ruta = next((x[9:] for x in lineas if x.startswith("worktree ")), "")
         if ruta and Path(ruta).resolve().parent == WORKTREES.resolve():
             git("worktree", "remove", "--force", ruta)
             quitados += 1

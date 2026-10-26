@@ -22,8 +22,10 @@ _ide_helper.php
 # for netbeans
 nbproject
 
-# Claude Code worktrees
+# Claude Code worktrees y delegaciones a Codex/agy (tools/agentes/delegar.py)
 .claude/worktrees/
+.claude/delegaciones/
+.claude/settings.local.json
 
 # Local-only prospecting / scraping workspace
 /scraping/

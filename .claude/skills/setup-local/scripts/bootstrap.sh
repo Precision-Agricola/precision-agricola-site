@@ -2,9 +2,9 @@
 #
 # bootstrap.sh — deja este proyecto listo para trabajar en una máquina nueva.
 #
-#   bash .claude/skills/setup-local/scripts/bootstrap.sh              # instalacion completa
-#   bash .claude/skills/setup-local/scripts/bootstrap.sh --skip-db    # sin tocar MySQL (ver nota)
-#   bash .claude/skills/setup-local/scripts/bootstrap.sh --port 8080  # otro puerto para la prueba
+#   bash .agents/skills/setup-local/scripts/bootstrap.sh              # instalacion completa
+#   bash .agents/skills/setup-local/scripts/bootstrap.sh --skip-db    # sin tocar MySQL (ver nota)
+#   bash .agents/skills/setup-local/scripts/bootstrap.sh --port 8080  # otro puerto para la prueba
 #
 # Es idempotente: correlo las veces que haga falta, no rompe lo que ya este bien.
 # Cuando algo falla, dice exactamente que hacer a mano.

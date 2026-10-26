@@ -2,7 +2,7 @@
 #
 # doctor.sh — diagnostica una instalacion local ya existente.
 #
-#   bash .claude/skills/setup-local/scripts/doctor.sh
+#   bash .agents/skills/setup-local/scripts/doctor.sh
 #
 # No modifica nada: solo mira y reporta. Uselo cuando el sitio dejo de
 # funcionar y no esta claro por que. Para arreglar, corre bootstrap.sh.
@@ -152,4 +152,4 @@ if [ -f .claude/launch.json ]; then
 fi
 
 printf '\n  Diagnostico terminado. Para arreglar lo marcado como [FALLA]:\n'
-printf '      bash .claude/skills/setup-local/scripts/bootstrap.sh\n\n'
+printf '      bash .agents/skills/setup-local/scripts/bootstrap.sh\n\n'

@@ -18,8 +18,9 @@ Las CLIs y sus sesiones viven en la PC del usuario. Si falta una, el script
 sale con codigo 2 y lo dice: falla ruidosa, nunca un resultado inventado.
 Sin dependencias fuera de la biblioteca estandar, para correr igual en Windows.
 
-Lo propio de cada proyecto vive en `preambulo.md`, junto a este archivo; el
-script es igual en todos los repos.
+Lo propio de cada proyecto vive en `preambulo.md` (y, si hace falta, en
+`revision.md`, que dice que cuenta como problema en una revision), junto a
+este archivo; el script es igual en todos los repos.
 """
 
 from __future__ import annotations
@@ -208,12 +209,18 @@ def huella_diff(base: str) -> str:
     return huella.hexdigest() if diff or nuevos else ""
 
 
+def criterio_revision() -> str:
+    # Un proyecto puede afinar que cuenta como problema real en revision.md.
+    archivo = AQUI / "revision.md"
+    return archivo.read_text(encoding="utf-8").strip() if archivo.exists() else CRITERIO_REVISION
+
+
 def revisar(base: str, limite: int) -> tuple[int, str]:
     codex = binario("codex")
     instruccion = (
         preambulo()
         + f"Revisa el diff contra el commit {base} (`git diff {base}`, `git status`). "
-        "No edites archivos. " + CRITERIO_REVISION
+        "No edites archivos. " + criterio_revision()
     )
     REGISTROS.mkdir(parents=True, exist_ok=True)
     registro = REGISTROS / f"review-{time.strftime('%Y%m%d-%H%M%S')}.md"

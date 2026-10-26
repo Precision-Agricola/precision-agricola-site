@@ -35,7 +35,7 @@ python tools/agentes/delegar.py limpiar           # quita worktrees y ramas dele
 
 1. El script crea un worktree en `.claude/worktrees/` con rama `delegar/...`.
 2. Lee el resumen en `.claude/delegaciones/` y `git -C <worktree> diff HEAD`.
-3. Corre las pruebas en el worktree (`{{COMANDO_PRUEBAS}}`).
+3. Prueba en el worktree: {{COMANDO_PRUEBAS: comandos a correr y qué revisar}}.
 4. Trae lo que sirva (`git -C <worktree> diff HEAD --binary | git apply`) y descarta el resto.
 5. `python tools/agentes/delegar.py limpiar`.
 

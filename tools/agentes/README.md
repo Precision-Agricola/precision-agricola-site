@@ -33,8 +33,8 @@ Python 3.9 o más reciente. Sin dependencias extra; funciona en Windows con Git 
 
 ```bash
 python tools/agentes/delegar.py estado
-python tools/agentes/delegar.py codex "agrega la meta description que falta en web/src/pages/drones.astro"
-python tools/agentes/delegar.py agy "aplica el espaciado aprobado a la tarjeta de producto en web/"
+python tools/agentes/delegar.py codex "agrega pruebas para el caso de lista vacía en <archivo>"
+python tools/agentes/delegar.py agy "aplica el espaciado de la pantalla aprobada a <componente>"
 python tools/agentes/delegar.py agy --modo plan "lee el manual y resume el protocolo de limpieza"
 python tools/agentes/delegar.py review
 python tools/agentes/delegar.py limpiar
@@ -44,7 +44,7 @@ Cada tarea crea un worktree en `.claude/worktrees/delegar-<agente>-<slug>-<fecha
 `delegar/...`, desde `HEAD` (`--base` para otro commit). El agente no hace commit. Su resumen
 queda en `.claude/delegaciones/`. Ambas rutas están en `.gitignore`.
 
-Después Claude lee el resumen y `git -C <worktree> diff HEAD`, corre el build y el audit en el
+Después Claude lee el resumen y `git -C <worktree> diff HEAD`, corre las pruebas en el
 worktree, trae lo que sirve con `git -C <worktree> diff HEAD --binary | git apply` y limpia.
 
 Códigos de salida: `0` terminó, `2` falta la CLI, `3` se pasó del límite, `4` agy no trabajó
@@ -67,13 +67,15 @@ revisiones. Si reporta algo, Claude lo recibe como pista y lo verifica antes de 
 
 ## Llevarlo a otro repo
 
-Se copia tal cual, salvo dos archivos que se reescriben para el proyecto nuevo:
+```bash
+python tools/agentes/exportar.py ../otro-repo --dry-run   # + se copia, = ya existe, ~ se mezcla
+python tools/agentes/exportar.py ../otro-repo
+python tools/agentes/exportar.py ../otro-repo --actualizar  # ^ trae la versión nueva de los scripts
+```
 
-1. Copia `tools/agentes/` completa, `.agents/skills/delegar/` y el hook de `.claude/settings.json`
-   (si el repo ya tiene uno, mezcla el bloque `Stop`).
-2. Reescribe `tools/agentes/preambulo.md` (qué es el repo y sus reglas duras) y `AGENTS.md`.
-   En la skill `delegar`, ajusta la tabla «Quién hace qué» y el comando de pruebas.
-3. Si había skills en `.claude/skills/`, muévelas a `.agents/skills/` y corre
-   `python tools/agentes/sincronizar-skills.py`.
-4. Agrega a `.gitignore`: `.claude/worktrees/`, `.claude/delegaciones/`, `.claude/settings.local.json`.
-5. Copia `.github/workflows/agentes.yml` para que CI avise si las skills se desincronizan.
+No pisa nada: copia lo que falta, agrega `@AGENTS.md` a un `CLAUDE.md` existente, mezcla el
+hook `Stop` en `.claude/settings.json`, completa `.gitignore` y pasa las skills de
+`.claude/skills/` a `.agents/skills/`. Al final lista lo pendiente: rellenar los `{{...}}` de
+`AGENTS.md`, `tools/agentes/preambulo.md` y la skill `delegar` con lo propio del proyecto.
+
+La skill de cuenta `conectar-agentes` hace lo mismo desde cualquier proyecto de claude.ai.

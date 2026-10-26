@@ -8,8 +8,8 @@ prueba y decide si integrar. Nada se mezcla a la rama actual ni a `main` aqui.
 
 Uso:
     python tools/agentes/delegar.py estado          # que CLIs hay en esta maquina
-    python tools/agentes/delegar.py codex "agrega la meta description que falta en /drones"
-    python tools/agentes/delegar.py agy "aplica el espaciado aprobado a la tarjeta de producto"
+    python tools/agentes/delegar.py codex "agrega pruebas para el caso de lista vacia"
+    python tools/agentes/delegar.py agy "aplica el espaciado aprobado a la tarjeta"
     python tools/agentes/delegar.py review          # segunda opinion de Codex
     python tools/agentes/delegar.py limpiar         # borra worktrees y ramas delegar/*
     python tools/agentes/delegar.py hook-stop       # lo llama el hook Stop

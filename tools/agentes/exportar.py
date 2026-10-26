@@ -33,7 +33,7 @@ HOOK = ('"$(command -v python || command -v python3)" '
 # Lo comun: igual en todos los repos, se puede reemplazar con --actualizar.
 # Lo demas de COPIAS es propio de cada proyecto y nunca se pisa.
 COMUNES = {"delegar.py", "sincronizar-skills.py", "exportar.py", "README.md", "plantillas"}
-IGNORAR = [".claude/worktrees/", ".claude/delegaciones/", ".claude/settings.local.json"]
+IGNORAR = [".claude/worktrees/", ".claude/delegaciones/", ".claude/settings.local.json", "__pycache__/"]
 
 # origen -> destino, relativos a AQUI y a la raiz del repo destino.
 COPIAS = {
@@ -72,7 +72,7 @@ class Instalador:
             return
         final.parent.mkdir(parents=True, exist_ok=True)
         if origen.is_dir():
-            shutil.copytree(origen, final)
+            shutil.copytree(origen, final, ignore=shutil.ignore_patterns("__pycache__"))
         else:
             shutil.copy2(origen, final)
 

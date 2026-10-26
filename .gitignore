@@ -26,6 +26,7 @@ nbproject
 .claude/worktrees/
 .claude/delegaciones/
 .claude/settings.local.json
+__pycache__/
 
 # Local-only prospecting / scraping workspace
 /scraping/

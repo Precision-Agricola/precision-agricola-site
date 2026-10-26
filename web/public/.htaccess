@@ -12,6 +12,10 @@ ErrorDocument 404 /404.html
     # Archivos ocultos (.git, .env...) nunca se sirven, salvo .well-known
     RewriteRule (^|/)\.(?!well-known/) - [R=404,L]
 
+    # La página de biorreactores vive en /biorreactores (con doble r).
+    # /bioreactores era la URL del sitio de October; se redirige con 301.
+    RewriteRule ^(bioreactores|biorreactor|bioreactor)/?$ /biorreactores [R=301,L,NC]
+
     # /ruta.html -> /ruta (una sola URL por página)
     RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.html[\s?] [NC]
     RewriteRule ^ /%1 [R=301,L,NE]

@@ -13,7 +13,7 @@ trabajo ocurre en un tema hecho a mano: `themes/precision-agricola/`.
 Casi todo está automatizado. Desde la raíz del repo:
 
 ```bash
-bash .claude/skills/setup-local/scripts/bootstrap.sh
+bash .agents/skills/setup-local/scripts/bootstrap.sh
 ```
 
 Detecta PHP, crea los atajos locales, escribe `.env`, genera la `APP_KEY`,
@@ -130,7 +130,7 @@ Si nada de esto encaja, corre el diagnóstico, que revisa cada punto por
 separado y dice cuál está mal:
 
 ```bash
-bash .claude/skills/setup-local/scripts/doctor.sh
+bash .agents/skills/setup-local/scripts/doctor.sh
 ```
 
 ## Antes de tocar producción

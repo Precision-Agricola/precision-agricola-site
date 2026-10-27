@@ -5,7 +5,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "exit 0"
+            "command": "\"$(command -v python || command -v python3)\" \"$CLAUDE_PROJECT_DIR/tools/agentes/delegar.py\" hook-stop",
+            "timeout": 600
           }
         ]
       }

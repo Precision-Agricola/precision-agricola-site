@@ -1,0 +1,51 @@
+---
+// /biofabrica: embudo de diagnóstico y calculadora de ahorro (Alpine).
+// Portado de themes/precision-agricola/pages/biofabrica.htm sin reescribir la
+// lógica: el marcado, los estilos y el componente Alpine son los mismos, en
+// src/components/biofabrica/. Mismo título, descripción, H1 y textos.
+import { getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import marcado from '../components/biofabrica/marcado.html?raw';
+import '../components/biofabrica/biofabrica.css';
+import { cotizador } from '../data/cotizador';
+import logo from '../assets/brand/logo-oscuro.png';
+import equipo from '../assets/biofabrica/biofabrica-2.webp';
+import ogFoto from '../assets/biofabrica/og.jpg';
+
+const title = 'Biofábrica agrícola: calcula tu ahorro | Precisión Agrícola';
+const description = 'Evalúa una biofábrica en tu rancho: compara comprar microorganismos o producirlos con un biorreactor agrícola. Calcula un ahorro estimado y solicita cotización.';
+
+const escapar = (v: string | number) => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+const datos = {
+  'data-precio': cotizador.precioLitro,
+  'data-precio-lote': cotizador.precioLote,
+  'data-dosis': cotizador.dosisHa,
+  'data-litros-lote': cotizador.litrosLote,
+  'data-referencia': cotizador.referenciaHa,
+  'data-reactor': cotizador.reactor,
+  'data-monitoreo': cotizador.monitoreo,
+};
+const atributos = Object.entries(datos).map(([k, v]) => `${k}="${escapar(v)}"`).join(' ');
+
+const og = await getImage({ src: ogFoto, width: 1200, format: 'jpg' });
+const logoImg = await getImage({ src: logo, width: 80, format: 'webp' });
+const chico = await getImage({ src: equipo, width: 283, format: 'webp' });
+const grande = await getImage({ src: equipo, width: 485, format: 'webp' });
+const html = marcado
+  .replace('__DATA__', atributos)
+  .replace('__LOGO__', logoImg.src)
+  .replace('__EQ_SRC__', chico.src)
+  .replace('__EQ_SRCSET__', `${chico.src} 283w, ${grande.src} 485w`);
+---
+<BaseLayout title={title} description={description} image={og.src} bare>
+  <link slot="head" rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+  <Fragment set:html={html} />
+</BaseLayout>
+
+<script>
+  import Alpine from 'alpinejs';
+  import { diagnostico } from '../components/biofabrica/diagnostico.js';
+
+  (window as unknown as { diagnostico: typeof diagnostico }).diagnostico = diagnostico;
+  Alpine.start();
+</script>

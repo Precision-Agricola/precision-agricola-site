@@ -20,6 +20,9 @@ ErrorDocument 404 /404.html
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.+)/$ /$1 [R=301,L]
 
+    # El embudo vivió en /diagnostico mientras se construía; ahora es /biofabrica.
+    RewriteRule ^diagnostico/?$ /biofabrica [R=301,L,NC]
+
     # /ruta -> ruta.html si existe
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

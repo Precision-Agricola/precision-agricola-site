@@ -1,0 +1,292 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Picture from '../components/ui/Picture.astro';
+import MetaPixel from '../components/site/MetaPixel.astro';
+import Diagnostico from '../components/biorreactores/Diagnostico.astro';
+import fondo from '../assets/biorreactores/main_bg.jpg';
+import equipo from '../assets/biorreactores/bioreactores.png';
+import perfil from '../assets/biorreactores/perfil_operativo_bg.jpg';
+import letras from '../assets/biorreactores/pa_letras_logo.png';
+import logo from '../assets/biorreactores/logo-pa.png';
+import og from '../assets/biorreactores/tunnels_berries_og.jpg';
+// Reveal se incluye en BaseLayout y se activa mediante data-reveal.
+const title = "Biorreactores agrícolas mexicanos para bioinsumos | Precisión Agrícola";
+const description = "Biorreactores agrícolas desarrollados en México para producir microorganismos en tu rancho. Compara configuración, monitoreo y costos; solicita un diagnóstico y cotización.";
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Biorreactores Agrícolas — Biofábrica On-Farm",
+    "description": "Sistema de biorreactores agrícolas IoT para producción on-farm de bioinsumos y consorcios microbianos. Consulta la configuración y las especificaciones del equipo en la ficha técnica.",
+    "brand": {
+      "@type": "Brand",
+      "name": "Precisión Agrícola"
+    },
+    "manufacturer": {
+      "@type": "Organization",
+      "name": "Precisión Agrícola",
+      "url": "https://www.precisionagricola.com",
+      "areaServed": [
+        {
+          "@type": "State",
+          "name": "Jalisco",
+          "containedInPlace": {
+            "@type": "Country",
+            "name": "México"
+          }
+        },
+        {
+          "@type": "State",
+          "name": "Michoacán",
+          "containedInPlace": {
+            "@type": "Country",
+            "name": "México"
+          }
+        }
+      ],
+      "telephone": "+52-33-1117-4441"
+    },
+    "image": "https://www.precisionagricola.com/themes/precision-agricola/assets/images/bioreactors/bioreactores.png",
+    "url": "https://www.precisionagricola.com/bioreactores",
+    "countryOfOrigin": {
+      "@type": "Country",
+      "name": "México"
+    },
+    "category": "Agricultura de Precisión"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Precisión Agrícola",
+    "description": "Biorreactores agrícolas y biofábricas on-farm con tecnología IoT para agricultura de precisión regenerativa en México.",
+    "url": "https://www.precisionagricola.com",
+    "telephone": "+52-33-1117-4441",
+    "areaServed": [
+      "Jalisco",
+      "Michoacán"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "Jalisco",
+      "addressCountry": "MX"
+    }
+  }
+];
+---
+<BaseLayout title={title} description={description} image={og.src} jsonLd={jsonLd} bare>
+  <MetaPixel slot="head" />
+  <Fragment slot="head">
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Túneles de cultivo de berries en una unidad de producción agrícola" />
+    <meta name="geo.region" content="MX-JAL" />
+    <meta name="geo.placename" content="Jalisco, México" />
+  </Fragment>
+  <header class="absolute inset-x-0 top-0 z-20 border-b border-white/10 bg-noche/30 px-5 backdrop-blur-md">
+    <a href="/" class="mx-auto flex h-16 max-w-7xl items-center gap-2 text-sm font-bold text-lima">
+      <Picture src={logo} alt="Precisión Agrícola" widths={[36, 72]} sizes="36px" class="size-9" />
+      Precisión Agrícola
+    </a>
+  </header>
+  <section id="diagnostico" class="relative isolate overflow-hidden bg-noche text-white">
+    <Picture src={fondo} alt="" priority pictureClass="absolute inset-0 -z-10" class="h-full w-full object-cover opacity-40" />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-r from-noche/90 to-noche/20"></div>
+    <div class="mx-auto grid min-h-svh max-w-7xl items-center gap-12 px-5 pt-28 pb-16 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+      <div>
+        <h1 class="pa-h1 uppercase" style="font-size:clamp(1.8rem, 5.5vw, 4.25rem)">
+          Biorreactores<br />
+          <span class="text-lima">Agrícolas</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/80">
+          Optimiza tu agricultura con biotecnología de precisión.
+          Produce tus bioinsumos on-farm con tecnología IoT
+          desarrollada en México.
+          Con acompañamiento técnico en sitio.
+        </p>
+      </div>
+      <Diagnostico />
+    </div>
+  </section>
+  <Section id="elegir-biorreactor" tone="brote">
+    <div class="mx-auto" style="max-width:70rem;line-height:1.75">
+      <h2 data-reveal class="font-title font-bold text-2xl md:text-3xl mb-6">Cómo elegir un biorreactor para producir bioinsumos</h2>
+      <p class="mb-6">El biorreactor es el equipo donde se multiplican microorganismos bajo condiciones controladas. Una biofábrica agrícola también necesita insumos, protocolos de trabajo, personal capacitado y control de calidad. La capacidad del tanque es solo una parte de la decisión.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-bold text-xl mb-3">Demanda y calendario de producción</h3>
+          <p>Revisa cuántos litros necesitas por aplicación, las hectáreas que atenderás y la frecuencia de uso. Diferencia la capacidad nominal del tanque del volumen útil por lote y considera el tiempo necesario para producir, muestrear y limpiar el sistema.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl mb-3">Equipo, monitoreo y operación</h3>
+          <p>Compara los materiales, la aireación, la agitación, el control térmico y la facilidad de limpieza. Confirma qué sensores y servicios incluye tu configuración, qué suministro eléctrico necesita y qué condiciones debe cumplir el agua.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl mb-3">¿Cuánto cuesta un biorreactor agrícola?</h3>
+          <p>La cotización depende del equipo, los microorganismos seleccionados y el monitoreo. Para evaluar la inversión también hay que contemplar medios de cultivo, energía, mano de obra, limpieza y análisis de calidad. El ahorro depende de tu operación.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl mb-3">¿Equipo propio o compra por litro?</h3>
+          <p>Compara la demanda de tu cultivo y tu capacidad para operar el equipo. Puedes solicitar microorganismos por litro o evaluar una biofábrica propia mediante el <a href="/biofabrica" class="underline font-bold">diagnóstico y calculadora de ahorro</a>.</p>
+        </div>
+      </div>
+      <p class="mt-8">Consulta la <a href="/kit-biorreactor" class="underline font-bold">ficha técnica del kit biorreactor</a> o revisa <a href="/biofabrica-on-farm" class="underline font-bold">cómo se organiza una biofábrica on-farm</a>. Para confirmar cobertura, instalación y acompañamiento en tu ubicación, <a href="/contacto" class="underline font-bold">contacta a Precisión Agrícola</a>.</p>
+    </div>
+  </Section>
+  <Section id="que-es-biofabrica">
+    <div class="mx-auto">
+      <div class="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
+        <div class="w-full lg:w-3/4">
+          <h2 data-reveal class="font-title font-bold uppercase mb-8" style="color:#737373;line-height:1.15;font-size:clamp(2rem, 4vw, 3.2rem)">
+            ¿Qué es una<br class="hidden lg:inline"> Biofábrica on-farm?
+          </h2>
+          <Picture src={equipo} alt="Equipos para producción de bioinsumos en una biofábrica agrícola" class="w-full h-auto max-h-[520px] object-contain" sizes="(min-width: 1024px) 800px, 100vw" />
+        </div>
+        <div class="w-full lg:w-1/4 lg:pt-16">
+          <p class="font-body leading-relaxed mb-4" style="color:#6b6b6b;font-size:.95rem">
+            Una Biofábrica On-Farm es una infraestructura biotecnológica de precisión
+            instalada directamente en la unidad de producción agrícola (rancho o invernadero),
+            diseñada para la multiplicación estandarizada de consorcios microbiológicos de alta densidad.
+          </p>
+          <p class="font-body leading-relaxed mb-8" style="color:#6b6b6b;font-size:.95rem">
+            A diferencia de la compra de insumos comerciales tradicionales, este sistema
+            permite al agricultor pasar de un modelo de consumo externo a uno de
+            <strong style="color:#343434">autonomía biológica</strong>,
+            produciendo biomasa metabólicamente activa en el punto de aplicación.
+          </p>
+          <Button href="#diagnostico" class="whitespace-normal! text-center">
+            Llenar solicitud de diagnóstico →
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+  <Section id="protocolo" tone="bosque">
+    <div class="mx-auto">
+      <div class="mb-14" style="max-width:800px">
+        <h2 data-reveal class="font-title font-black uppercase text-white mb-4" style="font-size:clamp(1.6rem, 3.5vw, 2.4rem);line-height:1.15">
+          Protocolo de Evaluación para la Producción de Microbiología
+        </h2>
+        <p class="font-body leading-relaxed" style="color:rgba(255,255,255,.75);font-size:1.05rem">
+          Un proceso estratégico para validar la viabilidad operativa y la capitalización de su inversión.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14" data-reveal-stagger>
+        <div class="rounded-[var(--radius-card)] p-8 shadow-[var(--shadow-card)]" style="background:rgba(255,255,255,.92)">
+          <h3 class="font-title font-bold text-lg md:text-xl mb-5" style="color:var(--color-bosque)">
+            Paso 1: Perfilamiento de Capacidad y Demanda
+          </h3>
+          <p class="font-body leading-relaxed" style="color:#4a4a4a;font-size:.9rem">
+            Iniciamos con el levantamiento de sus métricas de cultivo y volumen de gasto actual.
+            Estos datos nos permiten registrar su perfil en nuestro sistema y asignar a un
+            consultor que evaluará el potencial de ahorro de su proyecto.
+          </p>
+        </div>
+        <div class="rounded-[var(--radius-card)] p-8 shadow-[var(--shadow-card)]" style="background:rgba(255,255,255,.92)">
+          <h3 class="font-title font-bold text-lg md:text-xl mb-5" style="color:var(--color-bosque)">
+            Paso 2: Auditoría Técnica de Viabilidad
+          </h3>
+          <p class="font-body leading-relaxed" style="color:#4a4a4a;font-size:.9rem">
+            Analizamos la infraestructura de su rancho y sus parámetros técnicos actuales.
+            El objetivo es validar que su operación cumple con los requisitos necesarios para
+            integrar nuestra tecnología IoT y asegurar una implementación exitosa.
+          </p>
+        </div>
+        <div class="rounded-[var(--radius-card)] p-8 shadow-[var(--shadow-card)]" style="background:rgba(255,255,255,.92)">
+          <h3 class="font-title font-bold text-lg md:text-xl mb-5" style="color:var(--color-bosque)">
+            Paso 3: Proyección de ROI y Cotización
+          </h3>
+          <p class="font-body leading-relaxed" style="color:#4a4a4a;font-size:.9rem">
+            Presentamos su Calculadora de Retorno de Inversión y la configuración de Biofábrica
+            ideal para su demanda. En esta sesión personalizada, recibirá su cotización formal
+            y el cronograma de ahorro proyectado para su inversión.
+          </p>
+        </div>
+      </div>
+      <div class="text-center">
+        <Button href="#diagnostico" class="whitespace-normal! text-center">
+          Llenar solicitud de diagnóstico
+        </Button>
+      </div>
+    </div>
+  </Section>
+  <section id="perfil-operativo" aria-label="Perfil operativo de biofábrica agrícola">
+    <div class="relative" style="height:55vh;min-height:360px">
+      <Picture src={perfil} alt="" pictureClass="absolute inset-0" class="h-full w-full object-cover" />
+      <div class="absolute inset-0" style="background:linear-gradient(to top, rgba(0,0,0,.45) 0%, rgba(0,0,0,.1) 50%, transparent 100%)"></div>
+      <div class="relative h-full flex items-end px-8 md:px-16 lg:px-28 pb-10" style="z-index:1">
+        <h2 data-reveal class="font-title font-bold text-white" style="font-size:clamp(2.2rem, 5vw, 3.8rem);letter-spacing:0.02em;text-shadow:0 2px 12px rgba(0,0,0,.3)">
+          Perfil Operativo
+        </h2>
+      </div>
+    </div>
+    <div style="background:#e8e0d4">
+      <div class="mx-auto px-8 md:px-16 lg:px-28 py-14 lg:py-16">
+        <p class="font-body leading-relaxed mb-6" style="color:#2a2a2a;font-size:clamp(1rem, 1.3vw, 1.15rem);max-width:900px">
+          La Biofábrica 2.0 transforma la agricultura tradicional en una plataforma de bioproducción avanzada.
+          Mediante capacitación especializada, el proyecto logra autonomía On-Farm para generar insumos biotecnológicos.
+        </p>
+        <p class="font-body leading-relaxed" style="color:#2a2a2a;font-size:clamp(1rem, 1.3vw, 1.15rem);max-width:900px">
+          <strong>Nota de Precisión:</strong> El éxito de los microorganismos no depende solo de su capacidad de adaptarse,
+          sino de que el entorno (aire, materia orgánica y pH) sea el correcto.
+        </p>
+      </div>
+    </div>
+  </section>
+  <nav aria-label="Guías y herramientas de biofábricas" style="padding:2rem 1.25rem;background:#f0faf3;color:#1a3c2a">
+    <div style="max-width:70rem;margin:auto">
+      <h2 style="font-size:1.25rem;font-weight:700;margin:0 0 1rem">Explora tu proyecto de biofábrica</h2>
+      <ul style="display:flex;flex-wrap:wrap;gap:1rem 2rem;list-style:none;padding:0;margin:0">
+        <li><a href="/bioreactores" style="text-decoration:underline">Biorreactores agrícolas</a></li>
+        <li><a href="/biofabrica-on-farm" style="text-decoration:underline">Guía de biofábricas en el rancho</a></li>
+        <li><a href="/kit-biorreactor" style="text-decoration:underline">Ficha técnica del kit</a></li>
+        <li><a href="/biofabrica" style="text-decoration:underline">Calcula tu ahorro y solicita cotización</a></li>
+      </ul>
+    </div>
+  </nav>
+  <footer style="background:#333333">
+    <div class="text-center px-8 md:px-16 lg:px-28 pt-16 pb-10">
+      <Picture src={letras} alt="Precisión Agrícola — Biorreactores agrícolas y biofábricas on-farm" class="mx-auto mb-10 h-auto max-w-[220px]" sizes="(min-width: 1024px) 800px, 100vw" />
+      <p class="font-title uppercase text-white leading-relaxed mb-2" style="font-size:clamp(1rem, 2vw, 1.3rem);letter-spacing:0.03em;max-width:900px;margin-left:auto;margin-right:auto">
+        Si quieres conocer más, sobre nuestras soluciones de agricultura
+        de precisión regenerativa
+      </p>
+      <p class="font-title uppercase text-white font-bold" style="font-size:clamp(1rem, 2vw, 1.3rem);letter-spacing:0.03em">
+        Agenda una cita al teléfono
+        <a href="tel:+523311174441" class="hover:underline" style="color:#ffffff">33 1117 4441</a>
+      </p>
+    </div>
+    <div class="mx-auto" style="max-width:900px;height:1px;background:rgba(255,255,255,.25)"></div>
+    <div class="text-center px-8 py-10">
+      <p class="font-title uppercase font-bold text-white mb-6" style="font-size:1.1rem;letter-spacing:0.05em">
+        Síguenos en redes
+      </p>
+      <div class="flex justify-center gap-5">
+        <a href="https://www.linkedin.com/company/precision-agricola" aria-label="LinkedIn" target="_blank" rel="noopener" class="flex items-center justify-center rounded-lg" style="width:52px;height:52px;background:rgba(255,255,255,.15);transition:background .2s">
+          <svg class="w-6 h-6" fill="#ffffff" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@PrecisionAgricola" aria-label="YouTube" target="_blank" rel="noopener" class="flex items-center justify-center rounded-lg" style="width:52px;height:52px;background:rgba(255,255,255,.15);transition:background .2s">
+          <svg class="w-6 h-6" fill="#ffffff" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/PrecisionAgricolaMX" aria-label="Facebook" target="_blank" rel="noopener" class="flex items-center justify-center rounded-lg" style="width:52px;height:52px;background:rgba(255,255,255,.15);transition:background .2s">
+          <svg class="w-6 h-6" fill="#ffffff" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/precisionagricola" aria-label="Instagram" target="_blank" rel="noopener" class="flex items-center justify-center rounded-lg" style="width:52px;height:52px;background:rgba(255,255,255,.15);transition:background .2s">
+          <svg class="w-6 h-6" fill="#ffffff" viewBox="0 0 24 24"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 100 12.324 6.162 6.162 0 100-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 11-2.88 0 1.441 1.441 0 012.88 0z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="text-center pb-12 pt-4">
+      <a href="https://www.precisionagricola.com" target="_blank" rel="noopener" class="font-body text-white hover:underline" style="font-size:clamp(1.2rem, 2.5vw, 1.6rem)">
+        www.precisionagricola.com
+      </a>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .font-title { font-family: var(--font-display); }
+  :global(html) { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { :global(html) { scroll-behavior: auto; } }
+</style>

@@ -1,0 +1,283 @@
+---
+import Button from '../ui/Button.astro';
+import Picture from '../ui/Picture.astro';
+import logo from '../../assets/biorreactores/logo-pa.png';
+---
+<div class="diagnostico-card rounded-[var(--radius-card)] border-t-4 border-lima bg-white text-bosque shadow-[var(--shadow-card)]">
+  <div class="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-gray-100">
+    <Picture src={logo} alt="" widths={[32, 64]} sizes="32px" class="w-8 h-8 shrink-0" />
+    <div>
+      <p class="text-xs font-semibold tracking-widest uppercase" style="color:#6abf45">
+        Precisión Agrícola
+      </p>
+      <h2 class="text-sm font-black leading-tight" style="color:#1a3c2a">
+        Diagnóstico de Necesidad Biotecnológica
+      </h2>
+    </div>
+  </div>
+  <div data-success hidden class="flex flex-col items-center justify-center px-6 py-20 text-center">
+    <div class="w-14 h-14 rounded-full flex items-center justify-center mb-5" style="background:rgba(106,191,69,.12)">
+      <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#6abf45" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+    <h3 class="font-bold text-base mb-2" style="color:#1a3c2a">
+      ¡Diagnóstico recibido!
+    </h3>
+    <p class="text-xs leading-relaxed" style="color:#4a7c59">
+      Un especialista se pondrá en contacto<br>contigo en menos de 24 h.
+    </p>
+  </div>
+  <div data-error role="alert" hidden class="flex flex-col items-center justify-center px-6 py-12 text-center">
+    <div class="w-14 h-14 rounded-full flex items-center justify-center mb-5" style="background:rgba(220,53,69,.12)">
+      <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#dc3545" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </div>
+    <h3 class="font-bold text-base mb-2" style="color:#1a3c2a">
+      Error al enviar
+    </h3>
+    <p class="text-xs leading-relaxed mb-4" style="color:#4a7c59">
+      No se pudo registrar tu diagnóstico.<br>Por favor intenta nuevamente.
+    </p>
+    <button data-retry type="button" class="form-submit" style="max-width:200px;margin:0 auto">
+      Reintentar →
+    </button>
+  </div>
+  <form id="diagnostico-form" action="#" method="POST" class="px-6 py-5 space-y-4 overflow-y-auto lg:max-h-[72vh]" >
+    <div class="form-hp" aria-hidden="true">
+      <label for="company_url">Website</label>
+      <input type="text" name="company_url" id="company_url" tabindex="-1" autocomplete="off" value="">
+    </div>
+    <div data-too-fast role="alert" hidden class="rounded-lg px-4 py-3 text-xs font-semibold text-center" style="background:rgba(220,170,50,.12);color:#8a6d00;border:1px solid rgba(220,170,50,.3)">
+      Por favor tómate un momento para completar el formulario antes de enviarlo.
+    </div>
+    <div>
+      <label for="entry.717719532" class="form-label block mb-1">
+        Nombre Completo <span class="required-star">*</span>
+      </label>
+      <input id="entry.717719532" type="text" name="entry.717719532" required placeholder="Ej. Juan García López" class="form-input">
+    </div>
+    <div>
+      <label for="entry.418293425" class="form-label block mb-1">
+        Correo electrónico <span class="required-star">*</span>
+      </label>
+      <input id="entry.418293425" type="email" name="entry.418293425" required placeholder="correo@ejemplo.com" class="form-input">
+    </div>
+    <div>
+      <label for="entry.1012014923" class="form-label block mb-1">
+        Ubicación de la operación (Municipio / Estado) <span class="required-star">*</span>
+      </label>
+      <input id="entry.1012014923" type="text" name="entry.1012014923" required placeholder="Ej. Caborca, Sonora" class="form-input">
+    </div>
+    <div>
+      <label for="entry.1936785384" class="form-label block mb-1">
+        WhatsApp de contacto <span class="required-star">*</span>
+      </label>
+      <input id="entry.1936785384" type="tel" name="entry.1936785384" required placeholder="Ej. 644 123 4567" class="form-input">
+    </div>
+    <div>
+      <label for="entry.1412966994" class="form-label block mb-1">
+        Nombre del Rancho / Empresa <span class="required-star">*</span>
+      </label>
+      <input id="entry.1412966994" type="text" name="entry.1412966994" required placeholder="Ej. Rancho El Mezquite" class="form-input">
+    </div>
+    <fieldset>
+      <legend class="form-label block mb-2">
+        Cultivo Principal <span class="required-star">*</span>
+      </legend>
+      <div class="space-y-1.5">
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.232288433" value="Berries (Frambuesa, Arándano, Zarzamora)" class="form-radio" required>
+          Berries (Frambuesa, Arándano, Zarzamora)
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.232288433" value="Aguacate" class="form-radio">
+          Aguacate
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.232288433" value="Agave" class="form-radio">
+          Agave
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.232288433" value="Caña de Azúcar" class="form-radio">
+          Caña de Azúcar
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.232288433" value="__other_option__" class="form-radio">
+          Otro:
+        </label>
+        <input type="text" name="entry.232288433.other_option_response" placeholder="Especifica tu cultivo" class="form-input mt-1" hidden disabled aria-label="Especifica tu cultivo">
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend class="form-label block mb-2">
+        Superficie total en producción (Hectáreas) <span class="required-star">*</span>
+      </legend>
+      <div class="space-y-1.5">
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1112158256" value="Menos de 10 ha" class="form-radio" required>
+          Menos de 10 ha
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1112158256" value="11 a 50 ha" class="form-radio">
+          11 a 50 ha
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1112158256" value="Más de 50 ha" class="form-radio">
+          Más de 50 ha
+        </label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend class="form-label block mb-2">
+        ¿Cuál es tu principal problema actualmente? <span class="required-star">*</span>
+      </legend>
+      <div class="space-y-1.5">
+        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.745728650" value="Costo excesivo de los Microorganismos Benéficos" class="form-radio mt-0.5" required>
+          Costo excesivo de los Microorganismos Benéficos
+        </label>
+        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.745728650" value="Salud del suelo y degradación" class="form-radio mt-0.5">
+          Salud del suelo y degradación
+        </label>
+        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.745728650" value="Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)" class="form-radio mt-0.5">
+          Presencia de patógenos en raíz (Fusarium, Phytophthora, etc.)
+        </label>
+        <label class="flex items-start gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.745728650" value="Baja eficiencia en la absorción de nutrientes" class="form-radio mt-0.5">
+          Baja eficiencia en la absorción de nutrientes
+        </label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend class="form-label block mb-2">
+        ¿Utilizas microorganismos actualmente?
+        <span class="required-star">*</span>
+      </legend>
+      <div class="flex gap-6">
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1366426429" value="Sí" class="form-radio" required>
+          Sí
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1366426429" value="No" class="form-radio">
+          No
+        </label>
+      </div>
+    </fieldset>
+    <div>
+      <label for="entry.939413606" class="form-label block mb-1">
+        ¿Cuánto gastas aproximadamente al mes en microorganismos / bioinsumos por hectárea?
+        <span class="required-star">*</span>
+      </label>
+      <input id="entry.939413606" type="text" name="entry.939413606" required placeholder="Ej. $500 MXN / ha — escribe 0 si aún no usas" class="form-input">
+    </div>
+    <fieldset>
+      <legend class="form-label block mb-2">
+        ¿Qué deseas hacer?
+        <span class="required-star">*</span>
+      </legend>
+      <div class="space-y-1.5">
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1073422398" value="Programar una visita" class="form-radio" required>
+          Programar una visita
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1073422398" value="Adquirir una biofábrica" class="form-radio">
+          Adquirir una biofábrica
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:#2d4a3a">
+          <input type="radio" name="entry.1073422398" value="Comprar litros terminados de microorganismos" class="form-radio">
+          Comprar litros terminados de microorganismos
+        </label>
+      </div>
+    </fieldset>
+    <div class="pt-2 pb-1">
+      <Button type="submit" variant="dark" class="w-full">
+        <span data-submit-label>Enviar diagnóstico →</span>
+      </Button>
+      <p class="text-center text-xs mt-3" style="color:#7aad8a">
+        Un especialista se pondrá en contacto contigo en menos de 24 h.
+      </p>
+    </div>
+  </form>
+</div>
+
+<style>
+  [hidden] { display: none !important; }
+  .form-label { font-size: .8rem; font-weight: 700; }
+  .form-input { width: 100%; border: 1px solid #d1e8d9; border-radius: .65rem; padding: .65rem .8rem; font-size: .875rem; background: var(--color-brote); }
+  .form-input:focus-visible { outline: 2px solid var(--color-hoja); outline-offset: 2px; }
+  .form-radio { accent-color: var(--color-hoja); }
+  .required-star { color: var(--color-hoja); }
+  .form-hp { position: absolute; left: -9999px; width: 0; height: 0; overflow: hidden; }
+  .form-submit { border-radius: 999px; background: var(--color-bosque); color: white; padding: .75rem 1.5rem; cursor: pointer; }
+  button:disabled { opacity: .7; cursor: wait; }
+</style>
+<script>
+  import { enviarLead, registrarLead } from '../../scripts/enviar-lead';
+
+  const form = document.querySelector<HTMLFormElement>('#diagnostico-form')!;
+  const card = form.closest<HTMLElement>('.diagnostico-card')!;
+  const error = card.querySelector<HTMLElement>('[data-error]')!;
+  const tooFast = card.querySelector<HTMLElement>('[data-too-fast]')!;
+  const button = form.querySelector<HTMLButtonElement>('[type="submit"]')!;
+  const label = form.querySelector<HTMLElement>('[data-submit-label]')!;
+  const other = form.elements.namedItem('entry.232288433.other_option_response') as HTMLInputElement;
+  const startedAt = Date.now();
+  let submitting = false;
+
+  form.addEventListener('change', () => {
+    const selected = new FormData(form).get('entry.232288433') === '__other_option__';
+    other.hidden = !selected;
+    other.disabled = !selected;
+  });
+  card.querySelector('[data-retry]')!.addEventListener('click', () => {
+    error.hidden = true;
+    tooFast.hidden = true;
+    form.hidden = false;
+    button.focus();
+  });
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (submitting) return;
+    tooFast.hidden = true;
+    error.hidden = true;
+    const data = new FormData(form);
+    if (data.get('company_url')) {
+      form.hidden = true;
+      card.querySelector<HTMLElement>('[data-success]')!.hidden = false;
+      return;
+    }
+    if (Date.now() - startedAt < 5000) {
+      tooFast.hidden = false;
+      return;
+    }
+    const params = new URLSearchParams();
+    for (const [key, value] of data) {
+      if (key === 'company_url' || typeof value !== 'string') continue;
+      if (key.includes('.other_option_response') && !value.trim()) continue;
+      params.append(key, value);
+    }
+    submitting = true;
+    button.disabled = true;
+    label.textContent = 'Enviando…';
+    try {
+      await enviarLead(params);
+      registrarLead();
+      window.location.href = '/gracias-diagnostico';
+    } catch {
+      // Incluye el rechazo explícito del servidor ('rechazado').
+      form.hidden = true;
+      error.hidden = false;
+      card.querySelector<HTMLButtonElement>('[data-retry]')!.focus();
+    } finally {
+      submitting = false;
+      button.disabled = false;
+      label.textContent = 'Enviar diagnóstico →';
+    }
+  });
+</script>

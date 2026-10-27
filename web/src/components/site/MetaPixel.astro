@@ -1,0 +1,33 @@
+---
+// Meta Pixel (PageView) para las páginas de producto y el embudo.
+// Va en el slot head del layout:
+//   <MetaPixel slot="head" />
+// El evento Lead lo dispara registrarLead() de src/scripts/enviar-lead.ts al
+// enviar el formulario. Con leadRespaldo (solo /gracias-diagnostico) también
+// se dispara al cargar si el visitante llegó sin pasar por el formulario.
+interface Props {
+  leadRespaldo?: boolean;
+}
+const { leadRespaldo = false } = Astro.props;
+const id = '5389193441304738';
+---
+<script is:inline define:vars={{ id, leadRespaldo }}>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', id);
+  fbq('track', 'PageView');
+  if (leadRespaldo) {
+    try {
+      if (!localStorage.getItem('pa_lead_fired')) {
+        fbq('track', 'Lead');
+        localStorage.setItem('pa_lead_fired', '1');
+      }
+    } catch (e) {}
+  }
+</script>

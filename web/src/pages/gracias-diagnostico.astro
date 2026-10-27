@@ -1,0 +1,64 @@
+---
+// /gracias-diagnostico: destino tras enviar el diagnóstico (noindex).
+// Portada de themes/precision-agricola/pages/gracias-diagnostico.htm con el
+// mismo título, descripción, texto y enlace de WhatsApp. Sin barra ni pie,
+// como el original, y con el evento Lead de respaldo del Meta Pixel.
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MetaPixel from '../components/site/MetaPixel.astro';
+import logo from '../assets/brand/logo-oscuro.png';
+
+const title = 'Diagnóstico Recibido | Precisión Agrícola';
+const description = 'Tu diagnóstico de necesidad biotecnológica ha sido recibido. Un especialista te contactará en menos de 24 horas.';
+const whatsapp = 'https://wa.me/523311174441?text=Hola%2C%20acabo%20de%20completar%20el%20diagn%C3%B3stico%20de%20biorreactores.%20Me%20gustar%C3%ADa%20recibir%20mi%20c%C3%A1lculo%20de%20ROI.';
+const year = new Date().getFullYear();
+---
+<BaseLayout title={title} description={description} noindex bare>
+  <MetaPixel slot="head" leadRespaldo />
+  <section class="flex min-h-[calc(100svh-5rem)] items-center justify-center bg-brote px-6 py-20">
+    <div class="max-w-lg text-center">
+      <div class="pa-gracias-in mx-auto mb-8 flex size-20 items-center justify-center rounded-full bg-lima/15" style="--i: 0">
+        <svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="color: var(--color-lima)">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <div class="pa-gracias-in mb-6 flex items-center justify-center gap-3" style="--i: 0">
+        <Image src={logo} alt="" width={40} height={43} densities={[1, 2]} loading="eager" />
+        <span class="font-display text-sm font-bold text-medio">Precisión Agrícola</span>
+      </div>
+
+      <h1 class="pa-gracias-in pa-h1 mb-4 uppercase" style="--i: 1">¡Registro exitoso!</h1>
+
+      <p class="pa-gracias-in mx-auto mb-8 max-w-[420px] text-[1.05rem] leading-relaxed text-hoja" style="--i: 2">
+        Para recibir tu <strong class="text-bosque">cálculo de ROI de inmediato</strong> por WhatsApp, haz clic aquí:
+      </p>
+
+      <a
+        href={whatsapp}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="pa-gracias-in inline-flex items-center gap-3 rounded-full bg-[#25D366] px-8 py-4 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#1ebe5a]"
+        style="--i: 2"
+      >
+        <svg class="size-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+        Recibir mi ROI por WhatsApp
+      </a>
+
+      <div class="pa-gracias-in mt-6" style="--i: 2">
+        <a href="/biorreactores" class="text-sm text-medio underline transition-colors hover:text-hoja">← Volver a Biorreactores</a>
+      </div>
+    </div>
+  </section>
+  <footer class="bg-bosque py-8 text-center">
+    <p class="text-xs text-white/50">&copy; {year} Precisión Agrícola. Todos los derechos reservados.</p>
+  </footer>
+</BaseLayout>
+
+<style>
+  .pa-gracias-in { animation: pa-gracias 0.75s ease both; animation-delay: calc(var(--i) * 0.16s + 0.1s); }
+  @keyframes pa-gracias { from { opacity: 0; transform: translateY(24px); } }
+  @media (prefers-reduced-motion: reduce) { .pa-gracias-in { animation: none; } }
+</style>

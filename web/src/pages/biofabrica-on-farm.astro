@@ -1,0 +1,281 @@
+---
+// /biofabrica-on-farm: guía técnica de biofábricas agrícolas on-farm (sin formulario).
+// Portada de themes/precision-agricola/pages/biofabrica-on-farm.htm al sistema de web/.
+import { getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Picture from '../components/ui/Picture.astro';
+import {
+  meta,
+  beneficios,
+  consorcios,
+  preguntasFrecuentes,
+  jsonLdArticle,
+  jsonLdFaq,
+} from '../components/guia/datos';
+import tunnels from '../assets/guia/tunnels_berries_og.jpg';
+
+const og = await getImage({ src: tunnels, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+
+const recursos = [
+  { href: '/bioreactores', label: 'Biorreactores agrícolas' },
+  { href: '/biofabrica-on-farm', label: 'Guía de biofábricas en el rancho' },
+  { href: '/kit-biorreactor', label: 'Ficha técnica del kit' },
+  { href: '/biofabrica', label: 'Calcula tu ahorro y solicita cotización', featured: true },
+];
+---
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  image={og.src}
+  jsonLd={[jsonLdArticle, jsonLdFaq]}
+>
+  <Fragment slot="head">
+    <meta property="og:type" content="article" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={meta.ogImageAlt} />
+    <meta name="geo.region" content="MX-JAL" />
+    <meta name="geo.placename" content="Jalisco, México" />
+  </Fragment>
+
+  <!-- HERO -->
+  <section class="bf-hero relative isolate overflow-hidden bg-noche px-5 pt-36 pb-20 text-white lg:pt-44 lg:pb-28">
+    <Picture
+      src={tunnels}
+      alt={meta.ogImageAlt}
+      priority
+      sizes="100vw"
+      widths={[640, 960, 1280]}
+      pictureClass="bf-hero__bg absolute inset-0 -z-20"
+      class="h-full w-full object-cover opacity-35"
+    />
+    <div class="bf-hero__shade absolute inset-0 -z-10" aria-hidden="true"></div>
+
+    <div class="mx-auto max-w-4xl" data-reveal>
+      <span class="inline-flex items-center gap-2 rounded-full border border-lima/35 bg-lima/18 px-4 py-1.5 text-xs font-bold tracking-[.08em] text-lima uppercase backdrop-blur-md">
+        Biofábrica On-Farm · Guía Técnica
+      </span>
+      <h1 class="pa-h1 mt-5 mb-5 text-white">
+        Biofábricas agrícolas: produce bioinsumos en tu rancho
+      </h1>
+      <p class="max-w-3xl text-base leading-relaxed text-[#d6f0dc] md:text-lg">
+        Una biofábrica on-farm es una infraestructura biotecnológica de precisión instalada en tu unidad de producción agrícola. Te permite multiplicar productos microbianos para raíz, suelo, hoja y biocontrol —Bacillus, Trichoderma y Pseudomonas— para aplicar <strong class="text-white">bioinsumos frescos en el sitio donde se necesitan</strong>, con trazabilidad completa de cada lote por sensores IoT.
+      </p>
+    </div>
+  </section>
+
+  <!-- QUÉ ES -->
+  <Section id="definicion" width="narrow" eyebrow="Definición" title="¿Qué es una biofábrica on-farm?">
+    <div class="space-y-4 text-base leading-relaxed text-[#3a5a4a] md:text-lg" data-reveal>
+      <p>
+        Una <strong class="text-bosque">biofábrica on-farm</strong> integra tres elementos: equipo de fermentación controlada (<a href="/bioreactores" class="bf-link">biorreactores agrícolas IoT</a>), cepas microbianas certificadas, y protocolos técnicos diferenciados por consorcio. El conjunto permite al productor multiplicar microorganismos benéficos directamente en su unidad de producción.
+      </p>
+      <p>
+        A diferencia de los bioinsumos comerciales —que se compran empacados, viajan semanas hasta llegar al cultivo, y se almacenan con pérdida de viabilidad biológica—, el modelo on-farm produce los consorcios <strong class="text-bosque">frescos, en el sitio de aplicación</strong>. Los microorganismos se multiplican bajo condiciones monitoreadas (pH, oxígeno disuelto, temperatura, gases) y se aplican al cultivo dentro de horas o días.
+      </p>
+    </div>
+  </Section>
+
+  <!-- BENEFICIOS -->
+  <Section id="diferenciadores" tone="brote" eyebrow="Diferenciadores" title="¿Qué hace diferente a una biofábrica on-farm con IoT?">
+    <ul class="grid grid-cols-1 gap-5 md:grid-cols-2" data-reveal-stagger>
+      {beneficios.map((b) => (
+        <li class="bf-card group rounded-[var(--radius-card)] border border-[#d1e8d9] bg-white p-6 shadow-[var(--shadow-card)] sm:p-7">
+          <span class="inline-flex size-11 items-center justify-center rounded-xl bg-brote text-hoja transition-colors duration-300 group-hover:bg-lima group-hover:text-tinta">
+            <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path d={b.icono} />
+            </svg>
+          </span>
+          <h3 class="mt-4 text-lg font-bold text-bosque">{b.titulo}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">{b.texto}</p>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <!-- COMPONENTES -->
+  <Section id="componentes" width="narrow" eyebrow="Componentes técnicos" title="¿Qué necesita una biofábrica on-farm?">
+    <ol class="space-y-4" data-reveal-stagger>
+      <li class="bf-step">
+        <h3 class="text-lg font-bold text-bosque">1. Biorreactor agrícola IoT</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">
+          Equipo de fermentación con instrumentación continua: sensores de pH, oxígeno disuelto, CO₂, NH₃, H₂S, nivel y temperatura. Consulta la capacidad nominal, el volumen por lote y el monitoreo de la configuración actual en la ficha técnica. El sistema tolera hasta 2 días sin aireación por cortes eléctricos; al tercer día requiere aireación manual correctiva. <a href="/bioreactores" class="bf-link">Ver biorreactores disponibles</a>.
+        </p>
+      </li>
+      <li class="bf-step">
+        <h3 class="text-lg font-bold text-bosque">2. Cepas madre certificadas</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">
+          Inóculo microbiológico de origen trazable, suministrado por la empresa. El volumen de inoculación recomendado es del <strong class="text-bosque">1-5% del volumen total</strong> del biorreactor. Cada 3 ciclos productivos se incorporan cepas frescas para mantener viabilidad y diversidad funcional.
+        </p>
+      </li>
+      <li class="bf-step">
+        <h3 class="text-lg font-bold text-bosque">3. Medio de cultivo</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">
+          Suministrado mensualmente por la empresa con instrucciones específicas. Formulación base por ciclo: 200 g de ácido glutámico + 200 g de vitaminas del grupo B + 1 kg de melaza o azúcar morena. Se disuelve en tanque auxiliar antes de transferir al biorreactor.
+        </p>
+      </li>
+      <li class="bf-step">
+        <h3 class="text-lg font-bold text-bosque">4. Protocolos de fermentación y muestreo</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">
+          Protocolos diferenciados por consorcio (parámetros operativos abajo) + procedimiento de muestreo cada 15 días con diluciones seriadas y conteo de UFC en placa Petri incubada a 28-30 °C por 48-72 h. Define el pico de producción óptimo y la programación de aplicación al cultivo.
+        </p>
+      </li>
+      <li class="bf-step">
+        <h3 class="text-lg font-bold text-bosque">5. Capacitación operativa</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">
+          Entrenamiento al personal del rancho para operar el llenado, dosificación de medio, inoculación, monitoreo del dashboard IoT y procedimientos de limpieza (peróxido de hidrógeno agrícola al 70% cada 3 ciclos del mismo consorcio, o cada cambio de cepa).
+        </p>
+      </li>
+    </ol>
+  </Section>
+
+  <!-- CONSORCIOS -->
+  <Section
+    id="consorcios"
+    tone="brote"
+    eyebrow="Producción"
+    title="Productos microbianos producidos en la biofábrica"
+    lead="Seis productos diferenciados, cada uno con su protocolo de fermentación específico. Los parámetros operativos se controlan automáticamente por el sistema IoT durante toda la fermentación."
+  >
+    <div class="grid gap-5 md:grid-cols-2" data-reveal-stagger>
+      {consorcios.map((c) => (
+        <article class="bf-card flex flex-col rounded-[var(--radius-card)] border border-[#d1e8d9] bg-white p-6 shadow-[var(--shadow-card)] sm:p-7">
+          <div>
+            <span class="inline-block rounded-full bg-brote px-3 py-1 text-[11px] font-bold tracking-[.05em] text-hoja uppercase">
+              {c.rol}
+            </span>
+            <h3 class="mt-3 text-xl font-bold text-bosque">{c.nombre}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">
+              {c.descripcion}
+            </p>
+          </div>
+          <dl class="mt-5 grid grid-cols-2 gap-2 pt-2 sm:grid-cols-5">
+            {c.parametros.map((p) => (
+              <div class="rounded-lg border border-[#cfe7d6] bg-brote px-2.5 py-2 text-xs">
+                <dt class="text-[10.5px] font-bold tracking-[.04em] text-hoja uppercase">{p.label}</dt>
+                <dd class="mt-0.5 font-semibold text-bosque">{p.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </article>
+      ))}
+    </div>
+  </Section>
+
+  <!-- INVESTIGACIÓN Y DESARROLLO -->
+  <Section id="investigacion" width="narrow" eyebrow="Investigación y desarrollo" title="Validación en campo y mejora continua">
+    <div class="space-y-6 text-base leading-relaxed text-[#3a5a4a]" data-reveal>
+      <p>
+        El sistema integrado biorreactor + IoT + consorcios microbianos se encuentra en <strong class="text-bosque">fase de validación activa</strong> con productores piloto en Jalisco y Michoacán. A diferencia de un producto cerrado, cada operación que adopta el modelo aporta datos al sistema, lo que permite refinar protocolos por cultivo, región y consorcio.
+      </p>
+
+      <div class="bf-rd-banner rounded-r-2xl border-l-4 border-hoja p-6 sm:p-7">
+        <h3 class="text-lg font-bold text-bosque">¿Qué se está midiendo y mejorando?</h3>
+        <ul class="mt-3 space-y-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">
+          <li><strong class="text-bosque">· Curvas de crecimiento microbiano</strong> por consorcio y por región climática</li>
+          <li><strong class="text-bosque">· Estabilidad de parámetros</strong> (pH, O₂, gases) a lo largo del ciclo</li>
+          <li><strong class="text-bosque">· Frecuencia óptima</strong> de reincorporación de cepa madre</li>
+          <li><strong class="text-bosque">· Comportamiento del medio de cultivo</strong> bajo diferentes calidades de agua de origen</li>
+          <li><strong class="text-bosque">· Respuesta agronómica</strong> al ser aplicado en campo (en colaboración con los productores piloto)</li>
+        </ul>
+      </div>
+
+      <p>
+        Los productores que adoptan la biofábrica on-farm en esta etapa no solo obtienen el equipo — se incorporan como <strong class="text-bosque">socios de validación</strong>, con acceso anticipado a optimizaciones del protocolo conforme el modelo madura. La acumulación de datos históricos es lo que distingue al sistema de cualquier biofábrica artesanal sin instrumentación.
+      </p>
+    </div>
+  </Section>
+
+  <!-- FAQ -->
+  <Section id="preguntas" tone="brote" width="narrow" eyebrow="Preguntas frecuentes" title="Sobre la biofábrica on-farm">
+    <div class="space-y-3.5" data-reveal-stagger>
+      {preguntasFrecuentes.map((item) => (
+        <article class="rounded-2xl border border-[#d1e8d9] bg-white px-6 py-5 shadow-xs">
+          <h3 class="font-sans text-base font-bold text-bosque">{item.pregunta}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[#3a5a4a] sm:text-[15px]">{item.respuesta}</p>
+        </article>
+      ))}
+    </div>
+  </Section>
+
+  <!-- CTA FINAL -->
+  <section class="bf-cta px-5 py-20 text-white md:py-24">
+    <div class="mx-auto max-w-3xl text-center" data-reveal>
+      <h2 class="pa-h2 text-white">¿Tu operación es candidata para una biofábrica on-farm?</h2>
+      <p class="mt-4 mb-8 text-base leading-relaxed text-[#d6f0dc] md:text-lg">
+        Conoce los <a href="/bioreactores" class="bf-link text-lima!">biorreactores agrícolas disponibles</a> y solicita un diagnóstico técnico. Evaluamos cultivo, hectáreas, calidad de agua y consorcio prioritario para indicar la configuración que mejor se ajusta a tu operación.
+      </p>
+      <Button href="/biofabrica" size="lg">
+        Solicitar diagnóstico técnico
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </Button>
+    </div>
+  </section>
+
+  <!-- RECURSOS DEL EMBUDO (partial seo/recursos) -->
+  <nav class="bg-brote px-5 py-12 text-bosque" aria-label="Guías y herramientas de biofábricas">
+    <div class="mx-auto max-w-6xl" data-reveal>
+      <h2 class="text-xl font-bold">Explora tu proyecto de biofábrica</h2>
+      <ul class="mt-4 flex flex-wrap gap-x-8 gap-y-3 text-sm font-semibold">
+        {recursos.map((r) => (
+          <li>
+            <a href={r.href} class="bf-link">{r.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+</BaseLayout>
+
+<style>
+  .bf-hero__shade {
+    background: linear-gradient(135deg, rgb(26 60 42 / 0.92) 0%, rgb(45 106 79 / 0.82) 70%, rgb(15 36 25 / 0.95) 100%);
+  }
+
+  .bf-link {
+    color: var(--color-hoja);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgb(106 191 69 / 0.5);
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+  .bf-link:hover {
+    color: var(--color-lima);
+  }
+
+  .bf-card {
+    transition: border-color 0.25s, transform 0.25s var(--ease-out-soft), box-shadow 0.25s;
+  }
+  .bf-card:hover {
+    border-color: var(--color-lima);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgb(45 106 79 / 0.14);
+  }
+
+  .bf-step {
+    background: #fff;
+    border-left: 4px solid var(--color-lima);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 0.85rem 0.85rem 0;
+    box-shadow: 0 4px 12px rgb(26 60 42 / 0.05);
+  }
+
+  .bf-rd-banner {
+    background: linear-gradient(135deg, #f0faf3 0%, #d9f0e0 100%);
+  }
+
+  .bf-cta {
+    background: linear-gradient(135deg, var(--color-bosque) 0%, var(--color-hoja) 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bf-card, .bf-link {
+      transition: none;
+    }
+  }
+</style>

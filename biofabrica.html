@@ -1,0 +1,513 @@
+<!DOCTYPE html><html lang="es-MX"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Biofábrica agrícola: calcula tu ahorro | Precisión Agrícola</title><meta name="description" content="Evalúa una biofábrica en tu rancho: compara comprar microorganismos o producirlos con un biorreactor agrícola. Calcula un ahorro estimado y solicita cotización."><link rel="canonical" href="https://www.precisionagricola.com/biofabrica"><meta name="author" content="Precisión Agrícola"><meta name="theme-color" content="#1a3c2a"><meta property="og:type" content="website"><meta property="og:url" content="https://www.precisionagricola.com/biofabrica"><meta property="og:title" content="Biofábrica agrícola: calcula tu ahorro | Precisión Agrícola"><meta property="og:description" content="Evalúa una biofábrica en tu rancho: compara comprar microorganismos o producirlos con un biorreactor agrícola. Calcula un ahorro estimado y solicita cotización."><meta property="og:locale" content="es_MX"><meta property="og:site_name" content="Precisión Agrícola"><meta property="og:image" content="https://www.precisionagricola.com/_astro/og.C5ESVNXc_ZXrBmM.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Biofábrica agrícola: calcula tu ahorro | Precisión Agrícola"><meta name="twitter:description" content="Evalúa una biofábrica en tu rancho: compara comprar microorganismos o producirlos con un biorreactor agrícola. Calcula un ahorro estimado y solicita cotización."><meta name="twitter:image" content="https://www.precisionagricola.com/_astro/og.C5ESVNXc_ZXrBmM.jpg"><link rel="icon" type="image/x-icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="preload" href="/_astro/montserrat-latin-wght-normal.l_AIctKy.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/dm-sans-latin-wght-normal.Xz1IZZA0.woff2" as="font" type="font/woff2" crossorigin><script>document.documentElement.classList.add('js')</script><link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css"><link rel="stylesheet" href="/_astro/acerca-de.CklXnWum.css">
+<link rel="stylesheet" href="/_astro/biofabrica.3zWf6yes.css"></head> <body class="min-h-screen bg-white text-bosque antialiased"> <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-lima focus:px-4 focus:py-2 focus:font-bold focus:text-tinta">Saltar al contenido</a>  <main id="contenido">   <noscript><p style="max-width:46rem;margin:1rem auto;padding:1rem">El cálculo interactivo necesita JavaScript. Puedes consultar la <a href="/kit-biorreactor" style="color:#7ed957">ficha del equipo</a> o <a href="/contacto" style="color:#7ed957">contactarnos para una cotización</a>.</p></noscript>
+
+<div class="app" x-cloak
+     x-data="diagnostico()" data-precio="150" data-precio-lote="24000" data-dosis="4" data-litros-lote="200" data-referencia="900" data-reactor="30000" data-monitoreo="49000">
+
+    <header class="barra">
+        <img src="/_astro/logo-pa.B3ZXxfWx_ZJAjti.webp" alt="Precisión Agrícola">
+        <span class="marca">Precisión Agrícola</span>
+        <span class="progreso"><i :style="'width:' + avance + '%'"></i></span>
+        <a class="contacto-whatsapp" href="https://wa.me/523311174441" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp (abre en otra pestaña)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.8L3 21l1.7-4.6A9 9 0 1 1 21 11.5Z"/><path d="M8 7c0 5 4 9 9 9l1-3-3-1-1 2-4-4 2-1-1-3Z"/></svg>
+            WhatsApp
+        </a>
+    </header>
+
+    <main class="escena">
+
+        <!-- ══ 0 · Gancho ══════════════════════════════ -->
+        <template x-if="paso === 0">
+            <div>
+                <p class="paso-n surge">Diagnóstico en 1 minuto</p>
+                <h2 class="pregunta surge surge-1">
+                    ¿Comprar por litro o producir en tu rancho?
+                </h2>
+                <p class="apoyo surge surge-2">
+                    Compara las dos opciones con los datos de tu operación. El diagnóstico
+                    considera tu cultivo y superficie para orientar una propuesta de equipo
+                    o de microorganismos por litro.
+                </p>
+                <!-- Prueba de que el equipo existe. Va antes del botón porque
+                     el visitante viene de un anuncio y no sabe quiénes somos. -->
+                <figure class="gancho-equipo surge surge-3">
+                    <img src="/_astro/biofabrica-2.ZfpZD54p_Zu8q16.webp" srcset="/_astro/biofabrica-2.ZfpZD54p_Zu8q16.webp 283w, /_astro/biofabrica-2.ZfpZD54p_1WLPig.webp 485w"
+                         sizes="(max-width: 420px) 42vw, 180px"
+                         width="283" height="700" decoding="async"
+                         alt="Biofábrica 2.0: biorreactor agrícola de 190 litros en acero inoxidable">
+                    <figcaption>
+                        <span class="marca-equipo">Biofábrica 2.0</span>
+                        <ul>
+                            <li>190 litros de capacidad</li>
+                            <li>Acero inoxidable grado farmacéutico</li>
+                            <li>Ultrafiltración y esterilización UV-C</li>
+                            <li>Aireación, agitación y control térmico</li>
+                            <li>Sanitizado con ozono</li>
+                        </ul>
+                    </figcaption>
+                </figure>
+
+                <!-- Las dos modalidades se anuncian, no se preguntan. Aqui
+                     eran dos botones que parecian bifurcar el embudo y los dos
+                     llamaban a ir(1): la 'via' que elegian no se leia en
+                     ninguna parte. La eleccion de verdad esta al final del
+                     paso 6, cuando ya hay numeros que la sostengan. -->
+                <div class="surge surge-3 arranque">
+                    <p class="modalidades">
+                        <span class="modalidad"><i class="fi fi-rr-jug" aria-hidden="true"></i>Te vendemos por litro</span>
+                        <span class="modalidad"><i class="fi fi-rr-flask" aria-hidden="true"></i>o el equipo para producirlos</span>
+                    </p>
+                    <button type="button" class="btn" @click="ir(1)">Ver qué me conviene</button>
+                    <p class="arranque-pie">Con tus números te decimos cuál de las dos te sale mejor.</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 1 · Problema ════════════════════════════ -->
+        <template x-if="paso === 1">
+            <div>
+                <p class="paso-n">Paso 1 de 4</p>
+                <h2 class="pregunta">¿Qué te limita hoy?</h2>
+                <p class="apoyo">Elige uno o varios problemas que tengas.</p>
+                <div class="ops">
+                    <template x-for="p in problemasOrdenados" :key="p.id">
+                        <button type="button" class="op" :aria-pressed="problemas.includes(p.id)" @click="toggleProblema(p.id)">
+                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo">
+                                <span x-text="p.nom"></span>
+                                <span class="sub" x-show="p.sub" x-text="p.sub"></span>
+                            </span>
+                        </button>
+                    </template>
+                </div>
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="ir(2)" :disabled="problemas.length === 0">Continuar</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 2 · Cultivo ═════════════════════════════ -->
+        <template x-if="paso === 2">
+            <div>
+                <button class="atras" @click="ir(1)">← Atrás</button>
+                <p class="paso-n">Paso 2 de 4</p>
+                <h2 class="pregunta">¿Qué cultivas?</h2>
+                <p class="apoyo">Elige uno o varios.</p>
+                <div class="ops">
+                    <template x-for="c in CULTIVOS" :key="c.id">
+                        <button type="button" class="op" :aria-pressed="cultivos.includes(c.id)"
+                                @click="toggleCultivo(c.id)">
+                            <span class="ico"><i class="fi" :class="c.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo">
+                                <span x-text="c.nom"></span>
+                                <span class="sub" x-show="c.det" x-text="c.det"></span>
+                            </span>
+                        </button>
+                    </template>
+                </div>
+
+                <template x-if="cultivos.length">
+                    <section class="guia-etapas" aria-labelledby="titulo-etapas">
+                        <h3 id="titulo-etapas">¿Para qué etapa los necesitas?</h3>
+                        <p class="guia-intro">Elige una o varias etapas por cultivo. Preseleccionaremos los microorganismos sugeridos para todas ellas.</p>
+
+                        <template x-for="id in cultivos" :key="id">
+                            <div class="cultivo-etapas">
+                                <h4 x-text="nombreCultivo(id)"></h4>
+                                <div class="etapas-grid">
+                                    <template x-for="(e, i) in etapasDeCultivo(id)" :key="e.nom">
+                                        <button type="button" class="etapa-op"
+                                                :aria-pressed="etapaEstaElegida(id, e.nom)"
+                                                @click="elegirEtapa(id, e.nom)">
+                                            <span class="etapa-ilustra" aria-hidden="true"><i class="fi" :class="iconoEtapa(i, etapasDeCultivo(id).length)"></i></span>
+                                            <span class="etapa-nom" x-text="e.nom"></span>
+                                        </button>
+                                    </template>
+                                </div>
+
+                                <template x-for="etapa in etapasElegidas(id)" :key="etapa.nom">
+                                    <div class="etapa-detalle">
+                                        <p class="etapa-detalle-tit" x-text="etapa.nom"></p>
+                                        <p x-text="etapa.porque"></p>
+                                        <p class="manejo" x-text="etapa.manejo || consejoEtapa(etapa.nom)"></p>
+                                        <div class="etapa-cepas" x-show="etapa.cepas.length">
+                                            <template x-for="cepa in etapa.cepas" :key="cepa">
+                                                <span class="etapa-cepa" x-text="nombreCepa(cepa)"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <p class="etapa-aviso">Orientación inicial: el diagnóstico del predio y la etiqueta del producto definen la aplicación final.</p>
+                    </section>
+                </template>
+
+                <div class="campo" style="margin-top:1.2rem">
+                    <label for="estado-operacion">Estado de la República donde está tu operación</label>
+                    <select id="estado-operacion" x-model="estado">
+                        <option value="">Selecciona un estado</option>
+                        <template x-for="e in estadosMexico" :key="e">
+                            <option :value="e" x-text="e"></option>
+                        </template>
+                    </select>
+                </div>
+                <div style="margin-top:1.2rem">
+                    <button class="btn" @click="ir(3)" :disabled="cultivos.length === 0 || !etapasCompletas || !estado">Continuar</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 3 · Superficie y práctica ═══════════════ -->
+                <template x-if="paso === 3">
+            <div>
+                <button class="atras" @click="ir(2)">← Atrás</button>
+                <p class="paso-n">Paso 3 de 4</p>
+                                <h2 class="pregunta">¿Cómo gestionas tu carga microbiana actualmente?</h2>
+                <div class="ops">
+                    <template x-for="p in practicas" :key="p.id">
+                        <button class="op" :aria-pressed="practica === p.id" @click="practica = p.id">
+                            <span class="ico"><i class="fi" :class="p.icon" aria-hidden="true"></i></span>
+                            <span class="cuerpo">
+                                <span x-text="p.nom"></span>
+                                <span class="sub" x-show="p.sub" x-text="p.sub"></span>
+                            </span>
+                        </button>
+                    </template>
+                </div>
+
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="ir(5)" :disabled="!practica">Continuar</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 5 · Gasto ═══════════════════════════════ -->
+        <template x-if="paso === 5">
+            <div>
+                <button class="atras" @click="ir(3)">← Atrás</button>
+                <p class="paso-n">Paso 4 de 4</p>
+                <h2 class="pregunta" x-text="preguntaGasto"></h2>
+                <p class="apoyo">Ponlo por mes activo. Luego marca cuándo aplicas.</p>
+
+                <div style="margin:1.4rem 0 .5rem">
+                    <span class="cifra-viva">$<span x-text="gasto"></span></span>
+                    <span class="cifra-viva u"> MXN / ha al mes</span>
+                </div>
+                <input type="range" min="0" max="6000" step="50" x-model.number="gasto" aria-label="Gasto por hectárea al mes">
+                <div class="rango-topes"><span>$0</span><span>$6,000+</span></div>
+
+                <div class="meses-bloque">
+                    <div class="meses-head">
+                        <h3>¿En qué meses tienes ese gasto?</h3>
+                        <span x-text="mesesSeleccionadosTxt"></span>
+                    </div>
+                <div class="presets">
+                    <button type="button" class="preset" @click="seleccionarMeses('corto')">Ciclo corto</button>
+                    <button type="button" class="preset" @click="seleccionarMeses('medio')">Medio año</button>
+                    <button type="button" class="preset" @click="seleccionarMeses('todo')">Todo el año</button>
+                </div>
+                <details class="meses-fino">
+                                        <summary>
+                        <span>Ajustar mes por mes</span>
+                        <span class="ajustar">abrir</span>
+                    </summary>
+                    <div class="meses-grid">
+                        <template x-for="m in mesesDisponibles" :key="m.id">
+                            <button type="button" class="mes-chip"
+                                    :aria-pressed="mesesActivos.includes(m.id)"
+                                    @click="toggleMes(m.id)" x-text="m.nom"></button>
+                        </template>
+                    </div>
+                </details>
+                </div>
+
+                <template x-if="gasto > 0 && mesesGasto > 0">
+                    <div class="dato">
+                        <span class="ico"><i class="fi fi-rr-chart-histogram" aria-hidden="true"></i></span>
+                        <p>Por hectárea son <strong x-text="mxn(gastoHaAnual)"></strong> al año.
+                           En tus <strong x-text="ha + ' ha'"></strong>, son <strong x-text="mxn(gastoAnual)"></strong>.
+                           Produciéndolo on farm, baja a <strong x-text="mxn(costoOnFarmAnual)"></strong>.</p>
+                    </div>
+                </template>
+
+                <div style="margin-top:1.6rem">
+                    <button class="btn" @click="continuarGasto()" :disabled="gasto === 0 || mesesGasto === 0">Continuar</button>
+                    <button class="btn-txt" @click="gasto = 0; noSabe = true; calcular()">No sé cuánto gasto</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 6 · Resultado ═══════════════════════════ -->
+        <template x-if="paso === 6">
+            <div>
+                <button class="atras" @click="ir(5)">← Atrás</button>
+                                <div class="ajusta surge">
+                    <div class="ajusta-cab">
+                        <span class="ajusta-et">Tu superficie</span>
+                        <span class="ajusta-val"><span x-text="ha"></span> ha</span>
+                    </div>
+                    <input type="range" min="1" max="300" step="1" x-model.number="ha" aria-label="Hectáreas">
+                    <div class="rango-topes"><span>1 ha</span><span>300+ ha</span></div>
+                </div>
+
+                                <template x-for="k in [veredictoClave]" :key="k">
+                    <div class="veredicto asoma">
+                        <span class="et" x-text="veredicto.etiqueta"></span>
+                        <h2 x-text="veredicto.titulo"></h2>
+                        <p x-text="veredicto.texto"></p>
+                    </div>
+                </template>
+
+                                <template x-if="palanca !== 'campo' && ha > 0">
+                    <div class="surge surge-2">
+                        <p class="necesita">Para <strong x-text="ha + ' ha'"></strong> necesitas
+                           <strong x-text="num(litrosAplicacion) + ' L'"></strong> por aplicación.</p>
+
+                        <div class="opciones">
+                            <div class="opcion" :class="{ gana: !convieneProducir }">
+                                <span class="titulo">Comprarlos terminados</span>
+                                <span class="por-ha" x-text="mxn(comprarPorHa)"></span>
+                                <span class="por-ha-u">por hectárea</span>
+                                <span class="monto" x-text="mxn(comprarTotal)"></span>
+                                <span class="detalle" x-text="num(litrosAplicacion) + ' L, justo lo que ocupas'"></span>
+                                <span class="sello">Te conviene</span>
+                            </div>
+                            <div class="opcion" :class="{ gana: convieneProducir }">
+                                <span class="titulo">Producirlos tú</span>
+                                <span class="por-ha" x-text="mxn(producirPorHa)"></span>
+                                <span class="por-ha-u">por hectárea</span>
+                                <span class="monto" x-text="mxn(producirTotal)"></span>
+                                <span class="detalle" x-text="num(tandas) + (tandas === 1 ? ' tanda de ' : ' tandas de ') + num(loteLitros) + ' L'"></span>
+                                <span class="sello">Te conviene</span>
+                            </div>
+                        </div>
+
+                        <details class="porque">
+                        <summary>¿Por qué cambia según la superficie?</summary>
+                        <figure class="curva">
+                            <svg id="grafica" viewBox="0 0 320 156" role="img"
+                                 aria-labelledby="curva-pie" preserveAspectRatio="xMidYMid meet"
+                                 x-effect="dibujarCurva()"></svg>
+                            <figcaption id="curva-pie">
+                                <span class="clave"><i class="raya es-producir"></i>Producirlos</span>
+                                <span class="clave"><i class="raya es-comprar"></i>Comprarlos terminados</span>
+                                <span class="clave"><i class="punto"></i>Tú</span>
+                                <span class="pie">Pesos por hectárea, según tu superficie. Cada diente es una tanda nueva que se paga entera.</span>
+                            </figcaption>
+                        </figure>
+
+                        <p class="escala" :class="claseEscala" x-html="textoEscala"></p>
+                        </details>
+                    </div>
+                </template>
+
+
+                <template x-if="palanca !== 'campo'">
+                    <div class="metricas surge surge-1">
+                        <div class="metrica">
+                            <span class="v" x-text="mxn(ahorroHaAnual)"></span>
+                            <span class="l">ahorro por ha al año</span>
+                        </div>
+                        <div class="metrica">
+                            <span class="v" x-text="mxn(ahorroAnual)"></span>
+                            <span class="l">ahorro total al año</span>
+                        </div>
+                        <div class="metrica ancha">
+                            <span class="v" x-text="palanca === 'litros' ? litrosMes + ' L' : mesesTxt"></span>
+                            <span class="l" x-text="palanca === 'litros' ? 'cubres al mes activo con tu gasto actual' : 'para recuperar la inversión'"></span>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="datoCepa">
+                    <div class="dato surge surge-2">
+                        <span class="ico"><i class="fi fi-rr-microscope-bacteria" aria-hidden="true"></i></span>
+                        <p x-html="datoCepa"></p>
+                    </div>
+                </template>
+
+                <!-- Configurador -->
+
+                                <div class="salidas surge surge-3">
+                    <p class="salidas-tit">¿Cómo quieres seguir?</p>
+
+                    <button type="button" class="salida" :class="{ destacado: configurable }" @click="ir(8)">
+                        <span class="salida-ico"><i class="fi fi-rr-industry-windows" aria-hidden="true"></i></span>
+                        <span class="salida-cuerpo">
+                            <span class="salida-nom">Armar mi equipo</span>
+                            <span class="salida-det">El biorreactor y los microorganismos sugeridos para tus etapas, con su precio</span>
+                        </span>
+                        <span class="salida-flecha" aria-hidden="true">→</span>
+                    </button>
+
+                    <button type="button" class="salida" :class="{ destacado: !configurable }" @click="ir(7)">
+                        <span class="salida-ico"><i class="fi fi-rr-jug" aria-hidden="true"></i></span>
+                        <span class="salida-cuerpo">
+                            <span class="salida-nom">Comprarlos ya producidos</span>
+                            <span class="salida-det">Te entregamos los litros listos, sin comprar equipo</span>
+                        </span>
+                        <span class="salida-flecha" aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 8 · Configuración y precio ═══════════════ -->
+                <template x-if="paso === 8">
+            <div>
+                <button class="atras" @click="ir(6)">← Volver al resultado</button>
+                <p class="paso-n">Tu configuración</p>
+                <div class="surge surge-3">
+                        <p class="cfg-tit">Tu configuración · ajústala</p>
+
+                        <template x-if="incluyeReactor">
+                            <div class="pieza fija">
+                                <span class="marca-check">✓</span>
+                                <span class="cuerpo" style="flex:1">
+                                    <span class="nom">Biorreactor agrícola</span>
+                                    <span class="rol">Base del sistema</span>
+                                    <span class="det">Tanque de 190 L en acero inoxidable grado farmacéutico. Ultrafiltración, UV-C, control automático de aireación, agitación y temperatura, sanitizado con ozono.</span>
+                                </span>
+                                <span class="precio" x-text="mxn(precioReactor)"></span>
+                            </div>
+                        </template>
+
+                        <template x-if="!incluyeReactor">
+                            <p class="apoyo" style="font-size:.86rem;margin:-.2rem 0 .8rem">
+                                Como ya tienes equipo propio, no incluimos el biorreactor.
+                            </p>
+                        </template>
+
+                        <button class="pieza" :aria-pressed="monitoreo" @click="monitoreo = !monitoreo">
+                            <span class="marca-check" x-text="monitoreo ? '✓' : ''"></span>
+                            <span class="cuerpo" style="flex:1">
+                                <span class="nom">Sistema de monitoreo</span>
+                                <span class="rol">Opcional</span>
+                                <span class="det">Sensores de pH, oxígeno disuelto y temperatura para vigilar cada lote.</span>
+                            </span>
+                            <span class="precio" x-text="mxn(precioMonitoreo)"></span>
+                        </button>
+
+                        <p class="cfg-tit">Microorganismos · cada paquete rinde <span x-text="loteLitros"></span> L por lote, para <span x-text="loteHa"></span> ha</p>
+                        <p class="apoyo" style="font-size:.84rem;margin:-.25rem 0 .8rem">
+                            Preseleccionamos los sugeridos para tus etapas: <strong x-text="resumenEtapas"></strong>. Puedes quitar o agregar antes de cotizar; el total se actualiza al momento.
+                        </p>
+
+                        <template x-for="c in cepasOrdenadas" :key="c.id">
+                            <button class="pieza" :aria-pressed="cepas.includes(c.id)" @click="alternarCepa(c.id)">
+                                <span class="marca-check" x-text="cepas.includes(c.id) ? '✓' : ''"></span>
+                                <span class="cuerpo" style="flex:1">
+                                    <span class="nom" x-text="c.nombre"></span>
+                                    <span class="rol" x-text="c.rol"></span>
+                                    <span class="sugerida-etapa" x-show="cepasSugeridasEtapas.includes(c.id)">Sugerido por tus etapas</span>
+                                    <span class="det" x-text="c.desc"></span>
+                                </span>
+                                <span class="precio" x-text="mxn(c.precio)"></span>
+                            </button>
+                        </template>
+                    </div>
+
+                <!-- Formas de pago. Se muestran tal como las cotiza Ventas:
+                     no se calcula ninguna tabla de amortización porque el
+                     plazo no está definido, y no vamos a inventarlo. -->
+                <div class="surge surge-3">
+                        <p class="cfg-tit">Cómo pagarlo</p>
+                        <div class="pagos">
+                            <template x-for="p in FORMAS_PAGO" :key="p.id">
+                                <button class="pago" :aria-pressed="formaPago === p.id" @click="formaPago = p.id">
+                                    <span class="marca-check" x-text="formaPago === p.id ? '✓' : ''"></span>
+                                    <span style="flex:1">
+                                        <span class="nom" x-text="p.nom"></span>
+                                        <span class="det" x-text="p.det"></span>
+                                    </span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                <div class="total">
+                        <div class="total-fila">
+                            <span class="et">Total de tu configuración<br>
+                                <span style="font-size:.72rem;color:var(--txt-3)">pesos mexicanos, más IVA</span></span>
+                            <span class="v" x-text="mxn(precioConfig)"></span>
+                        </div>
+                    <button class="btn" @click="ir(7)">Recibir cotización de mi equipo</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ══ 7 · Captura ═════════════════════════════ -->
+        <template x-if="paso === 7">
+            <div>
+                <button class="atras" @click="ir(vengoDe)"
+                        x-text="vengoDe === 8 ? '← Volver a mi configuración' : '← Volver al resultado'"></button>
+                <p class="paso-n">Último paso</p>
+                <h2 class="pregunta" x-text="vengoDe === 8 ? '¿A dónde te enviamos la cotización de tu equipo?' : veredicto.cierreTitulo"></h2>
+                <p class="apoyo">Un especialista te contacta en menos de 24 h. Sin costo.</p>
+
+                <template x-if="errorEnvio">
+                    <div class="aviso">No se pudo enviar. Revisa tu conexión e inténtalo otra vez.</div>
+                </template>
+                <template x-if="muyRapido">
+                    <div class="aviso">Tómate un momento para revisar tus datos antes de enviar.</div>
+                </template>
+
+                <form @submit.prevent="enviar($event)">
+                    <div class="honeypot" aria-hidden="true">
+                        <label for="company_url">Sitio web</label>
+                        <input type="text" name="company_url" id="company_url" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="campo">
+                        <label for="f-nombre">Tu nombre</label>
+                        <input id="f-nombre" name="nombre" type="text" required autocomplete="name" placeholder="Juan García">
+                    </div>
+                    <div class="campo">
+                        <label for="f-wa">WhatsApp</label>
+                        <input id="f-wa" name="whatsapp" type="tel" required autocomplete="tel" placeholder="644 123 4567">
+                    </div>
+                    <div class="campo">
+                        <label for="f-mail">Correo</label>
+                        <input id="f-mail" name="correo" type="email" required autocomplete="email" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="campo">
+                        <label for="f-lugar">Municipio o localidad</label>
+                        <input id="f-lugar" name="lugar" type="text" required placeholder="Caborca">
+                    </div>
+                    <div class="campo">
+                        <label for="f-rancho">Nombre del rancho o empresa</label>
+                        <input id="f-rancho" name="rancho" type="text" required placeholder="Rancho El Mezquite">
+                    </div>
+
+                    <label class="casilla">
+                        <input type="checkbox" x-model="quiereFinanciamiento">
+                        <span>Me interesaría conocer opciones de financiamiento</span>
+                    </label>
+
+                    <button type="submit" class="btn" :disabled="enviando">
+                        <span x-text="enviando ? 'Enviando…' : (vengoDe === 8 ? 'Recibir cotización de mi equipo' : veredicto.cta)"></span>
+                    </button>
+                    <p class="legal">Usamos tus datos solo para contactarte sobre esta cotización.</p>
+                </form>
+            </div>
+        </template>
+
+    </main>
+</div>
+
+<section aria-labelledby="como-estimamos" style="max-width:46rem;margin:0 auto;padding:2rem 1.25rem;line-height:1.7;color:var(--txt-2)">
+    <h1 style="color:var(--txt);font-size:1.4rem;line-height:1.3">Biofábrica agrícola: calcula tu ahorro en el rancho</h1>
+    <p>Compara la compra de microorganismos con su producción en un biorreactor agrícola. Usa tu cultivo, superficie y calendario para explorar una configuración y solicitar cotización.</p>
+    <nav aria-label="Información sobre biofábricas" style="display:flex;flex-wrap:wrap;gap:.5rem 1.25rem">
+        <a href="/biorreactores" style="color:var(--lime)">Conoce el biorreactor</a>
+        <a href="/biofabrica-on-farm" style="color:var(--lime)">Cómo funciona una biofábrica</a>
+        <a href="/" style="color:var(--lime)">Precisión Agrícola</a>
+    </nav>
+    <h2 id="como-estimamos" style="color:var(--txt);font-size:1.3rem">¿Qué necesitas para evaluar tu biofábrica?</h2>
+    <p>Ten a mano tu superficie de cultivo, los meses en que aplicas insumos biológicos y tu gasto aproximado por hectárea. El diagnóstico reúne esos datos y te permite comparar alternativas: comprar microorganismos por litro, adquirir un equipo o mejorar tu producción actual.</p>
+    <h3 style="color:var(--txt)">¿El ahorro calculado es una garantía?</h3>
+    <p>No. Es una estimación basada en los supuestos y precios del configurador. Antes de invertir hay que confirmar dosis, frecuencia de aplicación, costos operativos, calidad del agua y configuración del equipo con el asesor técnico.</p>
+    <p>Consulta la <a href="/kit-biorreactor" style="color:var(--lime)">ficha técnica del kit biorreactor</a> y la <a href="/biofabrica-on-farm" style="color:var(--lime)">guía de biofábricas agrícolas</a> para preparar tu diagnóstico.</p>
+</section>
+  </main>  <script type="module">const s=document.querySelectorAll("[data-reveal], [data-reveal-stagger]");document.querySelectorAll("[data-reveal-stagger]").forEach(e=>{[...e.children].forEach((r,t)=>r.style.setProperty("--reveal-delay",`${t*90}ms`))});if(!("IntersectionObserver"in window)||matchMedia("(prefers-reduced-motion: reduce)").matches)s.forEach(e=>e.classList.add("is-visible"));else{const e=new IntersectionObserver(r=>{for(const t of r)t.isIntersecting&&(t.target.classList.add("is-visible"),e.unobserve(t.target))},{rootMargin:"0px 0px -10% 0px",threshold:.12});s.forEach(r=>e.observe(r))}</script> </body></html> <script type="module" src="/_astro/biofabrica.astro_astro_type_script_index_0_lang.mqDozys_.js"></script>

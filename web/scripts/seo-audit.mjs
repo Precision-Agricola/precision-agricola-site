@@ -14,7 +14,7 @@ const JS_BUDGET = 50 * 1024;
 // Páginas que deben llevar noindex. Cualquier otra con noindex falla.
 const noindexRoutes = new Set(['/ui-kit', '/gracias-diagnostico']);
 // Páginas del embudo que deben enlazar a la calculadora (como en tools/seo-audit.cjs).
-const funnelRoutes = new Set(['/', '/bioreactores', '/biofabrica-on-farm', '/kit-biorreactor']);
+const funnelRoutes = new Set(['/', '/biorreactores', '/biofabrica-on-farm', '/kit-biorreactor']);
 
 const walk = (dir) => readdirSync(dir).flatMap((name) => {
   const path = join(dir, name);

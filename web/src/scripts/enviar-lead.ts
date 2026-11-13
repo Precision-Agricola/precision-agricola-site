@@ -12,7 +12,7 @@
 //
 //   import { enviarLead, registrarLead } from '../scripts/enviar-lead';
 //   await enviarLead(new URLSearchParams({ 'entry.123': 'valor' }));
-//   registrarLead();
+//   registrarLead('kit');
 
 const tipo = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
@@ -45,11 +45,13 @@ export async function enviarLead(params: URLSearchParams): Promise<void> {
 }
 
 // Evento Lead de Meta, una sola vez por visitante (como en /bioreactores).
-export function registrarLead(): void {
+// pagina va como content_name para separar en Meta los leads de cada página.
+export function registrarLead(pagina?: string): void {
   const w = window as typeof window & { fbq?: (...args: unknown[]) => void };
   try {
     if (typeof w.fbq === 'function' && !localStorage.getItem('pa_lead_fired')) {
-      w.fbq('track', 'Lead');
+      if (pagina) w.fbq('track', 'Lead', { content_name: pagina });
+      else w.fbq('track', 'Lead');
       localStorage.setItem('pa_lead_fired', '1');
     }
   } catch {

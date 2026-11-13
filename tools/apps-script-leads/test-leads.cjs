@@ -92,6 +92,18 @@ test('el formulario anterior aprovecha intención y práctica', () => {
   assert.equal(si[columnas.indexOf('Práctica actual')], 'Usa microorganismos (sin detalle)');
   assert.equal(si[columnas.indexOf('Ruta')], 'Diagnóstico en campo');
 });
+test('el formulario de Astro dice de qué página vino sin cambiar la ruta', () => {
+  const h = headers.slice(0, 10).concat(['¿Utilizas microorganismos actualmente?', '¿Qué deseas hacer?']);
+  const base = ['2026-10-01', 'Ejemplo ficticio', 'ejemplo@example.invalid', '3300000000', 'Prueba', 'Zapopan, Jalisco', 'Berries', 'Más de 50 ha', '$500', 'Suelo', 'No'];
+  const de = (intencion) => Object.fromEntries(ctx.construirLead_(base.concat([intencion]), h, 'x').map((v, i) => [columnas[i], v]));
+  const kit = de('Programar una visita | PÁGINA: kit');
+  assert.equal(kit.Origen, 'Formulario /kit-biorreactor');
+  assert.equal(kit.Ruta, 'Diagnóstico en campo');
+  const landing = de('Comprar litros terminados de microorganismos | PÁGINA: landing');
+  assert.equal(landing.Origen, 'Formulario /biorreactores');
+  assert.equal(landing.Ruta, 'Litros terminados');
+  assert.equal(de('Adquirir una biofábrica | PÁGINA: otra').Origen, 'Formulario anterior');
+});
 test('el gasto se lee aunque el encabezado diga «gastas»', () => {
   const h = headers.slice(); h[8] = '¿Cuánto gastas aproximadamente al mes en microorganismos / bioinsumos por hectárea?';
   const fila = ['2026-10-01', 'n', 'c', '+520000000000', 'r', 'Jalisco', 'Berries', '11 a 50 ha', '$800', 'Suelo', ''];

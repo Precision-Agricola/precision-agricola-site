@@ -2,6 +2,16 @@
 import Button from '../ui/Button.astro';
 import Picture from '../ui/Picture.astro';
 import logo from '../../assets/biorreactores/logo-pa.png';
+
+// Formulario de diagnóstico compartido por /biorreactores y /kit-biorreactor.
+// origen dice de qué página vino el lead: viaja junto a «¿Qué deseas hacer?»
+// (entry.1073422398) como «| PÁGINA: <origen>» y como content_name del Lead de
+// Meta. El Apps Script lo pasa a la columna Origen. Los códigos no contienen
+// «biorreactor», «visita» ni «litros» para no confundir rutaDesdeIntencion_.
+interface Props {
+  origen: 'landing' | 'kit';
+}
+const { origen } = Astro.props;
 ---
 <div class="diagnostico-card rounded-[var(--radius-card)] border-t-4 border-lima bg-white text-bosque shadow-[var(--shadow-card)]">
   <div class="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-gray-100">
@@ -44,7 +54,7 @@ import logo from '../../assets/biorreactores/logo-pa.png';
       Reintentar →
     </button>
   </div>
-  <form id="diagnostico-form" action="#" method="POST" class="px-6 py-5 space-y-4 overflow-y-auto lg:max-h-[72vh]" >
+  <form id="diagnostico-form" data-origen={origen} action="#" method="POST" class="px-6 py-5 space-y-4 overflow-y-auto lg:max-h-[72vh]" >
     <div class="form-hp" aria-hidden="true">
       <label for="company_url">Website</label>
       <input type="text" name="company_url" id="company_url" tabindex="-1" autocomplete="off" value="">
@@ -262,12 +272,15 @@ import logo from '../../assets/biorreactores/logo-pa.png';
       if (key.includes('.other_option_response') && !value.trim()) continue;
       params.append(key, value);
     }
+    const origen = form.dataset.origen ?? '';
+    const intencion = params.get('entry.1073422398');
+    if (origen && intencion) params.set('entry.1073422398', `${intencion} | PÁGINA: ${origen}`);
     submitting = true;
     button.disabled = true;
     label.textContent = 'Enviando…';
     try {
       await enviarLead(params);
-      registrarLead();
+      registrarLead(origen);
       window.location.href = '/gracias-diagnostico';
     } catch {
       // Incluye el rechazo explícito del servidor ('rechazado').

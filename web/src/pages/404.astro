@@ -1,0 +1,149 @@
+---
+// /404: página de error para ErrorDocument 404 /404.html en Apache (noindex).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+
+const title = 'Página no encontrada | Precisión Agrícola';
+const description = 'La página que buscas no existe o cambió de dirección. Vuelve al inicio de Precisión Agrícola o explora nuestros biorreactores agrícolas, biofábrica y contacto.';
+
+const enlaces = [
+  {
+    href: '/',
+    label: 'Inicio',
+    detalle: 'Panorama general de nuestros servicios y tecnologías para el campo.',
+  },
+  {
+    href: '/biorreactores',
+    label: 'Biorreactores',
+    detalle: 'Equipos con monitoreo IoT para producir bioinsumos en tu rancho.',
+  },
+  {
+    href: '/biofabrica',
+    label: 'Biofábrica · Calcula tu ahorro',
+    detalle: 'Diagnóstico y estimación de ahorro para tu unidad de producción.',
+  },
+  {
+    href: '/contacto',
+    label: 'Contacto',
+    detalle: 'Atención por WhatsApp, teléfono y correo con respuesta en 24 horas.',
+  },
+];
+---
+<BaseLayout title={title} description={description} noindex>
+  <Section tone="noche" class="p404-hero relative isolate overflow-hidden">
+    <svg class="p404-hero__lines absolute inset-0 -z-10 h-full w-full" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+      {Array.from({ length: 7 }, (_, i) => (
+        <path
+          d={`M-40 ${160 + i * 68} C 260 ${80 + i * 64}, 520 ${260 + i * 60}, 820 ${150 + i * 62} S 1300 ${50 + i * 66}, 1500 ${175 + i * 62}`}
+          stroke="currentColor"
+          stroke-width="1.2"
+          style={`--i:${i}`}
+        />
+      ))}
+    </svg>
+    <div class="p404-hero__glow absolute -z-10" aria-hidden="true"></div>
+
+    <div class="grid items-center gap-12 pt-16 pb-4 md:pt-24 md:pb-8 lg:grid-cols-[1.15fr_1fr]">
+      <div>
+        <div class="mb-6 inline-flex size-16 items-center justify-center rounded-full border border-lima/30 bg-lima/15 text-lima" data-reveal aria-hidden="true">
+          <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v5M12 16h.01" />
+          </svg>
+        </div>
+
+        <p class="pa-eyebrow text-lima!" data-reveal>Error 404 · Precisión Agrícola</p>
+        <h1 class="pa-h1 mt-4" data-reveal>Página no encontrada</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/85 md:text-xl" data-reveal>
+          La página que buscas no existe o cambió de dirección. Puedes volver al inicio o elegir una de nuestras secciones principales para continuar.
+        </p>
+
+        <div class="mt-9 flex flex-wrap gap-3" data-reveal>
+          <Button href="/" size="lg" class="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+            Ir a Inicio
+          </Button>
+          <Button href="/contacto" variant="ghost-light" size="lg" class="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lima">
+            Ir a Contacto
+          </Button>
+        </div>
+      </div>
+
+      <nav
+        aria-labelledby="p404-nav-title"
+        class="rounded-[var(--radius-card)] border border-white/15 bg-white/[.06] p-7 backdrop-blur-xl md:p-8"
+        data-reveal
+      >
+        <h2 id="p404-nav-title" class="font-display text-xl font-extrabold text-white">
+          Secciones principales
+        </h2>
+        <p class="mt-1.5 text-sm text-white/80">
+          Enlaces directos para encontrar lo que necesitas en el sitio.
+        </p>
+
+        <ul class="mt-6 space-y-2.5">
+          {enlaces.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="p404-link group flex items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lima"
+              >
+                <span>
+                  <span class="block font-display text-base font-bold text-white">{item.label}</span>
+                  <span class="mt-0.5 block text-sm text-white/80">{item.detalle}</span>
+                </span>
+                <svg
+                  class="shrink-0 text-lima transition-transform duration-300 group-hover:translate-x-1 group-focus-visible:translate-x-1"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .p404-hero__lines { color: rgb(106 191 69 / .2); }
+  .p404-hero__lines path {
+    stroke-dasharray: 1800;
+    stroke-dashoffset: 1800;
+    animation: p404-draw 2.4s var(--ease-out-soft) calc(var(--i) * 120ms) forwards;
+  }
+  @keyframes p404-draw { to { stroke-dashoffset: 0; } }
+
+  .p404-hero__glow {
+    width: 620px;
+    height: 620px;
+    right: -160px;
+    top: -140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(61 140 95 / .5), transparent 65%);
+  }
+
+  .p404-link {
+    transition: background .25s, border-color .25s;
+  }
+  .p404-link:hover,
+  .p404-link:focus-visible {
+    background: rgb(106 191 69 / .14);
+    border-color: rgb(106 191 69 / .6);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .p404-hero__lines path { animation: none; stroke-dashoffset: 0; }
+    .p404-link { transition: none; }
+  }
+</style>

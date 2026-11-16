@@ -504,11 +504,12 @@ function construirLead_(fila, encabezados, id) {
   /* Los formularios de /bioreactores y /kit-biorreactor no traen resumen,
      pero sí preguntan qué quiere hacer y si ya usa microorganismos. */
   /* Desde el sitio de Astro, «¿Qué deseas hacer?» trae al final «| PÁGINA: kit»
-     o «| PÁGINA: landing» para saber de qué formulario vino el lead. */
-  const intencion = String(col('deseas hacer') || '');
+     o «| PÁGINA: landing» para saber de qué formulario vino el lead.
+     El segundo texto es el título real de la pregunta en el Google Form. */
+  const intencion = String(col('deseas hacer', 'deseas adquirir') || '');
   const pagina = (intencion.match(/\|\s*P[AÁ]GINA\s*:\s*([\w-]+)/i) || [])[1] || '';
   const rutaPedida = delEmbudo ? (r['RUTA SOLICITADA'] || r['RUTA']) : rutaDesdeIntencion_(intencion.split('|')[0]);
-  const practica = delEmbudo ? (r['Practica'] || r['Práctica'] || '') : practicaDesdeRespuesta_(col('utilizas microorganismos'));
+  const practica = delEmbudo ? (r['Practica'] || r['Práctica'] || '') : practicaDesdeRespuesta_(col('utilizas microorganismos', 'cuentas con presupuesto'));
 
   const puntaje = calcularPuntaje_({
     ruta: r['RECOMENDACION CALCULADA'] || r['RUTA'] || rutaPedida || '',

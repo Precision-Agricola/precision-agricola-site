@@ -3,7 +3,7 @@
 // Adapta las comprobaciones de tools/seo-audit.cjs del sitio en October y
 // añade el presupuesto por página: menos de 50 KB de JS e imágenes con srcset.
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { Script } from 'node:vm';
 import { JSDOM } from 'jsdom';
@@ -84,6 +84,28 @@ for (const file of pages.sort()) {
     failures++;
     console.error(`FAIL ${route}: ${error.message}`);
   }
+}
+
+try {
+  const sitemapPath = join(dist, 'sitemap.xml');
+  assert(existsSync(sitemapPath), 'no existe dist/sitemap.xml');
+  const xml = readFileSync(sitemapPath, 'utf8');
+  const sitemap = new JSDOM(xml, { contentType: 'application/xml' }).window.document;
+  const locs = [...sitemap.querySelectorAll('url > loc')].map((el) => el.textContent.trim());
+  assert.equal(new Set(locs).size, locs.length, 'URLs duplicadas en sitemap.xml');
+  for (const file of pages.sort()) {
+    const route = routeOf(file);
+    if (!noindexRoutes.has(route)) {
+      assert(locs.includes(canonicalBase + route), `falta ${canonicalBase + route}`);
+    }
+  }
+  for (const route of noindexRoutes) {
+    assert(!locs.includes(canonicalBase + route) && !xml.includes(route), `incluye ruta noindex ${route}`);
+  }
+  console.log(`PASS /sitemap.xml  ${locs.length} URLs`);
+} catch (error) {
+  failures++;
+  console.error(`FAIL /sitemap.xml: ${error.message}`);
 }
 
 process.exitCode = failures ? 1 : 0;

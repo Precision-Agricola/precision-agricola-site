@@ -92,6 +92,27 @@ test('el formulario anterior aprovecha intención y práctica', () => {
   assert.equal(si[columnas.indexOf('Práctica actual')], 'Usa microorganismos (sin detalle)');
   assert.equal(si[columnas.indexOf('Ruta')], 'Diagnóstico en campo');
 });
+test('el formulario de Astro dice de qué página vino sin cambiar la ruta', () => {
+  const h = headers.slice(0, 10).concat(['¿Utilizas microorganismos actualmente?', '¿Qué deseas hacer?']);
+  const base = ['2026-10-01', 'Ejemplo ficticio', 'ejemplo@example.invalid', '3300000000', 'Prueba', 'Zapopan, Jalisco', 'Berries', 'Más de 50 ha', '$500', 'Suelo', 'No'];
+  const de = (intencion) => Object.fromEntries(ctx.construirLead_(base.concat([intencion]), h, 'x').map((v, i) => [columnas[i], v]));
+  const kit = de('Programar una visita | PÁGINA: kit');
+  assert.equal(kit.Origen, 'Formulario /kit-biorreactor');
+  assert.equal(kit.Ruta, 'Diagnóstico en campo');
+  const landing = de('Comprar litros terminados de microorganismos | PÁGINA: landing');
+  assert.equal(landing.Origen, 'Formulario /biorreactores');
+  assert.equal(landing.Ruta, 'Litros terminados');
+  assert.equal(de('Adquirir una biofábrica | PÁGINA: otra').Origen, 'Formulario anterior');
+});
+test('los encabezados reales del Google Form llenan Origen, Ruta y Práctica', () => {
+  const h = ['Marca temporal', 'Nombre Completo', 'Correo electrónico', 'Ubicación de la operación (Municipio/Estado):', 'WhatsApp de contacto:', 'Nombre del Rancho / Empresa:', 'Cultivo Principal:', 'Superficie total en producción (Hectáreas):', '¿Cuál es tu principal problema actualmente?', '¿Cuánto inviertes aproximadamente al mes en bioinsumos por hectárea?', '¿Deseas adquirir un Biofabrica para reducir al máximo los costos de Bioinsumos?', '¿Cuentas con presupuesto para inversión inmediata o requieres apoyo con financiamiento/subsidio?'];
+  const fila = ['2026-10-01', 'Ejemplo ficticio', 'ejemplo@example.invalid', 'Zapopan, Jalisco', '3300000000', 'Prueba', 'Aguacate', '11 a 50 ha', 'Suelo', '500', 'Programar una visita | PÁGINA: landing', 'No'];
+  const r = Object.fromEntries(ctx.construirLead_(fila, h, 'x').map((v, i) => [columnas[i], v]));
+  assert.equal(r.Origen, 'Formulario /biorreactores');
+  assert.equal(r.Ruta, 'Diagnóstico en campo');
+  assert.equal(r['Gasto MXN/ha/mes'], 500);
+  assert.notEqual(r['Práctica actual'], '');
+});
 test('el gasto se lee aunque el encabezado diga «gastas»', () => {
   const h = headers.slice(); h[8] = '¿Cuánto gastas aproximadamente al mes en microorganismos / bioinsumos por hectárea?';
   const fila = ['2026-10-01', 'n', 'c', '+520000000000', 'r', 'Jalisco', 'Berries', '11 a 50 ha', '$800', 'Suelo', ''];

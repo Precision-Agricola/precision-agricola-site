@@ -13,8 +13,15 @@
   nuevos.
 - Los ahorros negativos conservan el signo; `marcarVenta` reconoce el
   monitoreo guardado como «Sí»; el ID busca el correo por encabezado.
-- Falta confirmar en la hoja real el encabezado de la pregunta de gasto
-  (issue #34). El script acepta «Cuánto inviertes» y «Cuánto gastas».
+- Encabezado del gasto (issue #34): el Google Form público titula
+  `entry.939413606` «¿Cuánto inviertes aproximadamente al mes en bioinsumos
+  por hectárea?», y la hoja de respuestas usa ese título. El script acepta
+  «Cuánto inviertes» y «Cuánto gastas». Ojo: los encabezados de la hoja son
+  los títulos del Form, no los textos del sitio. «¿Qué deseas hacer?» llega
+  como «¿Deseas adquirir un Biofabrica…?» y «¿Utilizas microorganismos?»,
+  como «¿Cuentas con presupuesto…?». `test-leads.cjs` prueba los 12
+  encabezados reales. Si alguien renombra una columna en Sheets, correr
+  `diagnosticarHoja()`.
 - Los tres formularios (`/bioreactores`, `/kit-biorreactor`, `/biofabrica`)
   envían con `partials/site/enviar-lead.htm`: primero a `/api/lead`, que
   reenvía al Form desde el servidor y lee si Google lo aceptó; si esa ruta

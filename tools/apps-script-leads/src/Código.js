@@ -503,8 +503,13 @@ function construirLead_(fila, encabezados, id) {
 
   /* Los formularios de /bioreactores y /kit-biorreactor no traen resumen,
      pero sí preguntan qué quiere hacer y si ya usa microorganismos. */
-  const rutaPedida = delEmbudo ? (r['RUTA SOLICITADA'] || r['RUTA']) : rutaDesdeIntencion_(col('deseas hacer'));
-  const practica = delEmbudo ? (r['Practica'] || r['Práctica'] || '') : practicaDesdeRespuesta_(col('utilizas microorganismos'));
+  /* Desde el sitio de Astro, «¿Qué deseas hacer?» trae al final «| PÁGINA: kit»
+     o «| PÁGINA: landing» para saber de qué formulario vino el lead.
+     El segundo texto es el título real de la pregunta en el Google Form. */
+  const intencion = String(col('deseas hacer', 'deseas adquirir') || '');
+  const pagina = (intencion.match(/\|\s*P[AÁ]GINA\s*:\s*([\w-]+)/i) || [])[1] || '';
+  const rutaPedida = delEmbudo ? (r['RUTA SOLICITADA'] || r['RUTA']) : rutaDesdeIntencion_(intencion.split('|')[0]);
+  const practica = delEmbudo ? (r['Practica'] || r['Práctica'] || '') : practicaDesdeRespuesta_(col('utilizas microorganismos', 'cuentas con presupuesto'));
 
   const puntaje = calcularPuntaje_({
     ruta: r['RECOMENDACION CALCULADA'] || r['RUTA'] || rutaPedida || '',
@@ -552,7 +557,7 @@ function construirLead_(fila, encabezados, id) {
   registro['Recuperación (meses)'] = recup;
   registro['Forma de pago'] = r['Forma de pago'] || '';
   registro['Interés financiamiento'] = /INTERESADO/i.test(r['Financiamiento'] || '') ? 'Sí' : 'No';
-  registro['Origen'] = delEmbudo ? 'Embudo /biofabrica' : 'Formulario anterior';
+  registro['Origen'] = delEmbudo ? 'Embudo /biofabrica' : (ORIGEN_POR_PAGINA[pagina.toLowerCase()] || 'Formulario anterior');
   /* Avisos automaticos: hay cifras que se ven como dato duro sin serlo, y
      Ventas no tiene por que adivinar cuales. */
   const avisos = [];
@@ -879,6 +884,9 @@ function estadoDesde_(texto) {
 function normalizar_(s) {
   return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 }
+
+/** Código «PÁGINA:» que manda Diagnostico.astro → texto de la columna Origen. */
+const ORIGEN_POR_PAGINA = { landing: 'Formulario /biorreactores', kit: 'Formulario /kit-biorreactor' };
 
 /** «¿Qué deseas hacer?» de los formularios viejos, como ruta del embudo. */
 function rutaDesdeIntencion_(texto) {

@@ -5,10 +5,11 @@
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Script } from 'node:vm';
 import { JSDOM } from 'jsdom';
 
-const dist = new URL('../dist/', import.meta.url).pathname;
+const dist = fileURLToPath(new URL('../dist/', import.meta.url));
 const canonicalBase = 'https://www.precisionagricola.com';
 const JS_BUDGET = 50 * 1024;
 // Páginas que deben llevar noindex. Cualquier otra con noindex falla.

@@ -76,3 +76,6 @@ Para publicar al instante sin esperar al cron, corre el mismo comando por SSH.
 
 - El certificado del dominio principal vence el 27 de enero de 2027 y no se
   renueva solo; se puede emitir igual con `acme.sh`, con `-w ~/public_html`.
+- `web/public/.htaccess` redirige HTTP a HTTPS y `precisionagricola.com` a
+  `https://www.precisionagricola.com` con 301 (salvo `/.well-known/`), y envía
+  `Strict-Transport-Security` (`max-age=31536000`) en respuestas HTTPS.

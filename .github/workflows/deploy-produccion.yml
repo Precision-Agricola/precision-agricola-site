@@ -1,0 +1,60 @@
+# Construye el sitio de Astro (web/) y deja el build en la rama prod-dist,
+# que es lo que sirve www.precisionagricola.com después del corte (issue #66).
+#
+# Solo corre a mano (Actions → Desplegar producción → Run workflow), para que
+# un merge a main nunca publique en www sin que alguien lo decida.
+# Igual que el beta: GoDaddy no acepta SSH desde GitHub, así que el servidor
+# jala la rama con un cron de cPanel. Ver web/DEPLOY.md.
+#
+# A diferencia del beta, aquí NO se agrega X-Robots-Tag ni robots.txt de
+# bloqueo: se publica el robots.txt de producción de web/public.
+
+name: Desplegar producción
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-produccion
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run audit:seo
+
+      - name: Preparar el build de producción
+        run: |
+          # /ui-kit es una página interna: no se publica en www.
+          rm -f dist/ui-kit.html
+          # Nada del beta debe colarse aquí.
+          ! grep -q 'X-Robots-Tag' dist/.htaccess
+          grep -q '^Allow: /' dist/robots.txt
+          echo "${GITHUB_SHA}" > dist/version.txt
+
+      - name: Publicar el build en la rama prod-dist
+        run: |
+          cd dist
+          git init -q -b prod-dist
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Build de producción de web/ desde ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" prod-dist

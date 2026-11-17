@@ -79,3 +79,71 @@ Para publicar al instante sin esperar al cron, corre el mismo comando por SSH.
 - `web/public/.htaccess` redirige HTTP a HTTPS y `precisionagricola.com` a
   `https://www.precisionagricola.com` con 301 (salvo `/.well-known/`), y envía
   `Strict-Transport-Security` (`max-age=31536000`) en respuestas HTTPS.
+
+## Producción (www): corte desde October
+
+`www.precisionagricola.com` todavía sirve October desde `~/public_html`.
+El sitio de Astro se publica en www con `.github/workflows/deploy-produccion.yml`,
+que **solo corre a mano** (Actions → «Desplegar producción» → Run workflow) y
+deja el build en la rama `prod-dist`, sin el `noindex` del beta y sin `/ui-kit`.
+
+### 1. Publicar la rama (GitHub)
+
+Correr «Desplegar producción» y esperar a que termine en verde.
+
+### 2. Preparar la carpeta (una sola vez, por SSH)
+
+```bash
+ls -la ~ | grep public_html          # anotar si es carpeta o enlace, y a dónde apunta
+mkdir -p ~/www-astro
+P="git --git-dir=$HOME/.prod-dist.git --work-tree=$HOME/www-astro"
+$P init -q
+$P config core.bare false
+$P remote add origin "$(git -C ~/precision-agricola remote get-url origin)"
+$P fetch -q --depth 1 origin prod-dist && $P reset -q --hard FETCH_HEAD
+cat ~/www-astro/version.txt          # debe coincidir con el run del paso 1
+```
+
+### 3. Corte (menos de un minuto)
+
+```bash
+cd ~
+mv public_html public_html-october   # si public_html era un enlace, se mueve el enlace
+ln -s www-astro public_html
+```
+
+`acme.sh -w ~/public_html` sigue funcionando: escribe en `~/www-astro/.well-known`.
+
+### 4. Cron (cPanel → Trabajos de cron), cada 5 minutos
+
+```bash
+P="git --git-dir=$HOME/.prod-dist.git --work-tree=$HOME/www-astro"; $P fetch -q --depth 1 origin prod-dist && $P reset -q --hard FETCH_HEAD
+```
+
+Con esto, cada vez que se corre «Desplegar producción», www se actualiza en
+menos de 5 minutos. Un push a `main` solo actualiza el beta.
+
+### Comprobar
+
+```bash
+curl -s  https://www.precisionagricola.com/version.txt
+curl -sI http://www.precisionagricola.com/biorreactores        # 301 → https
+curl -sI https://precisionagricola.com/contacto                # 301 → https://www…/contacto
+curl -sI https://www.precisionagricola.com/ | grep -i strict   # max-age=31536000
+curl -sI https://www.precisionagricola.com/ | grep -i robots   # nada: www sí se indexa
+curl -sI https://www.precisionagricola.com/bioreactores        # 301 → /biorreactores
+curl -sI https://www.precisionagricola.com/diagnostico         # 301 → /biofabrica
+curl -sI https://www.precisionagricola.com/ui-kit              # 404
+curl -si -X POST -d 'foo=bar' https://www.precisionagricola.com/api/lead.php  # 400 vacio
+```
+
+Después, un lead de prueba en `/biorreactores` y en `/kit-biorreactor`, y
+enviar el sitemap nuevo en Search Console.
+
+### Regresar a October (rollback)
+
+```bash
+cd ~ && rm public_html && mv public_html-october public_html
+```
+
+Quitar o pausar el cron de producción mientras se arregla.
